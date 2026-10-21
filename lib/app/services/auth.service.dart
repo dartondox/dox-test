@@ -11,13 +11,20 @@ class AuthService {
   AuthService(this.users);
 
   Future<User> register(RegisterRequest req) async {
-    User? existing = await users.findByEmail(req.email);
+    // UserObserver saves the email in lower case, so look it up that way.
+    User? existing = await users.findByEmail(req.email.toLowerCase());
     if (existing != null) {
       throw ValidationException(
         message: <String, String>{'email': 'email is already taken'},
       );
     }
-    return await users.create(req.name, req.email, Hash.make(req.password));
+    return await users.create(
+      req.name,
+      req.email,
+      Hash.make(req.password),
+      firstName: req.firstName,
+      lastName: req.lastName,
+    );
   }
 
   /// Returns the JWT token and the user. Wrong password gives 401.

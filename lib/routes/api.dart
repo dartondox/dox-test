@@ -1,8 +1,10 @@
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/auth.controller.dart';
+import 'package:dox_test/app/http/controllers/cache.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
 import 'package:dox_test/app/http/controllers/post.controller.dart';
+import 'package:dox_test/app/http/controllers/storage.controller.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
 import 'package:dox_test/app/http/controllers/tag.controller.dart';
 import 'package:dox_test/app/http/controllers/user.controller.dart';
@@ -23,6 +25,8 @@ class ApiRouter extends Router {
     Route.group('/tags', registerTags);
     Route.group('/files', registerFiles);
     Route.group('/system', registerSystem);
+    Route.group('/cache', registerCache);
+    Route.group('/storage', registerStorage);
   }
 
   void registerAuth() {
@@ -63,13 +67,42 @@ class ApiRouter extends Router {
   }
 
   void registerTags() {
-    Route.get('/{name}/posts', ioc.get<TagController>().posts);
+    TagController tags = ioc.get<TagController>();
+    Route.get('/', tags.index);
+    Route.post('/', tags.store);
+    Route.get('/{name}/posts', tags.posts);
   }
 
   void registerFiles() {
     FileController files = ioc.get<FileController>();
     Route.post('/', files.upload);
     Route.get('/{name}', files.download);
+    Route.get('/{name}/raw', files.raw);
+  }
+
+  /// {store} is memory, file or redis.
+  void registerCache() {
+    CacheController cache = ioc.get<CacheController>();
+    Route.put('/{store}/items/{key}', cache.put);
+    Route.get('/{store}/items/{key}', cache.get);
+    Route.delete('/{store}/items/{key}', cache.forget);
+    Route.post('/{store}/remember/{key}', cache.remember);
+    Route.post('/{store}/increment/{key}', cache.increment);
+    Route.put('/{store}/tags/{tag}/{key}', cache.putTagged);
+    Route.get('/{store}/tags/{tag}/{key}', cache.getTagged);
+    Route.delete('/{store}/tags/{tag}', cache.flushTag);
+    Route.post('/{store}/locks/{name}', cache.lock);
+    Route.delete('/{store}/locks/{name}', cache.release);
+  }
+
+  /// {disk} is local, memory or s3. {key*} takes the rest of the path.
+  void registerStorage() {
+    StorageController storage = ioc.get<StorageController>();
+    Route.post('/{disk}', storage.upload);
+    Route.get('/{disk}/stream/{key*}', storage.stream);
+    Route.get('/{disk}/download/{key*}', storage.download);
+    Route.get('/{disk}/signed/{key*}', storage.signed);
+    Route.delete('/{disk}/files/{key*}', storage.delete);
   }
 
   /// Every system route needs the API key header.
@@ -88,5 +121,7 @@ class ApiRouter extends Router {
     Route.get('/teapot', system.teapot);
     Route.get('/crash', system.crash);
     Route.get('/container', system.container);
+    Route.get('/ip', system.ip);
+    Route.get('/twice/{n}', system.twice);
   }
 }

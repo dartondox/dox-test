@@ -5,12 +5,16 @@ class RegisterRequest extends FormRequest {
   String name = '';
   String email = '';
   String password = '';
+  String? firstName;
+  String? lastName;
 
   @override
   void setUp() {
     name = input('name').toString();
     email = input('email').toString();
     password = input('password').toString();
+    firstName = input('first_name')?.toString();
+    lastName = input('last_name')?.toString();
   }
 
   @override

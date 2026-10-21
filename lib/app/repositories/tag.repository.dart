@@ -1,6 +1,9 @@
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 
+/// Thrown inside the transaction to show a rollback.
+class TagRollbackException implements Exception {}
+
 /// All database access for tags and the `post_tag` pivot table.
 class TagRepository {
   Future<Tag> firstOrCreate(String name) async {
@@ -12,6 +15,35 @@ class TagRepository {
     created.name = name;
     await created.save();
     return created;
+  }
+
+  /// Insert every name in one transaction.
+  /// [failAtEnd] throws after the inserts, so they are rolled back.
+  Future<void> createAll(List<String> names, {bool failAtEnd = false}) async {
+    Future<void> insertAll() async {
+      for (String name in names) {
+        await firstOrCreate(name);
+      }
+      if (failAtEnd) {
+        throw TagRollbackException();
+      }
+    }
+
+    await QueryBuilder.transaction(insertAll);
+  }
+
+  /// Tags by name, without the [except] names (whereNotIn).
+  Future<List<Tag>> list(int limit, List<String> except) async {
+    List<dynamic> rows = await Tag()
+        .whereNotIn('name', except)
+        .orderBy('name')
+        .limit(limit)
+        .get();
+    return List<Tag>.from(rows);
+  }
+
+  Future<int> count() async {
+    return await Tag().count();
   }
 
   /// Replace the tags of a post.

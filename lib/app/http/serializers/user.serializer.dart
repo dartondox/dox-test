@@ -7,6 +7,11 @@ class UserSerializer extends Serializer<User> {
 
   @override
   Map<String, dynamic> convert(User m) {
-    return <String, dynamic>{'id': m.id, 'name': m.name, 'email': m.email};
+    return <String, dynamic>{
+      'id': m.id,
+      'name': m.name,
+      'email': m.email,
+      'full_name': m.fullName,
+    };
   }
 }

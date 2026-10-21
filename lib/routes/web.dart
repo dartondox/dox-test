@@ -5,7 +5,12 @@ import 'package:dox_test/app/http/controllers/system.controller.dart';
 class WebRouter extends Router {
   @override
   void register() {
-    Route.get('/ping', Dox().ioc.get<SystemController>().ping);
+    SystemController system = Dox().ioc.get<SystemController>();
+    Route.get('/ping', system.ping);
+    Route.get('/playground', system.playground);
+
+    /// Local signed URLs from Storage().signedUrl(): GET /files/{key*}
+    Route.files('files');
     Route.disabledCors(registerNoCors);
   }
 

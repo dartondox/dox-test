@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
@@ -13,6 +15,17 @@ class FileService {
       'bytes': (await file.bytes).length,
       'size_kb': await file.size,
     };
+  }
+
+  /// The upload as a File. Only a plain name, so no `..` tricks.
+  File file(String name) {
+    File found = File(
+      '${AppConstants.storageRoot}/${AppConstants.uploadFolder}/$name',
+    );
+    if (name.contains('/') || name.contains('..') || !found.existsSync()) {
+      throw NotFoundHttpException(message: 'file not found');
+    }
+    return found;
   }
 
   Future<StreamFile> read(String name) async {

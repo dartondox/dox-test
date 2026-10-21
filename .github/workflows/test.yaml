@@ -38,7 +38,23 @@ jobs:
         options: >-
           --health-cmd "mysqladmin ping -h 127.0.0.1 -ppassword"
           --health-interval 2s --health-retries 60
+      redis:
+        image: redis:8-alpine
+        ports: ["6459:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s --health-retries 30
     steps:
+      # MinIO needs a start command, so it can not be a service.
+      # The folder made by mkdir is the dox-test bucket.
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio -p 9110:9000 \
+            -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
+            -e MC_HOST_local=http://minioadmin:minioadmin@127.0.0.1:9000 \
+            --entrypoint bash cgr.dev/chainguard/minio:latest \
+            -c "mkdir -p /data/dox-test && exec minio server /data"
+          for i in $(seq 1 30); do docker exec minio mc ready local && break; sleep 2; done
       - uses: actions/checkout@v4
         with:
           path: dox-test
@@ -56,7 +72,7 @@ jobs:
         run: |
           cp .env.example .env
           dart pub get
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build
       - name: Migrate
         working-directory: dox-test
         run: dart run bin/migrate.dart run

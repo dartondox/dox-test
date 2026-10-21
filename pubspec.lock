@@ -258,7 +258,7 @@ packages:
     source: path
     version: "3.0.0-alpha.1"
   dox_socketio:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       path: "../dox/packages/dox-socketio"
       relative: true

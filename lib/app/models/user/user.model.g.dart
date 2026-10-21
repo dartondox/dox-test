@@ -33,6 +33,8 @@ class UserGenerator extends Model<User> {
     'name',
     'email',
     'password',
+    'first_name',
+    'last_name',
     'created_at',
     'updated_at',
   ];
@@ -94,6 +96,8 @@ class UserGenerator extends Model<User> {
     ..name = m['name'] as String?
     ..email = m['email'] as String?
     ..password = m['password'] as String?
+    ..firstName = m['first_name'] as String?
+    ..lastName = m['last_name'] as String?
     ..createdAt = m['created_at'] == null
         ? null
         : DateTime.parse(m['created_at'] as String)
@@ -109,6 +113,8 @@ class UserGenerator extends Model<User> {
       'name': instance.name,
       'email': instance.email,
       'password': instance.password,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
     };
@@ -122,5 +128,11 @@ class UserGenerator extends Model<User> {
     }
 
     return map;
+  }
+
+  @override
+  void setComputedValues(Map<String, dynamic> map) {
+    User instance = this as User;
+    map['full_name'] = instance.fullName;
   }
 }

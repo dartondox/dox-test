@@ -6,6 +6,9 @@ class AppConstants {
   /// Header the system routes need.
   static const String apiKeyHeader = 'X-Api-Key';
 
+  /// Root folder of the local storage disk.
+  static const String storageRoot = 'storage';
+
   /// Storage folder for uploaded files.
   static const String uploadFolder = 'uploads';
 
@@ -21,4 +24,16 @@ class AppConstants {
 
   /// Default page size for lists.
   static const int defaultPerPage = 10;
+
+  /// Cache stores that the /api/cache routes may use.
+  static const List<String> cacheStores = <String>['memory', 'file', 'redis'];
+
+  /// Storage disks that the /api/storage routes may use.
+  static const List<String> storageDisks = <String>['local', 'memory', 's3'];
+
+  /// Browser page to try websocket and Socket.IO.
+  static const String playgroundFile = 'public/playground.html';
+
+  /// Socket.IO namespace and the room used by the playground.
+  static const String chatNamespace = '/chat';
 }

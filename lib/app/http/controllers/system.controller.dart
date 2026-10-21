@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/constants/app_constants.dart';
@@ -68,6 +70,29 @@ class SystemController {
   /// GET /api/system/container
   Map<String, int> container(DoxRequest req) {
     return <String, int>{'calls': service.nextCall()};
+  }
+
+  /// GET /api/system/ip (X-Forwarded-* is read only from trusted proxies)
+  Map<String, dynamic> ip(DoxRequest req) {
+    return <String, dynamic>{
+      'ip': req.ip(),
+      'scheme': req.scheme(),
+      'secure': req.isSecure(),
+    };
+  }
+
+  /// GET /api/system/twice/{n}
+  // ponytail: `int n` would be nicer, but dox_core passes path params as
+  // String today and `int n` gives a 500. Switch when typed params land.
+  Map<String, int> twice(DoxRequest req, String n) {
+    // a failed parse() inside a controller answers 422
+    return <String, int>{'result': v.coerce.int().parse(n) * 2};
+  }
+
+  /// Browser page to try websocket and Socket.IO
+  @ApiIgnore()
+  File playground(DoxRequest req) {
+    return File(AppConstants.playgroundFile);
   }
 
   /// GET /no-cors

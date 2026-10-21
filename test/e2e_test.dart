@@ -595,6 +595,364 @@ void main() {
       await outsider.close();
     });
   });
+
+  group('ORM: computed values, observers, transactions, whereNotIn', () {
+    test('@Computed full_name and observer lowercases the email', () async {
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 'Dave',
+          'first_name': 'Dave',
+          'last_name': 'Grohl',
+          'email': 'Dave@Mail.COM',
+          'password': 'secret123',
+        },
+      );
+      expect(res.statusCode, 201, reason: res.body);
+      Map<String, dynamic> user = api.json(res);
+      expect(user['email'], 'dave@mail.com');
+      expect(user['full_name'], 'Dave Grohl');
+
+      http.Response show = await api.get('/api/users/${user['id']}');
+      Map<String, dynamic> body = api.json(show);
+      expect(body['first_name'], 'Dave');
+      expect(body['full_name'], 'Dave Grohl');
+      expect(body.containsKey('password'), false);
+    });
+
+    test('login works with the lower case email', () async {
+      http.Response res = await api.post('/api/auth/login', <String, dynamic>{
+        'email': 'dave@mail.com',
+        'password': 'secret123',
+      });
+      expect(res.statusCode, 200, reason: res.body);
+      expect(api.json(res)['user']['full_name'], 'Dave Grohl');
+    });
+
+    test('transaction rolls back when it throws', () async {
+      int before = api.json(await api.get('/api/tags?limit=100')).length;
+      http.Response res = await api.post('/api/tags', <String, dynamic>{
+        'names': <String>['alpha', 'beta'],
+        'fail': true,
+      });
+      expect(res.statusCode, 200, reason: res.body);
+      expect(api.json(res), <String, dynamic>{'saved': false, 'total': before});
+    });
+
+    test('transaction commits; schema trims and lowercases', () async {
+      int before = api.json(await api.get('/api/tags?limit=100')).length;
+      http.Response res = await api.post('/api/tags', <String, dynamic>{
+        'names': <String>[' Alpha ', 'BETA'],
+      });
+      expect(api.json(res), <String, dynamic>{
+        'saved': true,
+        'total': before + 2,
+      });
+      http.Response list = await api.get('/api/tags?limit=100');
+      expect(api.names(api.json(list)), containsAll(<String>['alpha', 'beta']));
+    });
+
+    test('whereNotIn and limit from a coerced query', () async {
+      http.Response res = await api.get(
+        '/api/tags?limit=100&except=alpha,dart',
+      );
+      List<String> names = api.names(api.json(res));
+      expect(names, isNot(contains('alpha')));
+      expect(names, isNot(contains('dart')));
+      expect(names, contains('beta'));
+
+      http.Response two = await api.get('/api/tags?limit=2');
+      expect((api.json(two) as List<dynamic>).length, 2);
+    });
+  });
+
+  group('dox_validation schemas', () {
+    test('validateSchema gives 422 with field errors', () async {
+      http.Response res = await api.post('/api/tags', <String, dynamic>{
+        'names': <String>[],
+      });
+      expect(res.statusCode, 422);
+      expect(api.json(res), contains('names'));
+
+      http.Response query = await api.get('/api/tags?limit=abc');
+      expect(query.statusCode, 422);
+      expect(api.json(query), contains('limit'));
+    });
+
+    test('schema.parse() in a controller: ok and 422', () async {
+      http.Response ok = await api.get('/api/system/twice/21');
+      expect(api.json(ok), <String, dynamic>{'result': 42});
+      http.Response bad = await api.get('/api/system/twice/abc');
+      expect(bad.statusCode, 422);
+    });
+  });
+
+  group('dox_openapi', () {
+    test('/docs, /openapi.json and /openapi.yaml are served', () async {
+      http.Response docs = await api.get('/docs');
+      expect(docs.statusCode, 200);
+      expect(docs.headers['content-type'], startsWith('text/html'));
+
+      http.Response yaml = await api.get('/openapi.yaml');
+      expect(yaml.statusCode, 200);
+      expect(yaml.body, contains('openapi: "3.1.0"'));
+    });
+
+    test('annotations and doc comments are in the document', () async {
+      Map<String, dynamic> doc = api.json(await api.get('/openapi.json'));
+      Map<String, dynamic> paths = doc['paths'];
+
+      Map<String, dynamic> login = paths['/api/auth/login']['post'];
+      expect(login['summary'], 'Log in');
+      expect(login['description'], contains('Bearer'));
+      expect(login['responses'], contains('401'));
+
+      Map<String, dynamic> lock = paths['/api/cache/{store}/locks/{name}'];
+      expect(lock['post']['tags'], <String>['Cache']);
+      expect(lock['post']['responses'], contains('422'));
+
+      expect(paths['/api/tags']['post']['tags'], <String>['Tag', 'ORM']);
+      expect(paths['/api/auth/me']['get']['security'], isNotEmpty);
+      expect(paths['/api/system/env']['get']['security'], <dynamic>[
+        <String, dynamic>{'apiKey': <dynamic>[]},
+      ]);
+
+      Map<String, dynamic> user = doc['components']['schemas']['User'];
+      expect(user['properties'], contains('first_name'));
+      expect(user['properties'], isNot(contains('password')));
+    });
+  });
+
+  group('dox_cache', () {
+    for (String store in AppConstants.cacheStores) {
+      test('$store: put, get, forget', () async {
+        String path = '/api/cache/$store/items/user';
+        http.Response put = await api.put(path, <String, dynamic>{
+          'value': <String, dynamic>{'name': 'Ann'},
+          'ttl': 60,
+        });
+        expect(put.statusCode, 200, reason: put.body);
+        expect(api.json(await api.get(path)), <String, dynamic>{
+          'key': 'user',
+          'value': <String, dynamic>{'name': 'Ann'},
+          'has': true,
+        });
+        expect(api.json(await api.delete(path))['forgot'], true);
+        expect(api.json(await api.get(path))['has'], false);
+      });
+
+      test('$store: remember computes once', () async {
+        String path = '/api/cache/$store/remember/now';
+        Map<String, dynamic> first = api.json(
+          await api.post(path, <String, dynamic>{}),
+        );
+        Map<String, dynamic> second = api.json(
+          await api.post(path, <String, dynamic>{}),
+        );
+        expect(first['computed'], true);
+        expect(second['computed'], false);
+        expect(second['value'], first['value']);
+      });
+
+      test('$store: increment', () async {
+        String path = '/api/cache/$store/increment/hits';
+        expect(api.json(await api.post(path, <String, dynamic>{}))['value'], 1);
+        expect(
+          api.json(await api.post(path, <String, dynamic>{'by': 5}))['value'],
+          6,
+        );
+      });
+
+      test('$store: tags flush only their items', () async {
+        String base = '/api/cache/$store/tags';
+        await api.put('$base/users/a', <String, dynamic>{'value': 'Ann'});
+        await api.put('$base/posts/a', <String, dynamic>{'value': 'Post'});
+        await api.delete('$base/users');
+        expect(api.json(await api.get('$base/users/a'))['value'], isNull);
+        expect(api.json(await api.get('$base/posts/a'))['value'], 'Post');
+      });
+    }
+
+    for (String store in <String>['memory', 'redis']) {
+      test('$store: lock is held until its owner releases it', () async {
+        String path = '/api/cache/$store/locks/report';
+        Map<String, dynamic> first = api.json(
+          await api.post(path, <String, dynamic>{}),
+        );
+        expect(first['got'], true);
+        expect(
+          api.json(await api.post(path, <String, dynamic>{}))['got'],
+          false,
+        );
+
+        http.Response wrong = await api.delete('$path?owner=nobody');
+        expect(api.json(wrong)['released'], false);
+        http.Response right = await api.delete('$path?owner=${first['owner']}');
+        expect(api.json(right)['released'], true);
+        expect(
+          api.json(await api.post(path, <String, dynamic>{}))['got'],
+          true,
+        );
+      });
+    }
+
+    test('file store has no locks (422), unknown store (404)', () async {
+      http.Response lock = await api.post(
+        '/api/cache/file/locks/x',
+        <String, dynamic>{},
+      );
+      expect(lock.statusCode, 422);
+      http.Response unknown = await api.get('/api/cache/nope/items/x');
+      expect(unknown.statusCode, 404);
+    });
+  });
+
+  group('dox_storage', () {
+    for (String disk in AppConstants.storageDisks) {
+      test('$disk: upload, stream, download, signed URL, delete', () async {
+        http.Response up = await api.upload(
+          '/api/storage/$disk',
+          'hello $disk',
+          'note.txt',
+        );
+        expect(up.statusCode, 201, reason: up.body);
+        String key = api.json(up)['key'];
+        expect(key, startsWith('uploads/'));
+        expect(key, endsWith('.txt'));
+
+        http.Response stream = await api.get('/api/storage/$disk/stream/$key');
+        expect(stream.statusCode, 200);
+        expect(stream.body, 'hello $disk');
+
+        http.Response down = await api.get('/api/storage/$disk/download/$key');
+        expect(down.body, 'hello $disk');
+        expect(down.headers['content-disposition'], startsWith('attachment'));
+
+        String url = api.json(
+          await api.get('/api/storage/$disk/signed/$key'),
+        )['url'];
+        if (disk != 'memory') {
+          http.Response signed = await http.get(Uri.parse(url));
+          expect(signed.statusCode, 200, reason: url);
+          expect(signed.body, 'hello $disk');
+        }
+
+        http.Response del = await api.delete('/api/storage/$disk/files/$key');
+        expect(api.json(del)['deleted'], true);
+        http.Response gone = await api.get('/api/storage/$disk/stream/$key');
+        expect(gone.statusCode, 404);
+      });
+    }
+
+    test('Route.files: a changed signature gives 403', () async {
+      http.Response up = await api.upload('/api/storage/local', 'x', 'a.txt');
+      String key = api.json(up)['key'];
+      String url = api.json(
+        await api.get('/api/storage/local/signed/$key'),
+      )['url'];
+      expect((await http.get(Uri.parse('${url}0'))).statusCode, 403);
+      expect((await api.get('/files/$key')).statusCode, 403);
+    });
+  });
+
+  group('core: limits, ranges, proxies, playground', () {
+    test('a JSON body over maxBodySize gives 413', () async {
+      String big = 'a' * (1024 * 1024 + 10);
+      http.Response res = await api.post('/api/system/echo', <String, dynamic>{
+        'text': big,
+      });
+      expect(res.statusCode, 413);
+    });
+
+    test('an upload over maxMultipartSize gives 413', () async {
+      http.Response res = await api.upload(
+        '/api/storage/memory',
+        'a' * (5 * 1024 * 1024 + 10),
+        'big.txt',
+      );
+      expect(res.statusCode, 413);
+    });
+
+    test('a File response answers Range with 206', () async {
+      http.Response up = await api.upload('/api/files', 'hello range', 'r.txt');
+      String name = api.json(up)['name'];
+      http.Response res = await api.get(
+        '/api/files/$name/raw',
+        headers: <String, String>{'Range': 'bytes=0-4'},
+      );
+      expect(res.statusCode, 206);
+      expect(res.body, 'hello');
+      expect(res.headers['content-range'], 'bytes 0-4/11');
+      expect(res.headers['accept-ranges'], 'bytes');
+    });
+
+    test('trusted proxy: X-Forwarded-For and -Proto are used', () async {
+      http.Response plain = await api.get('/api/system/ip');
+      // dox_core gives the IPv4-mapped form here: ::ffff:127.0.0.1
+      expect(api.json(plain)['ip'], endsWith('127.0.0.1'));
+      expect(api.json(plain)['scheme'], 'http');
+
+      http.Response proxied = await api.get(
+        '/api/system/ip',
+        headers: <String, String>{
+          'X-Forwarded-For': '203.0.113.9',
+          'X-Forwarded-Proto': 'https',
+        },
+      );
+      expect(api.json(proxied), <String, dynamic>{
+        'ip': '203.0.113.9',
+        'scheme': 'https',
+        'secure': true,
+      });
+    });
+
+    test('GET /playground serves the test page', () async {
+      http.Response res = await api.get('/playground');
+      expect(res.statusCode, 200);
+      expect(res.headers['content-type'], startsWith('text/html'));
+      expect(res.body, contains('socket.io'));
+    });
+  });
+
+  group('dox_socketio', () {
+    test('connect to /chat gets welcome; ping is acked', () async {
+      SioClient a = await SioClient.connect(api.sioUri);
+      expect(await a.next('welcome'), contains('id'));
+      expect(await a.emitWithAck('ping', null), 'pong');
+      await a.close();
+    });
+
+    test('rooms: message reaches the room, not the sender', () async {
+      SioClient a = await SioClient.connect(api.sioUri);
+      SioClient b = await SioClient.connect(api.sioUri);
+      SioClient outsider = await SioClient.connect(api.sioUri);
+      expect(await a.emitWithAck('join', 'lobby'), <String, dynamic>{
+        'joined': 'lobby',
+      });
+      await b.emitWithAck('join', 'lobby');
+      Object? ack = await a.emitWithAck('message', <String, String>{
+        'room': 'lobby',
+        'text': 'hi',
+      });
+      expect(ack, 'sent');
+      expect((await b.next('message'))['text'], 'hi');
+      expect(await a.nothing('message'), true);
+      expect(await outsider.nothing('message'), true);
+      await a.close();
+      await b.close();
+      await outsider.close();
+    });
+
+    test('namespace middleware refuses an empty name', () async {
+      SioClient c = await SioClient.connect(
+        api.sioUri,
+        auth: <String, String>{'name': ' '},
+        expectError: true,
+      );
+      expect(c.connectError, 'name is empty');
+      await c.close();
+    });
+  });
 }
 
 /// Small HTTP helper for the tests.
@@ -605,10 +963,15 @@ class Api {
 
   String get base => 'http://127.0.0.1:${appConfig.serverPort}';
   Uri get wsUri => Uri.parse('ws://127.0.0.1:${appConfig.serverPort}/ws');
+  Uri get sioUri => Uri.parse(
+    'ws://127.0.0.1:${appConfig.serverPort}/socket.io/?EIO=4&transport=websocket',
+  );
 
   Future<void> boot() async {
     await Bootstrap(migrations).start(freshDatabase: true);
-    await Cache().flush();
+    for (String store in AppConstants.cacheStores) {
+      await Cache().store(store).flush();
+    }
   }
 
   Uri uri(String path) {
@@ -677,6 +1040,20 @@ class Api {
   }) async {
     http.Request req = http.Request(method, uri(path));
     req.headers.addAll(headers ?? <String, String>{});
+    return http.Response.fromStream(await req.send());
+  }
+
+  /// multipart/form-data with one `file` field
+  Future<http.Response> upload(
+    String path,
+    String text,
+    String filename,
+  ) async {
+    http.MultipartRequest req = http.MultipartRequest('POST', uri(path));
+    req.fields['note'] = 'upload';
+    req.files.add(
+      http.MultipartFile.fromString('file', text, filename: filename),
+    );
     return http.Response.fromStream(await req.send());
   }
 
@@ -751,6 +1128,113 @@ class WsClient {
     await Future<void>.delayed(Duration(milliseconds: 300));
     for (Map<String, dynamic> m in _messages) {
       if (m['event'] == event) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> close() async {
+    await socket.close();
+  }
+}
+
+/// Tiny Socket.IO client on a raw websocket (Engine.IO v4, Socket.IO v5),
+/// for the /chat namespace. The browser playground uses the real JS client.
+class SioClient {
+  static const String nsp = AppConstants.chatNamespace;
+
+  final WebSocket socket;
+  final List<List<dynamic>> _events = <List<dynamic>>[];
+  final Map<int, Object?> _acks = <int, Object?>{};
+  final Completer<void> _ready = Completer<void>();
+  String? connectError;
+  int _nextAck = 0;
+
+  SioClient(this.socket) {
+    socket.listen(_onData);
+  }
+
+  static Future<SioClient> connect(
+    Uri uri, {
+    Map<String, String>? auth,
+    bool expectError = false,
+  }) async {
+    SioClient client = SioClient(await WebSocket.connect(uri.toString()));
+    client.socket.add('40$nsp,${jsonEncode(auth ?? <String, String>{})}');
+    await client._ready.future.timeout(Duration(seconds: 2));
+    if (!expectError && client.connectError != null) {
+      throw StateError('connect_error: ${client.connectError}');
+    }
+    return client;
+  }
+
+  void _onData(dynamic data) {
+    String text = data.toString();
+    if (text == '2') {
+      socket.add('3'); // Engine.IO ping -> pong
+      return;
+    }
+    if (!text.startsWith('4')) {
+      return; // Engine.IO open packet
+    }
+    String packet = text.substring(1);
+    String type = packet[0];
+    String rest = packet.substring(1);
+    if (rest.startsWith('$nsp,')) {
+      rest = rest.substring(nsp.length + 1);
+    }
+    if (type == '0') {
+      _ready.complete();
+    } else if (type == '4') {
+      connectError = jsonDecode(rest)['message'];
+      _ready.complete();
+    } else if (type == '2') {
+      _events.add(jsonDecode(rest));
+    } else if (type == '3') {
+      int start = rest.indexOf('[');
+      List<dynamic> args = jsonDecode(rest.substring(start));
+      _acks[int.parse(rest.substring(0, start))] = args.isEmpty
+          ? null
+          : args.first;
+    }
+  }
+
+  /// Emit an event and wait up to 2 seconds for the server ack.
+  Future<Object?> emitWithAck(String event, Object? data) async {
+    int id = _nextAck++;
+    List<Object?> args = data == null
+        ? <Object?>[event]
+        : <Object?>[event, data];
+    socket.add('42$nsp,$id${jsonEncode(args)}');
+    for (int i = 0; i < 40; i++) {
+      if (_acks.containsKey(id)) {
+        return _acks.remove(id);
+      }
+      await Future<void>.delayed(Duration(milliseconds: 50));
+    }
+    throw TimeoutException('no ack for "$event"');
+  }
+
+  /// Wait up to 2 seconds for an event, return its first argument.
+  Future<dynamic> next(String event) async {
+    for (int i = 0; i < 40; i++) {
+      for (List<dynamic> e in _events) {
+        if (e.first == event) {
+          _events.remove(e);
+          return e.length > 1 ? e[1] : null;
+        }
+      }
+      await Future<void>.delayed(Duration(milliseconds: 50));
+    }
+    throw TimeoutException('no "$event" event');
+  }
+
+  /// True when the event does not come within 300 ms.
+  Future<bool> nothing(String event) async {
+    await Future<void>.delayed(Duration(milliseconds: 300));
+    for (List<dynamic> e in _events) {
+      if (e.first == event) {
         return false;
       }
     }

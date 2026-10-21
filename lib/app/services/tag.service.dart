@@ -15,4 +15,19 @@ class TagService {
     }
     return tag;
   }
+
+  Future<List<Tag>> list(int limit, List<String> except) async {
+    return await tags.list(limit, except);
+  }
+
+  /// Saves all names, or none when [fail] is true.
+  Future<Map<String, dynamic>> createMany(List<String> names, bool fail) async {
+    bool saved = true;
+    try {
+      await tags.createAll(names, failAtEnd: fail);
+    } on TagRollbackException {
+      saved = false;
+    }
+    return <String, dynamic>{'saved': saved, 'total': await tags.count()};
+  }
 }

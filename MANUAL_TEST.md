@@ -1,0 +1,183 @@
+# Manual test guide
+
+Check every Dox package by hand. One section per package.
+Each step: a command, then what you should see.
+
+## 0. Start (once)
+
+```bash
+cp .env.example .env
+dart pub get
+dart run build_runner build                 # models + lib/openapi.g.dart
+docker compose up -d --wait                 # postgres, mysql, redis, minio
+dart run bin/migrate.dart run               # optional: the server also migrates
+dart run bin/server.dart                    # http://127.0.0.1:3100
+```
+
+Leave the server running. Use a second terminal for the commands below.
+
+```bash
+B=http://127.0.0.1:3100
+K='X-Api-Key: secret-api-key'               # needed for /api/system/*
+J='Content-Type: application/json'
+```
+
+Other database: `DB_CONNECTION=mysql dart run bin/server.dart` (or `sqlite`).
+
+Stop: `Ctrl+C`, then `docker compose down`.
+
+---
+
+## 1. dox_core: routing, middleware, CORS
+
+- [ ] `curl -i $B/ping`
+  → `pong`, header `x-app-name: dox-test`
+- [ ] `curl -i -H 'Origin: x.com' $B/ping`
+  → `access-control-allow-origin: *`
+- [ ] `curl -i $B/no-cors`
+  → no `access-control-*` headers
+- [ ] `curl -i -X OPTIONS -H 'Origin: x.com' -H 'Access-Control-Request-Method: POST' $B/api/posts`
+  → `204`
+- [ ] `curl -i $B/api/system/env`
+  → `403 invalid api key` (no key)
+- [ ] `curl -H "$K" $B/api/system/env`
+  → `{"app_name":"dox-test",...}`
+
+## 2. dox_core: request, response, limits
+
+- [ ] `curl -H "$K" "$B/api/system/query?a=1&b=two"`
+  → `query`, `only`, `has_a: true`
+- [ ] `curl -H "$K" -c /tmp/c.txt $B/api/system/cookie` then `curl -H "$K" -b /tmp/c.txt $B/api/system/cookie/read`
+  → `{"theme":"dark"}` (the cookie itself is encrypted)
+- [ ] `curl -i -H "$K" $B/api/system/teapot`
+  → `418`, header `x-custom: yes`
+- [ ] `curl -H "$K" $B/api/system/crash`
+  → `500`
+- [ ] Body too big (limit 1 MB):
+  `head -c 2000000 /dev/zero | tr '\0' a | curl -s -o /dev/null -w '%{http_code}\n' -H "$K" -H "$J" --data-binary @- $B/api/system/echo`
+  → `413`
+- [ ] Upload too big (limit 5 MB):
+  `head -c 6000000 /dev/zero > /tmp/big.bin && curl -s -o /dev/null -w '%{http_code}\n' -F file=@/tmp/big.bin $B/api/storage/memory`
+  → `413`
+- [ ] Trusted proxy:
+  `curl -H "$K" -H 'X-Forwarded-For: 203.0.113.9' -H 'X-Forwarded-Proto: https' $B/api/system/ip`
+  → `{"ip":"203.0.113.9","scheme":"https","secure":true}`
+- [ ] File response with Range:
+  `echo 'hello range' > /tmp/r.txt && curl -F note=x -F file=@/tmp/r.txt $B/api/files`
+  → copy `name`, then `curl -i -H 'Range: bytes=0-4' $B/api/files/<name>/raw`
+  → `206`, body `hello`, `content-range: bytes 0-4/12`
+- [ ] Path param: `curl -H "$K" $B/api/system/twice/21` → `{"result":42}`.
+  `.../twice/abc` → `422`
+
+## 3. dox_auth (JWT) + form requests
+
+- [ ] Register:
+  `curl -H "$J" -d '{"name":"Ann","first_name":"Ann","last_name":"Lee","email":"Ann@Mail.COM","password":"secret123"}' $B/api/auth/register`
+  → `201`, `email: ann@mail.com` (lower case), `full_name: Ann Lee`, no password
+- [ ] Bad register: `curl -H "$J" -d '{"email":"x"}' $B/api/auth/register` → `422` with errors
+- [ ] Login: `curl -H "$J" -d '{"email":"ann@mail.com","password":"secret123"}' $B/api/auth/login`
+  → copy `token`, then `T='Authorization: Bearer <token>'`
+- [ ] `curl -H "$T" $B/api/auth/me` → Ann. Without `-H "$T"` → `401`
+
+## 4. dox_orm + dox_migration
+
+- [ ] Create post: `curl -H "$T" -H "$J" -d '{"title":"Hi","body":"text","status":"published","tags":["dart"]}' $B/api/posts`
+  → `201`, `author`, `tags` (belongsTo, manyToMany)
+- [ ] `curl "$B/api/posts?page=1&limit=2"` → `total`, `per_page`, `data` (pagination)
+- [ ] `curl $B/api/posts/1` → post with `author`, `comments`, `tags`
+- [ ] `curl $B/api/users/1` → `first_name`, `full_name` (@Computed), `profile`, `posts`
+- [ ] Soft delete: `curl -X DELETE -H "$T" $B/api/posts/1`, then `curl $B/api/posts/trashed`
+  → the post, with `deleted_at` (whereNotNull)
+- [ ] Stats (join, groupBy, whereNull, cache): `curl $B/api/posts/stats` twice
+  → second answer has `"cached":true`
+- [ ] Transaction rollback: `curl -H "$J" -d '{"names":["alpha","beta"],"fail":true}' $B/api/tags`
+  → `{"saved":false,...}`, `total` does not change
+- [ ] Transaction commit: same without `"fail":true` → `{"saved":true,...}`
+- [ ] whereNotIn: `curl "$B/api/tags?except=alpha,dart"` → no `alpha`, no `dart`
+- [ ] Observer: the server log prints `user created` after each register
+- [ ] Migrations: `dart run bin/migrate.dart status`
+  → 6 migrations, the last is `add_names_to_users_table`
+
+## 5. dox_validation (schemas)
+
+- [ ] `curl -H "$J" -d '{"names":[]}' $B/api/tags` → `422`, `names` error
+- [ ] `curl "$B/api/tags?limit=abc"` → `422`, `limit` error (v.coerce.int)
+- [ ] `curl -H "$J" -d '{"names":["  MiXed  "]}' $B/api/tags` → saved as `mixed` (trim + lower case)
+
+## 6. dox_openapi
+
+- [ ] Open http://127.0.0.1:3100/docs → Swagger UI
+- [ ] In the page: "Log in" has a summary, a description and a `401` answer (annotations)
+- [ ] Tag "Cache" holds all cache routes (`@Tags` on the class)
+- [ ] `GET /api/tags` shows "List tags (lower case annotation)" — see "Known issues" below
+- [ ] http://127.0.0.1:3100/openapi.json and http://127.0.0.1:3100/openapi.yaml → the document
+- [ ] Files: `dart run ../dox/packages/dox-cli/bin/dox.dart openapi:generate`
+  → `storage/openapi/openapi.json` and `openapi.yaml`
+
+## 7. dox_cache (memory, file, redis)
+
+Swap `redis` for `memory` or `file` in every URL.
+
+- [ ] Put: `curl -X PUT -H "$J" -d '{"value":{"name":"Ann"},"ttl":60}' $B/api/cache/redis/items/user`
+- [ ] Get: `curl $B/api/cache/redis/items/user` → `"has":true`
+- [ ] Forget: `curl -X DELETE $B/api/cache/redis/items/user` → `"forgot":true`
+- [ ] Remember: `curl -X POST $B/api/cache/redis/remember/now` twice
+  → first `"computed":true`, then `false` with the same value
+- [ ] Increment: `curl -X POST -H "$J" -d '{"by":5}' $B/api/cache/redis/increment/hits` → 5, 10, ...
+- [ ] Tags:
+  `curl -X PUT -H "$J" -d '{"value":"Ann"}' $B/api/cache/redis/tags/users/a`,
+  `curl -X DELETE $B/api/cache/redis/tags/users`,
+  `curl $B/api/cache/redis/tags/users/a` → `"value":null`
+- [ ] Lock: `curl -X POST $B/api/cache/redis/locks/report` twice
+  → first `"got":true` + `owner`, second `"got":false`.
+  Release: `curl -X DELETE "$B/api/cache/redis/locks/report?owner=<owner>"` → `"released":true`
+- [ ] `file` store lock → `422` (file has no locks)
+- [ ] See the keys in redis: `docker exec dox-test-redis redis-cli keys 'dox_test:*'`
+
+## 8. dox_storage (local, memory, s3 = MinIO)
+
+Swap `s3` for `local` or `memory`.
+
+- [ ] Upload: `echo hello > /tmp/a.txt && curl -F file=@/tmp/a.txt $B/api/storage/s3`
+  → `201`, `key` like `uploads/<uuid>.txt`
+- [ ] Stream: `curl $B/api/storage/s3/stream/<key>` → `hello`
+- [ ] Download: `curl -i $B/api/storage/s3/download/<key>` → `content-disposition: attachment`
+- [ ] Signed URL: `curl $B/api/storage/s3/signed/<key>` → a MinIO URL on port 9110.
+  `curl '<url>'` → `hello`
+- [ ] Local signed URL: same with `local` → a `/files/...` URL (Route.files).
+  `curl '<url>'` → `hello`. Change one letter of `signature` → `403`
+- [ ] Delete: `curl -X DELETE $B/api/storage/s3/files/<key>`, then stream → `404`
+- [ ] MinIO console: http://127.0.0.1:9111 (minioadmin / minioadmin), bucket `dox-test`
+
+## 9. dox_websocket + dox_socketio (browser)
+
+- [ ] Open http://127.0.0.1:3100/playground in **two tabs**
+- [ ] WebSocket box: Connect → `connected`. Echo → `echo hello` in the same tab only
+- [ ] Broadcast in tab 1 → shows in tab 2, not in tab 1
+- [ ] Join "lobby" in both tabs, Chat in tab 1 → tab 2 gets `hi lobby`
+- [ ] Socket.IO box: Connect → `connected, id ..., welcome {...}`
+  (transport becomes `websocket` after the polling start)
+- [ ] Ping → `ack: pong`
+- [ ] Join "lobby" in both tabs, Message in tab 1 → tab 1 `ack: sent`, tab 2 `message {...}`
+- [ ] Type a space as name, Connect → `connect_error: name is empty` (namespace middleware)
+
+## 10. Production build (AOT)
+
+- [ ] `dart run ../dox/packages/dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
+- [ ] Stop `dart run`, then `./build/bundle/bin/server` from the project folder
+  → starts in well under a second. `curl $B/ping` → `pong`
+
+## 11. Automatic checks
+
+- [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
+  → all pass (83 checks)
+
+## Known issues (framework, not this app)
+
+- **Typed path params**: `twice(DoxRequest req, int n)` gives `500`
+  (`type 'String' is not a subtype of type 'int'`). Path params are always `String`.
+  The app uses `String n` for now.
+- **OpenAPI index routes**: `GET /api/users`, `/api/posts` and `/api/tags` show a plain
+  "GET /api/..." entry, without the doc comment or annotations.
+  All three are `Route.get('/', x.index)` inside a group, so the docs can not tell them apart.
+- **Client IP**: `req.ip()` gives `::ffff:127.0.0.1`, not `127.0.0.1`, for a local client.

@@ -4,11 +4,19 @@ import 'package:dox_test/app/models/user/user.model.dart';
 
 /// All database access for users and profiles.
 class UserRepository {
-  Future<User> create(String name, String email, String passwordHash) async {
+  Future<User> create(
+    String name,
+    String email,
+    String passwordHash, {
+    String? firstName,
+    String? lastName,
+  }) async {
     User user = User();
     user.name = name;
     user.email = email;
     user.password = passwordHash;
+    user.firstName = firstName;
+    user.lastName = lastName;
     await user.save();
     return user;
   }

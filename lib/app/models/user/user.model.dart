@@ -20,6 +20,21 @@ class User extends UserGenerator {
   @Column()
   String? password;
 
+  @Column(name: 'first_name')
+  String? firstName;
+
+  @Column(name: 'last_name')
+  String? lastName;
+
+  /// Not a column. Added to the JSON as `full_name`.
+  @Computed()
+  String? get fullName {
+    if (firstName == null && lastName == null) {
+      return null;
+    }
+    return <String?>[firstName, lastName].whereType<String>().join(' ');
+  }
+
   @HasOne(Profile, foreignKey: 'user_id', localKey: 'id')
   Profile? profile;
 

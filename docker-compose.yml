@@ -25,3 +25,32 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ppassword"]
       interval: 2s
       retries: 60
+
+  redis:
+    image: redis:8-alpine
+    container_name: dox-test-redis
+    ports:
+      - "6459:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      retries: 30
+
+  # S3 for the `s3` storage disk. API on 9110, web console on 9111.
+  # The folder made by mkdir is the `dox-test` bucket.
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    container_name: dox-test-minio
+    entrypoint: ["bash", "-c"]
+    command: ["mkdir -p /data/dox-test && exec minio server /data --console-address :9001"]
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MC_HOST_local: http://minioadmin:minioadmin@127.0.0.1:9000
+    ports:
+      - "9110:9000"
+      - "9111:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      retries: 30

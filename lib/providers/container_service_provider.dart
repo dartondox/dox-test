@@ -1,7 +1,9 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/auth.controller.dart';
+import 'package:dox_test/app/http/controllers/cache.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
 import 'package:dox_test/app/http/controllers/post.controller.dart';
+import 'package:dox_test/app/http/controllers/storage.controller.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
 import 'package:dox_test/app/http/controllers/tag.controller.dart';
 import 'package:dox_test/app/http/controllers/user.controller.dart';
@@ -10,8 +12,10 @@ import 'package:dox_test/app/repositories/post.repository.dart';
 import 'package:dox_test/app/repositories/tag.repository.dart';
 import 'package:dox_test/app/repositories/user.repository.dart';
 import 'package:dox_test/app/services/auth.service.dart';
+import 'package:dox_test/app/services/cache.service.dart';
 import 'package:dox_test/app/services/file.service.dart';
 import 'package:dox_test/app/services/post.service.dart';
+import 'package:dox_test/app/services/storage.service.dart';
 import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/app/services/tag.service.dart';
 import 'package:dox_test/app/services/user.service.dart';
@@ -36,6 +40,8 @@ class ContainerServiceProvider implements DoxService {
     ioc.registerSingleton<TagService>(tagService);
     ioc.registerSingleton<FileService>(fileService);
     ioc.registerSingleton<SystemService>(systemService);
+    ioc.registerSingleton<CacheService>(cacheService);
+    ioc.registerSingleton<StorageService>(storageService);
 
     ioc.registerSingleton<AuthController>(authController);
     ioc.registerSingleton<UserController>(userController);
@@ -43,6 +49,8 @@ class ContainerServiceProvider implements DoxService {
     ioc.registerSingleton<TagController>(tagController);
     ioc.registerSingleton<FileController>(fileController);
     ioc.registerSingleton<SystemController>(systemController);
+    ioc.registerSingleton<CacheController>(cacheController);
+    ioc.registerSingleton<StorageController>(storageController);
     ioc.registerSingleton<ChatSocketController>(chatSocketController);
   }
 
@@ -88,6 +96,22 @@ class ContainerServiceProvider implements DoxService {
 
   SystemService systemService(IocContainer i) {
     return SystemService();
+  }
+
+  CacheService cacheService(IocContainer i) {
+    return CacheService();
+  }
+
+  StorageService storageService(IocContainer i) {
+    return StorageService();
+  }
+
+  CacheController cacheController(IocContainer i) {
+    return CacheController(i.get<CacheService>());
+  }
+
+  StorageController storageController(IocContainer i) {
+    return StorageController(i.get<StorageService>());
   }
 
   AuthController authController(IocContainer i) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/services/file.service.dart';
 
@@ -18,5 +20,10 @@ class FileController {
   /// GET /api/files/{name}
   Future<StreamFile> download(DoxRequest req, String name) async {
     return await service.read(name);
+  }
+
+  /// GET /api/files/{name}/raw (a File: Range gives 206 Partial Content)
+  File raw(DoxRequest req, String name) {
+    return service.file(name);
   }
 }

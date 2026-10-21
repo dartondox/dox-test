@@ -46,7 +46,7 @@ class PostRepository {
   Future<List<Post>> trashed() async {
     List<dynamic> rows = await Post()
         .withTrash()
-        .whereRaw('deleted_at IS NOT NULL')
+        .whereNotNull('deleted_at')
         .orderBy('id')
         .get();
     return List<Post>.from(rows);
@@ -65,7 +65,7 @@ class PostRepository {
     List<dynamic> rows = await QueryBuilder.table('posts')
         .select('users.name as author, count(posts.id) as total')
         .join('users', 'users.id', 'posts.user_id')
-        .whereRaw('posts.deleted_at IS NULL')
+        .whereNull('posts.deleted_at')
         .groupBy('users.name')
         .orderBy('users.name')
         .get();

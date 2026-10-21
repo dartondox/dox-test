@@ -10,6 +10,7 @@ dependencies:
   dox_migration: ^3.0.0-alpha.1
   dox_auth: ^3.0.0-alpha.1
   dox_websocket: ^3.0.0-alpha.1
+  dox_socketio: ^3.0.0-alpha.1
   postgres: ^3.5.20
 
 dev_dependencies:

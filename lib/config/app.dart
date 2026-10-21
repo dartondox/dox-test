@@ -7,7 +7,9 @@ import 'package:dox_test/config/cache.dart';
 import 'package:dox_test/config/cors.dart';
 import 'package:dox_test/config/env.dart';
 import 'package:dox_test/config/logger.dart';
+import 'package:dox_test/config/openapi.dart';
 import 'package:dox_test/config/services.dart';
+import 'package:dox_test/config/socketio.dart';
 import 'package:dox_test/config/storage.dart';
 import 'package:dox_test/routes/api.dart';
 import 'package:dox_test/routes/web.dart';
@@ -39,4 +41,13 @@ AppConfig appConfig = AppConfig(
   cors: cors,
   services: services,
   logger: logger,
+  openApi: openApi,
+  socketIo: socketIo,
+
+  /// Bigger bodies get 413. Small on purpose, so it is easy to try.
+  maxBodySize: AppEnv.getInt('MAX_BODY_SIZE', 1024 * 1024),
+  maxMultipartSize: AppEnv.getInt('MAX_MULTIPART_SIZE', 5 * 1024 * 1024),
+
+  /// Only these clients may set X-Forwarded-For and X-Forwarded-Proto.
+  trustedProxies: AppEnv.get('TRUSTED_PROXIES', '127.0.0.1,::1').split(','),
 );

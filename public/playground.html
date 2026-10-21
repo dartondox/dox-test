@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dox-test playground</title>
+  <style>
+    body { font: 15px system-ui, sans-serif; max-width: 860px; margin: 24px auto; padding: 0 16px; }
+    section { border: 1px solid #ccc; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+    button { margin: 4px 4px 4px 0; padding: 6px 10px; }
+    input { padding: 5px; width: 160px; }
+    pre { background: #111; color: #9f9; padding: 10px; height: 180px; overflow: auto; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>dox-test playground</h1>
+  <p>Open this page in two tabs to see rooms and broadcasts. Docs: <a href="/docs">/docs</a></p>
+
+  <section>
+    <h2>WebSocket (dox_websocket) at /ws</h2>
+    <button onclick="wsConnect()">Connect</button>
+    <button onclick="wsSend('echo', 'hello')">Echo "hello"</button>
+    <button onclick="wsSend('broadcast', {text: 'hi all'})">Broadcast</button>
+    <button onclick="wsSend('joinRoom', 'lobby')">Join "lobby"</button>
+    <button onclick="wsSend('chat', {room: 'lobby', text: 'hi lobby'})">Chat to "lobby"</button>
+    <pre id="wsLog"></pre>
+  </section>
+
+  <section>
+    <h2>Socket.IO (dox_socketio) at /chat</h2>
+    <input id="ioName" placeholder="name (optional)">
+    <button onclick="ioConnect()">Connect</button>
+    <button onclick="ioPing()">Ping (ack)</button>
+    <button onclick="ioJoin()">Join "lobby"</button>
+    <button onclick="ioMessage()">Message to "lobby"</button>
+    <button onclick="ioClose()">Disconnect</button>
+    <pre id="ioLog"></pre>
+  </section>
+
+  <!-- pinned client version -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
+  <script>
+    var ws = null;
+    var io_ = null;
+
+    function log(id, text) {
+      var el = document.getElementById(id);
+      el.textContent += new Date().toLocaleTimeString() + '  ' + text + '\n';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function wsConnect() {
+      ws = new WebSocket('ws://' + location.host + '/ws');
+      ws.onopen = function () { log('wsLog', 'open'); };
+      ws.onclose = function () { log('wsLog', 'closed'); };
+      ws.onmessage = function (e) { log('wsLog', 'got ' + e.data); };
+    }
+
+    function wsSend(event, message) {
+      if (!ws) { log('wsLog', 'press Connect first'); return; }
+      ws.send(JSON.stringify({event: event, message: message}));
+      log('wsLog', 'sent ' + event);
+    }
+
+    function ioConnect() {
+      var name = document.getElementById('ioName').value;
+      var auth = name === '' ? {} : {name: name};
+      io_ = io(location.origin + '/chat', {auth: auth});
+      io_.on('connect', function () { log('ioLog', 'connected, id ' + io_.id + ', transport ' + io_.io.engine.transport.name); });
+      io_.on('connect_error', function (e) { log('ioLog', 'connect_error: ' + e.message); });
+      io_.on('disconnect', function (reason) { log('ioLog', 'disconnect: ' + reason); });
+      io_.on('welcome', function (d) { log('ioLog', 'welcome ' + JSON.stringify(d)); });
+      io_.on('message', function (d) { log('ioLog', 'message ' + JSON.stringify(d)); });
+    }
+
+    function ioPing() {
+      if (!io_) { log('ioLog', 'press Connect first'); return; }
+      io_.emit('ping', function (answer) { log('ioLog', 'ack: ' + answer); });
+    }
+
+    function ioJoin() {
+      if (!io_) { log('ioLog', 'press Connect first'); return; }
+      io_.emit('join', 'lobby', function (answer) { log('ioLog', 'ack: ' + JSON.stringify(answer)); });
+    }
+
+    function ioMessage() {
+      if (!io_) { log('ioLog', 'press Connect first'); return; }
+      io_.emit('message', {room: 'lobby', text: 'hello lobby'}, function (answer) { log('ioLog', 'ack: ' + answer); });
+    }
+
+    function ioClose() {
+      if (io_) { io_.disconnect(); }
+    }
+  </script>
+</body>
+</html>

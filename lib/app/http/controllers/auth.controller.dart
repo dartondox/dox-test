@@ -9,13 +9,21 @@ class AuthController {
 
   AuthController(this.service);
 
-  /// POST /api/auth/register
+  /// Register a user
+  ///
+  /// The email is saved in lower case (UserObserver).
+  @Tags(<String>['Auth'])
   Future<DoxResponse> register(RegisterRequest req) async {
     User user = await service.register(req);
     return response(UserSerializer(user)).statusCode(201);
   }
 
   /// POST /api/auth/login
+  @Summary('Log in')
+  @Description('Gives a JWT. Send it as `Authorization: Bearer <token>`.')
+  @Tags(<String>['Auth'])
+  @Response(200, Map<String, dynamic>, description: '{token, user}')
+  @Response(401, null, description: 'Wrong email or password')
   Future<Map<String, dynamic>> login(DoxRequest req) async {
     return await service.login(
       req.input('email').toString(),
@@ -23,7 +31,8 @@ class AuthController {
     );
   }
 
-  /// GET /api/auth/me (needs token)
+  /// The logged in user
+  @Tags(<String>['Auth'])
   UserSerializer me(DoxRequest req) {
     return UserSerializer(req.auth?.user<User>());
   }
