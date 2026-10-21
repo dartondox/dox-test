@@ -1,0 +1,64 @@
+name: e2e
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      dox_ref:
+        description: dartondox/dox branch to test against
+        default: develop
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [postgres, mysql]
+    env:
+      DB_CONNECTION: ${{ matrix.db }}
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dox_test
+        ports: ["5452:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s --health-retries 30
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: dox_test
+        ports: ["3326:3306"]
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -ppassword"
+          --health-interval 2s --health-retries 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dox-test
+      - uses: actions/checkout@v4
+        with:
+          repository: dartondox/dox
+          ref: ${{ inputs.dox_ref || 'develop' }}
+          path: dox
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install and generate models
+        working-directory: dox-test
+        run: |
+          cp .env.example .env
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+      - name: Migrate
+        working-directory: dox-test
+        run: dart run bin/migrate.dart
+      - name: End-to-end checks
+        working-directory: dox-test
+        run: dart test -r expanded

@@ -1,0 +1,16 @@
+# Use the local framework code instead of pub.dev.
+dependency_overrides:
+  dox_annotation:
+    path: ../dox/packages/dox-annotation
+  dox_auth:
+    path: ../dox/packages/dox-auth
+  dox_builder:
+    path: ../dox/packages/dox-builder
+  dox_core:
+    path: ../dox/packages/dox-core
+  dox_migration:
+    path: ../dox/packages/dox-migration
+  dox_query_builder:
+    path: ../dox/packages/dox-query-builder
+  dox_websocket:
+    path: ../dox/packages/dox-websocket
