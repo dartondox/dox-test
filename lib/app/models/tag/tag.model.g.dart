@@ -14,9 +14,9 @@ class TagGenerator extends Model<Tag> {
 
   @override
   Map<String, dynamic> get timestampsColumn => <String, dynamic>{
-        'created_at': 'created_at',
-        'updated_at': 'updated_at',
-      };
+    'created_at': 'created_at',
+    'updated_at': 'updated_at',
+  };
 
   @override
   String get tableName => 'tags';
@@ -28,21 +28,25 @@ class TagGenerator extends Model<Tag> {
   Tag query() => Tag();
 
   @override
-  List<String> get tableColumns =>
-      <String>['id', 'name', 'created_at', 'updated_at'];
+  List<String> get tableColumns => <String>[
+    'id',
+    'name',
+    'created_at',
+    'updated_at',
+  ];
 
   @override
   List<String> get preloadList => <String>[];
 
   @override
   Map<String, Function> get relationsResultMatcher => <String, Function>{
-        'posts': getPosts,
-      };
+    'posts': getPosts,
+  };
 
   @override
   Map<String, Function> get relationsQueryMatcher => <String, Function>{
-        'posts': queryPosts,
-      };
+    'posts': queryPosts,
+  };
 
   static Future<void> getPosts(List<Model<Tag>> list) async {
     var result = await getManyToMany<Tag, Post>(queryPosts(list), list);

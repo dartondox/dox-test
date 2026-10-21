@@ -5,8 +5,10 @@ import 'package:dox_test/constants/app_constants.dart';
 class AppHeaderMiddleware implements IDoxMiddleware {
   @override
   IDoxRequest handle(IDoxRequest req) {
-    req.httpRequest.response.headers
-        .set(AppConstants.appHeader, Env.get('APP_NAME', 'dox-test'));
+    req.httpRequest.response.headers.set(
+      AppConstants.appHeader,
+      Env.get('APP_NAME', 'dox-test'),
+    );
     return req;
   }
 }

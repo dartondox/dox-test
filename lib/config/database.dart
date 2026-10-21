@@ -34,7 +34,9 @@ DatabaseConfig databaseConfig = DatabaseConfig(
       driver: Driver.sqlite,
       // A file, not :memory:, so every isolate sees the same database.
       database: AppEnv.get(
-          'DB_DATABASE', '${Directory.systemTemp.path}/dox_test.sqlite'),
+        'DB_DATABASE',
+        '${Directory.systemTemp.path}/dox_test.sqlite',
+      ),
       debug: AppEnv.get('DB_DEBUG', 'false') == 'true',
       printer: ConsoleQueryPrinter(),
     ),

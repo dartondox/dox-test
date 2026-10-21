@@ -23,8 +23,9 @@ class PostService {
 
   /// `statusCsv` is like "draft,published". Empty means all.
   Future<Pagination> list(int page, int perPage, String statusCsv) async {
-    List<String> statuses =
-        statusCsv.isEmpty ? <String>[] : statusCsv.split(',');
+    List<String> statuses = statusCsv.isEmpty
+        ? <String>[]
+        : statusCsv.split(',');
     return await posts.paginate(page, perPage, statuses);
   }
 
@@ -69,8 +70,9 @@ class PostService {
   Future<Map<String, dynamic>> stats() async {
     Cache cache = Cache();
     if (await cache.has(AppConstants.postStatsCacheKey)) {
-      Map<String, dynamic> cached =
-          jsonDecode(await cache.get(AppConstants.postStatsCacheKey));
+      Map<String, dynamic> cached = jsonDecode(
+        await cache.get(AppConstants.postStatsCacheKey),
+      );
       cached['cached'] = true;
       return cached;
     }

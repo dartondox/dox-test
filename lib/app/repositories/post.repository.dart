@@ -5,9 +5,14 @@ import 'package:dox_test/app/models/post/post.model.dart';
 class PostRepository {
   /// One page of posts with author (belongsTo) and tags (manyToMany).
   Future<Pagination> paginate(
-      int page, int perPage, List<String> statuses) async {
-    QueryBuilder<Post> query =
-        Post().preload('author').preload('tags').orderBy('id', 'desc');
+    int page,
+    int perPage,
+    List<String> statuses,
+  ) async {
+    QueryBuilder<Post> query = Post()
+        .preload('author')
+        .preload('tags')
+        .orderBy('id', 'desc');
     if (statuses.isNotEmpty) {
       query = query.whereIn('status', statuses);
     }

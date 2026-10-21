@@ -32,11 +32,7 @@ AppConfig appConfig = AppConfig(
     AppHeaderMiddleware(),
   ],
 
-  routers: <Router>[
-    WebRouter(),
-    ApiRouter(),
-    WebsocketRouter(),
-  ],
+  routers: <Router>[WebRouter(), ApiRouter(), WebsocketRouter()],
   responseHandler: ResponseHandler(),
   cache: cache,
   fileStorage: storage,

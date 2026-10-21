@@ -14,7 +14,8 @@ class AuthService {
     User? existing = await users.findByEmail(req.email);
     if (existing != null) {
       throw ValidationException(
-          message: <String, String>{'email': 'email is already taken'});
+        message: <String, String>{'email': 'email is already taken'},
+      );
     }
     return await users.create(req.name, req.email, Hash.make(req.password));
   }
@@ -22,8 +23,10 @@ class AuthService {
   /// Returns the JWT token and the user. Wrong password gives 401.
   Future<Map<String, dynamic>> login(String email, String password) async {
     Auth auth = Auth();
-    String? token = await auth
-        .attempt(<String, dynamic>{'email': email, 'password': password});
+    String? token = await auth.attempt(<String, dynamic>{
+      'email': email,
+      'password': password,
+    });
     if (token == null) {
       throw UnAuthorizedException(message: 'wrong email or password');
     }

@@ -14,9 +14,9 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
 
   @override
   Map<String, dynamic> get timestampsColumn => <String, dynamic>{
-        'created_at': 'created_at',
-        'updated_at': 'updated_at',
-      };
+    'created_at': 'created_at',
+    'updated_at': 'updated_at',
+  };
 
   @override
   String get tableName => 'posts';
@@ -29,32 +29,32 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
 
   @override
   List<String> get tableColumns => <String>[
-        'id',
-        'user_id',
-        'title',
-        'body',
-        'status',
-        'deleted_at',
-        'created_at',
-        'updated_at'
-      ];
+    'id',
+    'user_id',
+    'title',
+    'body',
+    'status',
+    'deleted_at',
+    'created_at',
+    'updated_at',
+  ];
 
   @override
   List<String> get preloadList => <String>[];
 
   @override
   Map<String, Function> get relationsResultMatcher => <String, Function>{
-        'author': getAuthor,
-        'comments': getComments,
-        'tags': getTags,
-      };
+    'author': getAuthor,
+    'comments': getComments,
+    'tags': getTags,
+  };
 
   @override
   Map<String, Function> get relationsQueryMatcher => <String, Function>{
-        'author': queryAuthor,
-        'comments': queryComments,
-        'tags': queryTags,
-      };
+    'author': queryAuthor,
+    'comments': queryComments,
+    'tags': queryTags,
+  };
 
   static Future<void> getAuthor(List<Model<Post>> list) async {
     var result = await getBelongsTo<Post, User>(queryAuthor(list), list);

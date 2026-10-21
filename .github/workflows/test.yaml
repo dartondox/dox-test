@@ -7,8 +7,7 @@ on:
     inputs:
       dox_ref:
         description: dartondox/dox branch to test against
-        # TODO: back to develop after dartondox/dox PR #115 merges
-        default: schema-builder-and-docs
+        default: develop
 
 jobs:
   e2e:
@@ -46,11 +45,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: dartondox/dox
-          ref: ${{ inputs.dox_ref || 'schema-builder-and-docs' }}
+          ref: ${{ inputs.dox_ref || 'develop' }}
           path: dox
-      - name: Install SQLite
-        if: matrix.db == 'sqlite'
-        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable

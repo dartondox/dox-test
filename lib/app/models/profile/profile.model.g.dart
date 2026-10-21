@@ -14,9 +14,9 @@ class ProfileGenerator extends Model<Profile> {
 
   @override
   Map<String, dynamic> get timestampsColumn => <String, dynamic>{
-        'created_at': 'created_at',
-        'updated_at': 'updated_at',
-      };
+    'created_at': 'created_at',
+    'updated_at': 'updated_at',
+  };
 
   @override
   String get tableName => 'profiles';
@@ -28,21 +28,27 @@ class ProfileGenerator extends Model<Profile> {
   Profile query() => Profile();
 
   @override
-  List<String> get tableColumns =>
-      <String>['id', 'user_id', 'bio', 'website', 'created_at', 'updated_at'];
+  List<String> get tableColumns => <String>[
+    'id',
+    'user_id',
+    'bio',
+    'website',
+    'created_at',
+    'updated_at',
+  ];
 
   @override
   List<String> get preloadList => <String>[];
 
   @override
   Map<String, Function> get relationsResultMatcher => <String, Function>{
-        'user': getUser,
-      };
+    'user': getUser,
+  };
 
   @override
   Map<String, Function> get relationsQueryMatcher => <String, Function>{
-        'user': queryUser,
-      };
+    'user': queryUser,
+  };
 
   static Future<void> getUser(List<Model<Profile>> list) async {
     var result = await getBelongsTo<Profile, User>(queryUser(list), list);

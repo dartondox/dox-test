@@ -14,9 +14,9 @@ class CommentGenerator extends Model<Comment> {
 
   @override
   Map<String, dynamic> get timestampsColumn => <String, dynamic>{
-        'created_at': 'created_at',
-        'updated_at': 'updated_at',
-      };
+    'created_at': 'created_at',
+    'updated_at': 'updated_at',
+  };
 
   @override
   String get tableName => 'comments';
@@ -28,23 +28,27 @@ class CommentGenerator extends Model<Comment> {
   Comment query() => Comment();
 
   @override
-  List<String> get tableColumns =>
-      <String>['id', 'post_id', 'user_id', 'body', 'created_at', 'updated_at'];
+  List<String> get tableColumns => <String>[
+    'id',
+    'post_id',
+    'user_id',
+    'body',
+    'created_at',
+    'updated_at',
+  ];
 
   @override
-  List<String> get preloadList => <String>[
-        'user',
-      ];
+  List<String> get preloadList => <String>['user'];
 
   @override
   Map<String, Function> get relationsResultMatcher => <String, Function>{
-        'user': getUser,
-      };
+    'user': getUser,
+  };
 
   @override
   Map<String, Function> get relationsQueryMatcher => <String, Function>{
-        'user': queryUser,
-      };
+    'user': queryUser,
+  };
 
   static Future<void> getUser(List<Model<Comment>> list) async {
     var result = await getBelongsTo<Comment, User>(queryUser(list), list);

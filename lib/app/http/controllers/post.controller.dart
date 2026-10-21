@@ -19,7 +19,8 @@ class PostController {
     return await service.list(
       int.parse(req.input('page')?.toString() ?? '1'),
       int.parse(
-          req.input('limit')?.toString() ?? '${AppConstants.defaultPerPage}'),
+        req.input('limit')?.toString() ?? '${AppConstants.defaultPerPage}',
+      ),
       req.input('status')?.toString() ?? '',
     );
   }
@@ -65,13 +66,19 @@ class PostController {
   Future<DoxResponse> addComment(DoxRequest req, String id) async {
     req.validate(<String, String>{'body': 'required'});
     Comment comment = await service.addComment(
-        _user(req.auth as Auth?), id, req.input('body').toString());
+      _user(req.auth as Auth?),
+      id,
+      req.input('body').toString(),
+    );
     return response(comment).statusCode(201);
   }
 
   /// GET /api/posts/{postId}/comments/{commentId}
   Future<Comment> showComment(
-      DoxRequest req, String postId, String commentId) async {
+    DoxRequest req,
+    String postId,
+    String commentId,
+  ) async {
     return await service.showComment(postId, commentId);
   }
 

@@ -14,13 +14,14 @@ class UserController {
   Future<Pagination> index(DoxRequest req) async {
     req.validate(<String, String>{
       'page': 'required|integer',
-      'limit': 'required|integer'
+      'limit': 'required|integer',
     });
     return await service.list(
       req.input('search')?.toString() ?? '',
       int.parse(req.input('page')?.toString() ?? '1'),
       int.parse(
-          req.input('limit')?.toString() ?? '${AppConstants.defaultPerPage}'),
+        req.input('limit')?.toString() ?? '${AppConstants.defaultPerPage}',
+      ),
     );
   }
 

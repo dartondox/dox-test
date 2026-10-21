@@ -30,8 +30,10 @@ class ApiRouter extends Router {
     Route.post('/register', auth.register);
     Route.post('/login', auth.login);
     Route.get('/me', <dynamic>[AuthMiddleware(), auth.me]);
-    Route.put('/me/profile',
-        <dynamic>[AuthMiddleware(), ioc.get<UserController>().saveProfile]);
+    Route.put('/me/profile', <dynamic>[
+      AuthMiddleware(),
+      ioc.get<UserController>().saveProfile,
+    ]);
   }
 
   void registerUsers() {

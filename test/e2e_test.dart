@@ -29,11 +29,15 @@ void main() {
     });
 
     test('CORS headers are sent', () async {
-      http.Response res =
-          await api.get('/ping', headers: <String, String>{'Origin': 'x.com'});
+      http.Response res = await api.get(
+        '/ping',
+        headers: <String, String>{'Origin': 'x.com'},
+      );
       expect(res.headers['access-control-allow-origin'], '*');
       expect(
-          res.headers['access-control-allow-methods'], 'GET,POST,PUT,DELETE');
+        res.headers['access-control-allow-methods'],
+        'GET,POST,PUT,DELETE',
+      );
     });
 
     test('Route.disabledCors removes CORS headers', () async {
@@ -43,11 +47,14 @@ void main() {
     });
 
     test('CORS preflight (OPTIONS) gets CORS headers', () async {
-      http.Response res =
-          await api.send('OPTIONS', '/api/posts', headers: <String, String>{
-        'Origin': 'x.com',
-        'Access-Control-Request-Method': 'POST',
-      });
+      http.Response res = await api.send(
+        'OPTIONS',
+        '/api/posts',
+        headers: <String, String>{
+          'Origin': 'x.com',
+          'Access-Control-Request-Method': 'POST',
+        },
+      );
       expect(res.statusCode, 204);
       expect(res.headers['access-control-allow-origin'], '*');
     });
@@ -78,22 +85,29 @@ void main() {
     test('JSON body', () async {
       http.Response res = await api.post('/api/system/echo', <String, dynamic>{
         'name': 'dox',
-        'list': <int>[1, 2]
+        'list': <int>[1, 2],
       });
       Map<String, dynamic> body = api.json(res);
       expect(body['is_json'], true);
       expect(body['body'], <String, dynamic>{
         'name': 'dox',
-        'list': <int>[1, 2]
+        'list': <int>[1, 2],
       });
     });
 
     test('form-data with file upload, then download it', () async {
-      http.MultipartRequest req =
-          http.MultipartRequest('POST', api.uri('/api/files'));
+      http.MultipartRequest req = http.MultipartRequest(
+        'POST',
+        api.uri('/api/files'),
+      );
       req.fields['note'] = 'my note';
-      req.files.add(http.MultipartFile.fromString('file', 'hello dox file',
-          filename: 'hello.txt'));
+      req.files.add(
+        http.MultipartFile.fromString(
+          'file',
+          'hello dox file',
+          filename: 'hello.txt',
+        ),
+      );
       http.Response res = await http.Response.fromStream(await req.send());
       expect(res.statusCode, 201, reason: res.body);
       Map<String, dynamic> body = api.json(res);
@@ -110,19 +124,27 @@ void main() {
     });
 
     test('uploaded file size_kb is the file size', () async {
-      http.MultipartRequest req =
-          http.MultipartRequest('POST', api.uri('/api/files'));
+      http.MultipartRequest req = http.MultipartRequest(
+        'POST',
+        api.uri('/api/files'),
+      );
       req.fields['note'] = 'size';
-      req.files.add(http.MultipartFile.fromBytes(
-          'file', List<int>.filled(2048, 65),
-          filename: 'a.txt'));
+      req.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          List<int>.filled(2048, 65),
+          filename: 'a.txt',
+        ),
+      );
       http.Response res = await http.Response.fromStream(await req.send());
       expect(api.json(res)['size_kb'], 2);
     });
 
     test('missing file in form-data fails validation (422)', () async {
-      http.MultipartRequest req =
-          http.MultipartRequest('POST', api.uri('/api/files'));
+      http.MultipartRequest req = http.MultipartRequest(
+        'POST',
+        api.uri('/api/files'),
+      );
       req.fields['note'] = 'no file';
       http.Response res = await http.Response.fromStream(await req.send());
       expect(res.statusCode, 422);
@@ -132,8 +154,10 @@ void main() {
 
   group('auth + FormRequest validation', () {
     test('register fails validation (422)', () async {
-      http.Response res = await api.post('/api/auth/register',
-          <String, dynamic>{'email': 'not-an-email', 'password': '123'});
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{'email': 'not-an-email', 'password': '123'},
+      );
       expect(res.statusCode, 422);
       Map<String, dynamic> errors = api.json(res);
       expect(errors['name'], 'name is missing');
@@ -143,12 +167,14 @@ void main() {
 
     test('register passes (201, serializer hides password)', () async {
       for (String name in <String>['Alice', 'Bob', 'Carol']) {
-        http.Response res =
-            await api.post('/api/auth/register', <String, dynamic>{
-          'name': name,
-          'email': '${name.toLowerCase()}@mail.com',
-          'password': 'secret123',
-        });
+        http.Response res = await api.post(
+          '/api/auth/register',
+          <String, dynamic>{
+            'name': name,
+            'email': '${name.toLowerCase()}@mail.com',
+            'password': 'secret123',
+          },
+        );
         expect(res.statusCode, 201, reason: res.body);
         Map<String, dynamic> user = api.json(res);
         expect(user['name'], name);
@@ -158,19 +184,23 @@ void main() {
     });
 
     test('register with a used email fails (422)', () async {
-      http.Response res =
-          await api.post('/api/auth/register', <String, dynamic>{
-        'name': 'Alice',
-        'email': 'alice@mail.com',
-        'password': 'secret123',
-      });
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 'Alice',
+          'email': 'alice@mail.com',
+          'password': 'secret123',
+        },
+      );
       expect(res.statusCode, 422);
       expect(api.json(res)['email'], 'email is already taken');
     });
 
     test('login with wrong password gives 401', () async {
-      http.Response res = await api.post('/api/auth/login',
-          <String, dynamic>{'email': 'alice@mail.com', 'password': 'wrong'});
+      http.Response res = await api.post('/api/auth/login', <String, dynamic>{
+        'email': 'alice@mail.com',
+        'password': 'wrong',
+      });
       expect(res.statusCode, 401);
     });
 
@@ -184,8 +214,10 @@ void main() {
         Map<String, dynamic> body = api.json(res);
         expect(body['token'], isA<String>());
         expect(body['user']['email'], '${name.toLowerCase()}@mail.com');
-        expect((body['user'] as Map<String, dynamic>).containsKey('password'),
-            false);
+        expect(
+          (body['user'] as Map<String, dynamic>).containsKey('password'),
+          false,
+        );
         api.tokens[name] = body['token'];
       }
     });
@@ -209,32 +241,28 @@ void main() {
           'Alice',
           'Dart tips',
           'published',
-          <String>['dart', 'tips']
+          <String>['dart', 'tips'],
         ],
         <dynamic>[
           'Alice',
           'Draft post',
           'draft',
-          <String>['dart']
+          <String>['dart'],
         ],
         <dynamic>[
           'Bob',
           'Bob first',
           'published',
-          <String>['life']
+          <String>['life'],
         ],
       ];
       for (List<dynamic> row in rows) {
-        http.Response res = await api.post(
-          '/api/posts',
-          <String, dynamic>{
-            'title': row[1],
-            'body': 'body of ${row[1]}',
-            'status': row[2],
-            'tags': row[3],
-          },
-          token: row[0],
-        );
+        http.Response res = await api.post('/api/posts', <String, dynamic>{
+          'title': row[1],
+          'body': 'body of ${row[1]}',
+          'status': row[2],
+          'tags': row[3],
+        }, token: row[0]);
         expect(res.statusCode, 201, reason: res.body);
         Map<String, dynamic> post = api.json(res);
         expect(post['title'], row[1]);
@@ -245,9 +273,9 @@ void main() {
     });
 
     test('create post fails validation (422)', () async {
-      http.Response res = await api.post(
-          '/api/posts', <String, dynamic>{'status': 'unknown'},
-          token: 'Alice');
+      http.Response res = await api.post('/api/posts', <String, dynamic>{
+        'status': 'unknown',
+      }, token: 'Alice');
       expect(res.statusCode, 422);
       Map<String, dynamic> errors = api.json(res);
       expect(errors.keys, containsAll(<String>['title', 'body', 'status']));
@@ -255,16 +283,19 @@ void main() {
 
     test('optional field (status) can be left out', () async {
       int id = api.postIds['Draft post']!;
-      http.Response res = await api.put('/api/posts/$id',
-          <String, dynamic>{'title': 'Draft post', 'body': 'b'},
-          token: 'Alice');
+      http.Response res = await api.put('/api/posts/$id', <String, dynamic>{
+        'title': 'Draft post',
+        'body': 'b',
+      }, token: 'Alice');
       expect(res.statusCode, 200, reason: res.body);
       expect(api.json(res)['status'], 'draft');
     });
 
     test('create post without token gives 401', () async {
-      http.Response res = await api
-          .post('/api/posts', <String, dynamic>{'title': 't', 'body': 'b'});
+      http.Response res = await api.post('/api/posts', <String, dynamic>{
+        'title': 't',
+        'body': 'b',
+      });
       expect(res.statusCode, 401);
     });
 
@@ -276,7 +307,9 @@ void main() {
       expect(post['author']['name'], 'Alice');
       expect(post['comments'], isEmpty);
       expect(
-          api.names(post['tags']), unorderedEquals(<String>['dart', 'tips']));
+        api.names(post['tags']),
+        unorderedEquals(<String>['dart', 'tips']),
+      );
     });
 
     test('serializer response', () async {
@@ -299,16 +332,12 @@ void main() {
 
     test('update post (owner) and replace tags', () async {
       int id = api.postIds['Draft post']!;
-      http.Response res = await api.put(
-        '/api/posts/$id',
-        <String, dynamic>{
-          'title': 'Draft post v2',
-          'body': 'new body',
-          'status': 'draft',
-          'tags': <String>['news'],
-        },
-        token: 'Alice',
-      );
+      http.Response res = await api.put('/api/posts/$id', <String, dynamic>{
+        'title': 'Draft post v2',
+        'body': 'new body',
+        'status': 'draft',
+        'tags': <String>['news'],
+      }, token: 'Alice');
       expect(res.statusCode, 200, reason: res.body);
       Map<String, dynamic> post = api.json(res);
       expect(post['title'], 'Draft post v2');
@@ -318,24 +347,29 @@ void main() {
 
     test('update post of another user gives 403', () async {
       int id = api.postIds['Dart tips']!;
-      http.Response res = await api.put('/api/posts/$id',
-          <String, dynamic>{'title': 'x', 'body': 'y', 'status': 'draft'},
-          token: 'Bob');
+      http.Response res = await api.put('/api/posts/$id', <String, dynamic>{
+        'title': 'x',
+        'body': 'y',
+        'status': 'draft',
+      }, token: 'Bob');
       expect(res.statusCode, 403);
     });
 
     test('comments: create, eager user, two route params', () async {
       int id = api.postIds['Dart tips']!;
       http.Response res = await api.post(
-          '/api/posts/$id/comments', <String, dynamic>{'body': 'Nice post'},
-          token: 'Bob');
+        '/api/posts/$id/comments',
+        <String, dynamic>{'body': 'Nice post'},
+        token: 'Bob',
+      );
       expect(res.statusCode, 201, reason: res.body);
       Map<String, dynamic> comment = api.json(res);
       expect(comment['body'], 'Nice post');
       expect(comment['user']['name'], 'Bob');
 
-      http.Response one =
-          await api.get('/api/posts/$id/comments/${comment['id']}');
+      http.Response one = await api.get(
+        '/api/posts/$id/comments/${comment['id']}',
+      );
       expect(one.statusCode, 200, reason: one.body);
       expect(api.json(one)['id'], comment['id']);
 
@@ -347,8 +381,10 @@ void main() {
 
     test('comment on a missing post gives 404', () async {
       http.Response res = await api.post(
-          '/api/posts/99999/comments', <String, dynamic>{'body': 'x'},
-          token: 'Bob');
+        '/api/posts/99999/comments',
+        <String, dynamic>{'body': 'x'},
+        token: 'Bob',
+      );
       expect(res.statusCode, 404);
     });
 
@@ -396,9 +432,11 @@ void main() {
     });
 
     test('hasOne profile: create, then show user with relations', () async {
-      http.Response res = await api.put('/api/auth/me/profile',
-          <String, dynamic>{'bio': 'I write Dart', 'website': 'a.dev'},
-          token: 'Alice');
+      http.Response res = await api.put(
+        '/api/auth/me/profile',
+        <String, dynamic>{'bio': 'I write Dart', 'website': 'a.dev'},
+        token: 'Alice',
+      );
       expect(res.statusCode, 200, reason: res.body);
       Map<String, dynamic> profile = api.json(res);
       expect(profile['bio'], 'I write Dart');
@@ -407,8 +445,10 @@ void main() {
       http.Response user = await api.get('/api/users/${api.userIds['Alice']}');
       Map<String, dynamic> body = api.json(user);
       expect(body['profile']['website'], 'a.dev');
-      expect(api.titles(body['posts']),
-          unorderedEquals(<String>['Dart tips', 'Draft post v2']));
+      expect(
+        api.titles(body['posts']),
+        unorderedEquals(<String>['Dart tips', 'Draft post v2']),
+      );
       expect(body.containsKey('password'), false);
     });
 
@@ -424,8 +464,10 @@ void main() {
       expect(stats['cached'], false);
       expect(stats['total'], 3);
       expect(stats['published'], 2);
-      expect(api.authorTotals(stats['per_author']),
-          <String, int>{'Alice': 2, 'Bob': 1});
+      expect(api.authorTotals(stats['per_author']), <String, int>{
+        'Alice': 2,
+        'Bob': 1,
+      });
 
       http.Response again = await api.get('/api/posts/stats');
       expect(api.json(again)['cached'], true);
@@ -471,10 +513,12 @@ void main() {
       String value = setCookie.split(';').first.split('=').sublist(1).join('=');
       expect(value, isNot('dark'), reason: 'cookie should be encrypted');
 
-      http.Response read = await api.get('/api/system/cookie/read',
-          headers: <String, String>{
-            'Cookie': '${AppConstants.themeCookie}=$value'
-          });
+      http.Response read = await api.get(
+        '/api/system/cookie/read',
+        headers: <String, String>{
+          'Cookie': '${AppConstants.themeCookie}=$value',
+        },
+      );
       expect(api.json(read)['theme'], 'dark');
     });
 
@@ -487,8 +531,9 @@ void main() {
     });
 
     test('hashing', () async {
-      http.Response res = await api
-          .post('/api/system/hash', <String, dynamic>{'password': 'pw123'});
+      http.Response res = await api.post('/api/system/hash', <String, dynamic>{
+        'password': 'pw123',
+      });
       Map<String, dynamic> body = api.json(res);
       expect(body['hash'], startsWith(r'$2'));
       expect(body['verified'], true);
@@ -570,8 +615,11 @@ class Api {
     return Uri.parse('$base$path');
   }
 
-  Map<String, String> _headers(String? token, bool withKey,
-      [Map<String, String>? extra]) {
+  Map<String, String> _headers(
+    String? token,
+    bool withKey, [
+    Map<String, String>? extra,
+  ]) {
     Map<String, String> headers = <String, String>{
       'Content-Type': 'application/json',
       ...?extra,
@@ -585,29 +633,48 @@ class Api {
     return headers;
   }
 
-  Future<http.Response> get(String path,
-      {String? token, bool withKey = true, Map<String, String>? headers}) {
+  Future<http.Response> get(
+    String path, {
+    String? token,
+    bool withKey = true,
+    Map<String, String>? headers,
+  }) {
     return http.get(uri(path), headers: _headers(token, withKey, headers));
   }
 
-  Future<http.Response> post(String path, Map<String, dynamic> body,
-      {String? token}) {
-    return http.post(uri(path),
-        headers: _headers(token, true), body: jsonEncode(body));
+  Future<http.Response> post(
+    String path,
+    Map<String, dynamic> body, {
+    String? token,
+  }) {
+    return http.post(
+      uri(path),
+      headers: _headers(token, true),
+      body: jsonEncode(body),
+    );
   }
 
-  Future<http.Response> put(String path, Map<String, dynamic> body,
-      {String? token}) {
-    return http.put(uri(path),
-        headers: _headers(token, true), body: jsonEncode(body));
+  Future<http.Response> put(
+    String path,
+    Map<String, dynamic> body, {
+    String? token,
+  }) {
+    return http.put(
+      uri(path),
+      headers: _headers(token, true),
+      body: jsonEncode(body),
+    );
   }
 
   Future<http.Response> delete(String path, {String? token}) {
     return http.delete(uri(path), headers: _headers(token, true));
   }
 
-  Future<http.Response> send(String method, String path,
-      {Map<String, String>? headers}) async {
+  Future<http.Response> send(
+    String method,
+    String path, {
+    Map<String, String>? headers,
+  }) async {
     http.Request req = http.Request(method, uri(path));
     req.headers.addAll(headers ?? <String, String>{});
     return http.Response.fromStream(await req.send());
@@ -660,8 +727,9 @@ class WsClient {
   }
 
   void send(String event, dynamic message) {
-    socket
-        .add(jsonEncode(<String, dynamic>{'event': event, 'message': message}));
+    socket.add(
+      jsonEncode(<String, dynamic>{'event': event, 'message': message}),
+    );
   }
 
   /// Wait up to 2 seconds for an event, return its message.

@@ -10,24 +10,15 @@ import '2024_01_01_000005_create_tags_table.dart' as m5;
 
 /// all Dart migrations of db/migration, sorted by name
 final List<MigrationEntry> migrations = <MigrationEntry>[
-  MigrationEntry(
-    '2024_01_01_000001_create_users_table',
-    m1.CreateUsersTable(),
-  ),
+  MigrationEntry('2024_01_01_000001_create_users_table', m1.CreateUsersTable()),
   MigrationEntry(
     '2024_01_01_000002_create_profiles_table',
     m2.CreateProfilesTable(),
   ),
-  MigrationEntry(
-    '2024_01_01_000003_create_posts_table',
-    m3.CreatePostsTable(),
-  ),
+  MigrationEntry('2024_01_01_000003_create_posts_table', m3.CreatePostsTable()),
   MigrationEntry(
     '2024_01_01_000004_create_comments_table',
     m4.CreateCommentsTable(),
   ),
-  MigrationEntry(
-    '2024_01_01_000005_create_tags_table',
-    m5.CreateTagsTable(),
-  ),
+  MigrationEntry('2024_01_01_000005_create_tags_table', m5.CreateTagsTable()),
 ];
