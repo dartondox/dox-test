@@ -236,6 +236,13 @@ packages:
       relative: true
     source: path
     version: "3.0.0-alpha.1"
+  dox_http_native:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-http-native"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
   dox_migration:
     dependency: "direct main"
     description:
