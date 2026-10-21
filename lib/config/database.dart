@@ -1,10 +1,10 @@
-import 'package:dox_query_builder/dox_query_builder.dart';
+import 'dart:io';
+
+import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/config/env.dart';
 
-/// Pick the database with `DB_CONNECTION` = postgres or mysql.
+/// Pick the database with `DB_CONNECTION` = postgres, mysql or sqlite.
 String dbConnection = AppEnv.get('DB_CONNECTION', 'postgres');
-
-bool get isMysql => dbConnection == 'mysql';
 
 DatabaseConfig databaseConfig = DatabaseConfig(
   connection: dbConnection,
@@ -27,6 +27,14 @@ DatabaseConfig databaseConfig = DatabaseConfig(
       user: AppEnv.get('DB_USERNAME', 'root'),
       password: AppEnv.get('DB_PASSWORD', 'password'),
       database: AppEnv.get('DB_NAME', 'dox_test'),
+      debug: AppEnv.get('DB_DEBUG', 'false') == 'true',
+      printer: ConsoleQueryPrinter(),
+    ),
+    'sqlite': ConnectionConfig(
+      driver: Driver.sqlite,
+      // A file, not :memory:, so every isolate sees the same database.
+      database: AppEnv.get(
+          'DB_DATABASE', '${Directory.systemTemp.path}/dox_test.sqlite'),
       debug: AppEnv.get('DB_DEBUG', 'false') == 'true',
       printer: ConsoleQueryPrinter(),
     ),

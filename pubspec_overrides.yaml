@@ -10,7 +10,7 @@ dependency_overrides:
     path: ../dox/packages/dox-core
   dox_migration:
     path: ../dox/packages/dox-migration
-  dox_query_builder:
-    path: ../dox/packages/dox-query-builder
+  dox_orm:
+    path: ../dox/packages/dox-orm
   dox_websocket:
     path: ../dox/packages/dox-websocket

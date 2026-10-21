@@ -1,6 +1,6 @@
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_query_builder/dox_query_builder.dart';
+import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/http/requests/post.request.dart';
 import 'package:dox_test/app/http/serializers/post.serializer.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';

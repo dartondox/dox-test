@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
+      sha256: "0b2f2bd91ba804e53a61d757b986f89f1f9eaed5b11e4b2f5a2468d86d6c9fc7"
       url: "https://pub.dev"
     source: hosted
-    version: "61.0.0"
+    version: "67.0.0"
   adaptive_number:
     dependency: transitive
     description:
@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
+      sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
       url: "https://pub.dev"
     source: hosted
-    version: "5.13.0"
+    version: "6.4.1"
   args:
     dependency: transitive
     description:
@@ -221,10 +221,10 @@ packages:
     dependency: transitive
     description:
       name: dart_jsonwebtoken
-      sha256: "00a0812d2aeaeb0d30bcbc4dd3cee57971dbc0ab2216adf4f0247f37793f15ef"
+      sha256: b268ff9bb87a16360a397f1accb50e7c781384e1119010b34f6d7c25820c44d8
       url: "https://pub.dev"
     source: hosted
-    version: "2.17.0"
+    version: "3.1.1"
   dart_style:
     dependency: transitive
     description:
@@ -239,49 +239,49 @@ packages:
       path: "../dox/packages/dox-annotation"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   dox_auth:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-auth"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   dox_builder:
     dependency: "direct dev"
     description:
       path: "../dox/packages/dox-builder"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   dox_core:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-core"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   dox_migration:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-migration"
       relative: true
     source: path
-    version: "3.0.0"
-  dox_query_builder:
+    version: "3.0.0-alpha.1"
+  dox_orm:
     dependency: "direct main"
     description:
-      path: "../dox/packages/dox-query-builder"
+      path: "../dox/packages/dox-orm"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   dox_websocket:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-websocket"
       relative: true
     source: path
-    version: "3.0.0"
+    version: "3.0.0-alpha.1"
   ed25519_edwards:
     dependency: transitive
     description:
@@ -382,10 +382,10 @@ packages:
     dependency: transitive
     description:
       name: ioredis
-      sha256: "1551dc8fde7cd1329162fcfa868fd67a3ed566f561076e1d3255d31e0a1b69da"
+      sha256: c40f05592635f264904904dc588c863658c22693fe8ac6660413c39fc779e352
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "2.0.0-alpha.1"
   js:
     dependency: transitive
     description:
@@ -406,10 +406,10 @@ packages:
     dependency: "direct dev"
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "5.1.1"
   logging:
     dependency: transitive
     description:
@@ -438,18 +438,18 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
+      sha256: bd47de35f07e27267e69c8c8b22edf9473bfee170a60d60fcc93730c5144b7f6
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
-  mysql1:
-    dependency: "direct main"
+    version: "2.1.0"
+  mysql_dart:
+    dependency: transitive
     description:
-      name: mysql1
-      sha256: "68aec7003d2abc85769bafa1777af3f4a390a90c31032b89636758ff8eb839e9"
+      name: mysql_dart
+      sha256: "39cd9ca5c7a0127251f15a5d5b9a8b2145f1553f16d029fff28d02f7139d8d7c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.0"
+    version: "3.0.1"
   node_preamble:
     dependency: transitive
     description:
@@ -586,6 +586,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  sqlite3:
+    dependency: transitive
+    description:
+      name: sqlite3
+      sha256: "3145bd74dcdb4fd6f5c6dda4d4e4490a8087d7f286a14dee5d37087290f0f8a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.4"
   stack_trace:
     dependency: transitive
     description:
@@ -630,26 +638,26 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "713a8789d62f3233c46b4a90b174737b2c04cb6ae4500f2aa8b1be8f03f5e67f"
+      sha256: "75906bf273541b676716d1ca7627a17e4c4070a3a16272b7a3dc7da3b9f3f6b7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.25.8"
+    version: "1.26.3"
   test_api:
     dependency: transitive
     description:
       name: test_api
-      sha256: "664d3a9a64782fcdeb83ce9c6b39e78fd2971d4e37827b9b06c3aa1edc5e760c"
+      sha256: ab2726c1a94d3176a45960b6234466ec367179b87dd74f1611adb1f3b5fb9d55
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.7"
   test_core:
     dependency: transitive
     description:
       name: test_core
-      sha256: "12391302411737c176b0b5d6491f466b0dd56d4763e347b6714efbaa74d7953d"
+      sha256: "0cc24b5ff94b38d2ae73e1eb43cc302b77964fbf67abad1e296025b78deb53d0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.5"
+    version: "0.6.12"
   timing:
     dependency: transitive
     description:
@@ -670,10 +678,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
+      sha256: "9b129329f58692f6e6578329498a8fe9fbe98f090beb764ffbb8ee2eadd01dcd"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.7"
+    version: "4.6.0"
   vm_service:
     dependency: transitive
     description:

@@ -7,7 +7,8 @@ on:
     inputs:
       dox_ref:
         description: dartondox/dox branch to test against
-        default: develop
+        # TODO: back to develop after dartondox/dox PR #115 merges
+        default: schema-builder-and-docs
 
 jobs:
   e2e:
@@ -15,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        db: [postgres, mysql]
+        db: [postgres, mysql, sqlite]
     env:
       DB_CONNECTION: ${{ matrix.db }}
     services:
@@ -45,8 +46,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: dartondox/dox
-          ref: ${{ inputs.dox_ref || 'develop' }}
+          ref: ${{ inputs.dox_ref || 'schema-builder-and-docs' }}
           path: dox
+      - name: Install SQLite
+        if: matrix.db == 'sqlite'
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -58,7 +62,7 @@ jobs:
           dart run build_runner build --delete-conflicting-outputs
       - name: Migrate
         working-directory: dox-test
-        run: dart run bin/migrate.dart
+        run: dart run bin/migrate.dart run
       - name: End-to-end checks
         working-directory: dox-test
         run: dart test -r expanded

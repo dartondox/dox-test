@@ -1,4 +1,4 @@
-import 'package:dox_query_builder/dox_query_builder.dart';
+import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';

@@ -10,6 +10,8 @@ import 'package:dox_test/constants/app_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import '../db/migration/migrations.dart';
+
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and the websocket.
 /// Tests run in order and share state (users, token, post ids).
@@ -182,7 +184,8 @@ void main() {
         Map<String, dynamic> body = api.json(res);
         expect(body['token'], isA<String>());
         expect(body['user']['email'], '${name.toLowerCase()}@mail.com');
-        expect((body['user'] as Map<String, dynamic>).containsKey('password'), false);
+        expect((body['user'] as Map<String, dynamic>).containsKey('password'),
+            false);
         api.tokens[name] = body['token'];
       }
     });
@@ -559,7 +562,7 @@ class Api {
   Uri get wsUri => Uri.parse('ws://127.0.0.1:${appConfig.serverPort}/ws');
 
   Future<void> boot() async {
-    await Bootstrap().start(freshDatabase: true);
+    await Bootstrap(migrations).start(freshDatabase: true);
     await Cache().flush();
   }
 
