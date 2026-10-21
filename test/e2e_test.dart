@@ -46,7 +46,7 @@ void main() {
         'Origin': 'x.com',
         'Access-Control-Request-Method': 'POST',
       });
-      expect(res.statusCode, 200);
+      expect(res.statusCode, 204);
       expect(res.headers['access-control-allow-origin'], '*');
     });
 
