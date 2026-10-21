@@ -12,7 +12,7 @@ class CommentRepository {
   }
 
   /// Comment of one post. The user is loaded eagerly by the model.
-  Future<Comment?> findForPost(dynamic postId, dynamic commentId) async {
+  Future<Comment?> findForPost(int postId, int commentId) async {
     return await Comment()
         .where('post_id', postId)
         .where('id', commentId)

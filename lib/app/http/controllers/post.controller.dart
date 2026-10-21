@@ -1,88 +1,77 @@
-import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
-import 'package:dox_test/app/http/requests/post.request.dart';
+import 'package:dox_test/app/http/dtos/post.dto.dart';
 import 'package:dox_test/app/http/serializers/post.serializer.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/post.service.dart';
-import 'package:dox_test/constants/app_constants.dart';
 
 class PostController {
   final PostService service;
 
   PostController(this.service);
 
-  /// GET /api/posts?page=&limit=&status=
-  Future<Pagination> index(DoxRequest req) async {
-    return await service.list(
-      int.parse(req.input('page')?.toString() ?? '1'),
-      int.parse(
-        req.input('limit')?.toString() ?? '${AppConstants.defaultPerPage}',
-      ),
-      req.input('status')?.toString() ?? '',
-    );
+  /// List posts
+  ///
+  /// Newest first. Filter by status and author.
+  Future<Pagination> index(ListPosts query) async {
+    return await service.list(query);
   }
 
-  /// GET /api/posts/{id}
-  Future<Post> show(DoxRequest req, String id) async {
+  /// Get one post
+  Future<Post> show(int id) async {
     return await service.show(id);
   }
 
-  /// GET /api/posts/{id}/summary (uses the serializer)
-  Future<PostSerializer> summary(DoxRequest req, String id) async {
+  /// Get one post, short form (serializer)
+  Future<PostSerializer> summary(int id) async {
     return PostSerializer(await service.show(id));
   }
 
-  /// POST /api/posts (needs token)
-  Future<DoxResponse> store(PostRequest req) async {
-    Post post = await service.create(_user(req.auth<Auth>()), req);
+  /// Create a post (needs token)
+  Future<DoxResponse> store(DoxRequest req, SavePost body) async {
+    Post post = await service.create(_user(req), body);
     return response(post).statusCode(201);
   }
 
-  /// PUT /api/posts/{id} (needs token)
-  Future<Post> update(PostRequest req, String id) async {
-    return await service.update(_user(req.auth<Auth>()), id, req);
+  /// Update a post (needs token, only the owner)
+  Future<Post> update(DoxRequest req, int id, SavePost body) async {
+    return await service.update(_user(req), id, body);
   }
 
-  /// DELETE /api/posts/{id} (needs token)
-  Future<Map<String, String>> destroy(DoxRequest req, String id) async {
-    await service.delete(_user(req.auth as Auth?), id);
+  /// Delete a post (needs token, only the owner)
+  Future<Map<String, String>> destroy(DoxRequest req, int id) async {
+    await service.delete(_user(req), id);
     return <String, String>{'message': 'deleted'};
   }
 
-  /// GET /api/posts/trashed
-  Future<List<Post>> trashed(DoxRequest req) async {
+  /// Deleted posts
+  Future<List<Post>> trashed() async {
     return await service.trashed();
   }
 
-  /// GET /api/posts/stats
-  Future<Map<String, dynamic>> stats(DoxRequest req) async {
+  /// Post stats (cached)
+  Future<Map<String, dynamic>> stats() async {
     return await service.stats();
   }
 
-  /// POST /api/posts/{id}/comments (needs token)
-  Future<DoxResponse> addComment(DoxRequest req, String id) async {
-    req.validate(<String, String>{'body': 'required'});
-    Comment comment = await service.addComment(
-      _user(req.auth as Auth?),
-      id,
-      req.input('body').toString(),
-    );
+  /// Add a comment (needs token)
+  Future<DoxResponse> addComment(
+    DoxRequest req,
+    int id,
+    AddComment body,
+  ) async {
+    Comment comment = await service.addComment(_user(req), id, body.body);
     return response(comment).statusCode(201);
   }
 
-  /// GET /api/posts/{postId}/comments/{commentId}
-  Future<Comment> showComment(
-    DoxRequest req,
-    String postId,
-    String commentId,
-  ) async {
+  /// Get one comment of a post
+  Future<Comment> showComment(int postId, int commentId) async {
     return await service.showComment(postId, commentId);
   }
 
-  User _user(Auth? auth) {
-    return auth!.user<User>()!;
+  User _user(DoxRequest req) {
+    return req.auth!.user<User>()!;
   }
 }

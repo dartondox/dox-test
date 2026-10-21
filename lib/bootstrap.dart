@@ -14,7 +14,6 @@ class Bootstrap {
 
   /// A Migrator on the database picked by `DB_CONNECTION`.
   Future<Migrator> migrator() async {
-    Env().load();
     ConnectionConfig config = databaseConfig.getConnectionConfig();
     return Migrator(
       migrations: migrations,

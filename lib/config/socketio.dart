@@ -7,6 +7,6 @@ import 'package:dox_test/config/env.dart';
 /// One isolate, so the in-memory adapter is enough.
 // ponytail: no Redis adapter. Add `adapter:` when APP_TOTAL_ISOLATE > 1.
 SocketIoConfig socketIo = SocketIoConfig(
-  enabled: AppEnv.get('SOCKETIO_ENABLED', 'true') == 'true',
+  enabled: env.socketioEnabled,
   namespaces: <NamespaceHandler>[ChatNamespace()],
 );

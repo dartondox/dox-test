@@ -34,16 +34,16 @@ class ApiRouter extends Router {
     Route.post('/register', auth.register);
     Route.post('/login', auth.login);
     Route.get('/me', <dynamic>[AuthMiddleware(), auth.me]);
-    Route.put('/me/profile', <dynamic>[
-      AuthMiddleware(),
-      ioc.get<UserController>().saveProfile,
-    ]);
+    UserController users = ioc.get<UserController>();
+    Route.put('/me/profile', <dynamic>[AuthMiddleware(), users.saveProfile]);
+    Route.patch('/me/profile', <dynamic>[AuthMiddleware(), users.patchProfile]);
   }
 
   void registerUsers() {
     UserController users = ioc.get<UserController>();
     Route.get('/', users.index);
     Route.get('/{id}', users.show);
+    Route.put('/{id}', <dynamic>[AuthMiddleware(), users.update]);
   }
 
   void registerPosts() {
@@ -76,6 +76,7 @@ class ApiRouter extends Router {
   void registerFiles() {
     FileController files = ioc.get<FileController>();
     Route.post('/', files.upload);
+    Route.post('/avatar', files.avatar);
     Route.get('/{name}', files.download);
     Route.get('/{name}/raw', files.raw);
   }
@@ -116,6 +117,7 @@ class ApiRouter extends Router {
     Route.post('/echo', system.echo);
     Route.get('/env', system.env);
     Route.post('/hash', system.hash);
+    Route.post('/orders', system.order);
     Route.get('/cookie', system.setCookie);
     Route.get('/cookie/read', system.readCookie);
     Route.get('/teapot', system.teapot);

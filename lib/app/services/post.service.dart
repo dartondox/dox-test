@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/exceptions/forbidden.exception.dart';
-import 'package:dox_test/app/http/requests/post.request.dart';
+import 'package:dox_test/app/http/dtos/post.dto.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
@@ -12,6 +12,7 @@ import 'package:dox_test/app/repositories/comment.repository.dart';
 import 'package:dox_test/app/repositories/post.repository.dart';
 import 'package:dox_test/app/repositories/tag.repository.dart';
 import 'package:dox_test/constants/app_constants.dart';
+import 'package:dox_test/constants/post_status.dart';
 
 /// Post and comment logic.
 class PostService {
@@ -21,15 +22,20 @@ class PostService {
 
   PostService(this.posts, this.tags, this.comments);
 
-  /// `statusCsv` is like "draft,published". Empty means all.
-  Future<Pagination> list(int page, int perPage, String statusCsv) async {
-    List<String> statuses = statusCsv.isEmpty
-        ? <String>[]
-        : statusCsv.split(',');
-    return await posts.paginate(page, perPage, statuses);
+  Future<Pagination> list(ListPosts query) async {
+    List<String> statuses = <String>[];
+    for (PostStatus status in query.status) {
+      statuses.add(status.name);
+    }
+    return await posts.paginate(
+      query.page,
+      query.perPage,
+      statuses,
+      query.authorId,
+    );
   }
 
-  Future<Post> show(dynamic id) async {
+  Future<Post> show(int id) async {
     Post? post = await posts.findWithRelations(id);
     if (post == null) {
       throw NotFoundHttpException(message: 'post not found');
@@ -37,26 +43,26 @@ class PostService {
     return post;
   }
 
-  Future<Post> create(User author, PostRequest req) async {
+  Future<Post> create(User author, SavePost input) async {
     Post post = Post();
     post.userId = author.id;
-    _fill(post, req);
+    _fill(post, input);
     await posts.save(post);
-    await _syncTags(post.id!, req.tags);
+    await _syncTags(post.id!, input.tags);
     await _clearStats();
-    return await show(post.id);
+    return await show(post.id!);
   }
 
-  Future<Post> update(User user, dynamic id, PostRequest req) async {
+  Future<Post> update(User user, int id, SavePost input) async {
     Post post = await _findOwned(user, id);
-    _fill(post, req);
+    _fill(post, input);
     await posts.save(post);
-    await _syncTags(post.id!, req.tags);
+    await _syncTags(post.id!, input.tags);
     await _clearStats();
-    return await show(post.id);
+    return await show(post.id!);
   }
 
-  Future<void> delete(User user, dynamic id) async {
+  Future<void> delete(User user, int id) async {
     await _findOwned(user, id);
     await posts.softDelete(id);
     await _clearStats();
@@ -78,7 +84,7 @@ class PostService {
     }
     Map<String, dynamic> result = <String, dynamic>{
       'total': await posts.countAll(),
-      'published': await posts.countByStatus(AppConstants.statusPublished),
+      'published': await posts.countByStatus(PostStatus.published.name),
       'per_author': await posts.countPerAuthor(),
     };
     await cache.put(AppConstants.postStatsCacheKey, jsonEncode(result));
@@ -86,16 +92,16 @@ class PostService {
     return result;
   }
 
-  Future<Comment> addComment(User user, dynamic postId, String body) async {
+  Future<Comment> addComment(User user, int postId, String body) async {
     Post? post = await posts.find(postId);
     if (post == null) {
       throw NotFoundHttpException(message: 'post not found');
     }
     Comment comment = await comments.create(post.id!, user.id!, body);
-    return (await comments.findForPost(post.id, comment.id))!;
+    return (await comments.findForPost(post.id!, comment.id!))!;
   }
 
-  Future<Comment> showComment(dynamic postId, dynamic commentId) async {
+  Future<Comment> showComment(int postId, int commentId) async {
     Comment? comment = await comments.findForPost(postId, commentId);
     if (comment == null) {
       throw NotFoundHttpException(message: 'comment not found');
@@ -103,13 +109,13 @@ class PostService {
     return comment;
   }
 
-  void _fill(Post post, PostRequest req) {
-    post.title = req.title;
-    post.body = req.content;
-    post.status = req.status;
+  void _fill(Post post, SavePost input) {
+    post.title = input.title;
+    post.body = input.body;
+    post.status = input.status.name;
   }
 
-  Future<Post> _findOwned(User user, dynamic id) async {
+  Future<Post> _findOwned(User user, int id) async {
     Post? post = await posts.find(id);
     if (post == null) {
       throw NotFoundHttpException(message: 'post not found');

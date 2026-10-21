@@ -18,10 +18,6 @@ class AppConstants {
   /// Cache key for post stats.
   static const String postStatsCacheKey = 'post_stats';
 
-  /// Post status values.
-  static const String statusDraft = 'draft';
-  static const String statusPublished = 'published';
-
   /// Default page size for lists.
   static const int defaultPerPage = 10;
 

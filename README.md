@@ -84,9 +84,9 @@ It checks out this repo into `dox-test` and `dartondox/dox` into `dox`, so the
 - `lib/routes` -> `lib/app/http/controllers` -> `lib/app/services` -> `lib/app/repositories` -> `lib/app/models`
 - `lib/providers`: dox services (database + observers, auth, websocket, IoC container)
 - `lib/app/ws`: websocket events and the Socket.IO `/chat` namespace
-- `lib/app/http/schemas`: `dox_validation` schemas (DTO classes will replace them later)
+- `lib/app/http/dtos`: `@Dto` classes for request input. `lib/app/http/rules`: custom rules
 - `public/playground.html`: the browser test page at `/playground`
-- `lib/config`: all config. `lib/constants`: global constants.
+- `lib/config`: all config. Env keys are typed in `lib/config/env.dart` (`@DoxEnv`). `lib/constants`: global constants.
 - `db/migration`: Dart migrations, written with the schema builder.
   The same file works on Postgres, MySQL and SQLite.
   `db/migration/migrations.dart` lists them. Do not edit it: `dox make:migration`

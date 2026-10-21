@@ -7,7 +7,7 @@ import 'package:dox_test/constants/app_constants.dart';
 class ApiKeyMiddleware implements IDoxMiddleware {
   @override
   IDoxRequest handle(IDoxRequest req) {
-    if (req.header(AppConstants.apiKeyHeader) != AppEnv.get('API_KEY')) {
+    if (req.header(AppConstants.apiKeyHeader) != env.apiKey) {
       throw ForbiddenException('invalid api key');
     }
     return req;

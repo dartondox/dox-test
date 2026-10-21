@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_test/app/http/dtos/system.dto.dart';
 import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
@@ -36,12 +37,17 @@ class SystemController {
 
   /// GET /api/system/env
   Map<String, dynamic> env(DoxRequest req) {
-    return service.env();
+    return service.envInfo();
   }
 
   /// POST /api/system/hash
-  Map<String, dynamic> hash(DoxRequest req) {
-    return service.hash(req.input('password').toString());
+  Map<String, dynamic> hash(HashPassword body) {
+    return service.hash(body.password);
+  }
+
+  /// POST /api/system/orders (nested DTO and a list of DTOs)
+  Map<String, dynamic> order(CreateOrder body) {
+    return service.order(body);
   }
 
   /// GET /api/system/cookie (sets an encrypted cookie)
@@ -81,12 +87,9 @@ class SystemController {
     };
   }
 
-  /// GET /api/system/twice/{n}
-  // ponytail: `int n` would be nicer, but dox_core passes path params as
-  // String today and `int n` gives a 500. Switch when typed params land.
-  Map<String, int> twice(DoxRequest req, String n) {
-    // a failed parse() inside a controller answers 422
-    return <String, int>{'result': v.coerce.int().parse(n) * 2};
+  /// GET /api/system/twice/{n} (`abc` is not an int, so 404)
+  Map<String, int> twice(int n) {
+    return <String, int>{'result': n * 2};
   }
 
   /// Browser page to try websocket and Socket.IO

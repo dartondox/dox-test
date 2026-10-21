@@ -1,7 +1,8 @@
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_test/config/env.dart';
 
 LoggerConfig logger = LoggerConfig(
-  name: Env.get('APP_NAME'),
+  name: env.appName,
   enabled: true,
-  level: Env.get('LOG_LEVEL', 'info'),
+  level: env.logLevel,
 );

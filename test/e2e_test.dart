@@ -36,7 +36,7 @@ void main() {
       expect(res.headers['access-control-allow-origin'], '*');
       expect(
         res.headers['access-control-allow-methods'],
-        'GET,POST,PUT,DELETE',
+        'GET,POST,PUT,PATCH,DELETE',
       );
     });
 
@@ -148,21 +148,139 @@ void main() {
       req.fields['note'] = 'no file';
       http.Response res = await http.Response.fromStream(await req.send());
       expect(res.statusCode, 422);
-      expect(api.json(res), contains('file'));
+      expect(api.json(res), <String, dynamic>{'file': 'The file is required'});
+    });
+
+    test('DTO file: text instead of a file, missing note (422)', () async {
+      http.MultipartRequest req = http.MultipartRequest(
+        'POST',
+        api.uri('/api/files'),
+      );
+      req.fields['file'] = 'just text';
+      http.Response res = await http.Response.fromStream(await req.send());
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'file': 'The file must be a file',
+        'note': 'The note is required',
+      });
+    });
+
+    test('DTO @MaxSize: a file over 1MB gives 422', () async {
+      http.Response res = await api.uploadBytes(
+        '/api/files',
+        'file',
+        List<int>.filled(1024 * 1024 + 1, 65),
+        'big.txt',
+        fields: <String, String>{'note': 'big'},
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'file': 'The file may not be larger than 1MB',
+      });
+    });
+
+    test('DTO @Image: a png passes, a text file and a big png fail', () async {
+      http.Response ok = await api.uploadBytes(
+        '/api/files/avatar',
+        'avatar',
+        Api.tinyPng,
+        'me.png',
+      );
+      expect(ok.statusCode, 201, reason: ok.body);
+      expect(api.json(ok)['extension'], 'png');
+
+      http.Response text = await api.uploadBytes(
+        '/api/files/avatar',
+        'avatar',
+        utf8.encode('not an image'),
+        'fake.png',
+      );
+      expect(text.statusCode, 422);
+      expect(api.json(text), <String, dynamic>{
+        'avatar': 'The avatar must be an image',
+      });
+
+      http.Response big = await api.uploadBytes(
+        '/api/files/avatar',
+        'avatar',
+        <int>[...Api.tinyPng, ...List<int>.filled(70 * 1024, 0)],
+        'big.png',
+      );
+      expect(big.statusCode, 422);
+      expect(api.json(big), <String, dynamic>{
+        'avatar': 'The avatar may not be larger than 64KB',
+      });
     });
   });
 
-  group('auth + FormRequest validation', () {
-    test('register fails validation (422)', () async {
+  group('auth + DTO validation', () {
+    test('register: missing keys use the @Dto(messages:) text (422)', () async {
       http.Response res = await api.post(
         '/api/auth/register',
-        <String, dynamic>{'email': 'not-an-email', 'password': '123'},
+        <String, dynamic>{'email': 'ann@mail.com', 'name': '   '},
       );
       expect(res.statusCode, 422);
-      Map<String, dynamic> errors = api.json(res);
-      expect(errors['name'], 'name is missing');
-      expect(errors['email'], 'The email is not a valid email');
-      expect(errors['password'], contains('at least 6'));
+      expect(api.json(res), <String, dynamic>{
+        'name': 'name is missing',
+        'password': 'password is missing',
+        'password_confirmation': 'password_confirmation is missing',
+      });
+    });
+
+    test('register: @Length, @Email, @MinLength (422)', () async {
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 'A',
+          'email': 'not-an-email',
+          'password': '123',
+          'password_confirmation': '123',
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'name': 'The name must be between 2 and 100 characters',
+        'email': 'The email is not a valid email',
+        'password': 'The password must be at least 6 characters',
+      });
+    });
+
+    test('register: JSON is strict, "name": 5 is not a string (422)', () async {
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 5,
+          'email': 'a@mail.com',
+          'password': 'secret123',
+          'password_confirmation': 'secret123',
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'name': 'The name must be a string',
+      });
+    });
+
+    test('register: validate() checks password_confirmation (422)', () async {
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 'Ann',
+          'email': 'ann@mail.com',
+          'password': 'secret123',
+          'password_confirmation': 'secret999',
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'password_confirmation': 'The passwords do not match',
+      });
+    });
+
+    test('a JSON body that is not an object gives _root (422)', () async {
+      http.Response res = await api.postRaw('/api/auth/register', '[1, 2]');
+      expect(res.statusCode, 422);
+      expect(api.json(res), contains('_root'));
     });
 
     test('register passes (201, serializer hides password)', () async {
@@ -173,6 +291,7 @@ void main() {
             'name': name,
             'email': '${name.toLowerCase()}@mail.com',
             'password': 'secret123',
+            'password_confirmation': 'secret123',
           },
         );
         expect(res.statusCode, 201, reason: res.body);
@@ -183,18 +302,26 @@ void main() {
       }
     });
 
-    test('register with a used email fails (422)', () async {
-      http.Response res = await api.post(
-        '/api/auth/register',
-        <String, dynamic>{
-          'name': 'Alice',
-          'email': 'alice@mail.com',
-          'password': 'secret123',
-        },
-      );
-      expect(res.statusCode, 422);
-      expect(api.json(res)['email'], 'email is already taken');
-    });
+    test(
+      'register with a used email fails: @Unique after @Lowercase',
+      () async {
+        for (String email in <String>['alice@mail.com', ' ALICE@Mail.com ']) {
+          http.Response res = await api.post(
+            '/api/auth/register',
+            <String, dynamic>{
+              'name': 'Alice',
+              'email': email,
+              'password': 'secret123',
+              'password_confirmation': 'secret123',
+            },
+          );
+          expect(res.statusCode, 422, reason: email);
+          expect(api.json(res), <String, dynamic>{
+            'email': 'The email has already been taken',
+          });
+        }
+      },
+    );
 
     test('login with wrong password gives 401', () async {
       http.Response res = await api.post('/api/auth/login', <String, dynamic>{
@@ -232,10 +359,46 @@ void main() {
       expect(res.statusCode, 200, reason: res.body);
       expect(api.json(res)['name'], 'Alice');
     });
+
+    test('update user: @Unique ignoreParam skips your own row', () async {
+      int alice = api.userIds['Alice']!;
+      http.Response same = await api.put('/api/users/$alice', <String, dynamic>{
+        'name': 'Alice',
+        'email': 'ALICE@mail.com',
+      }, token: 'Alice');
+      expect(same.statusCode, 200, reason: same.body);
+      expect(api.json(same)['email'], 'alice@mail.com');
+
+      http.Response taken = await api.put(
+        '/api/users/$alice',
+        <String, dynamic>{'name': 'Alice', 'email': 'bob@mail.com'},
+        token: 'Alice',
+      );
+      expect(taken.statusCode, 422);
+      expect(api.json(taken), <String, dynamic>{
+        'email': 'The email has already been taken',
+      });
+    });
+
+    test('update user: another user gives 403, bad id gives 404', () async {
+      int alice = api.userIds['Alice']!;
+      Map<String, dynamic> body = <String, dynamic>{
+        'name': 'Bob',
+        'email': 'free@mail.com',
+      };
+      http.Response other = await api.put(
+        '/api/users/$alice',
+        body,
+        token: 'Bob',
+      );
+      expect(other.statusCode, 403);
+      http.Response bad = await api.put('/api/users/abc', body, token: 'Bob');
+      expect(bad.statusCode, 404);
+    });
   });
 
   group('ORM: CRUD, relations, soft delete', () {
-    test('create posts with tags (FormRequest + manyToMany pivot)', () async {
+    test('create posts with tags (DTO + manyToMany pivot)', () async {
       List<List<dynamic>> rows = <List<dynamic>>[
         <dynamic>[
           'Alice',
@@ -278,8 +441,37 @@ void main() {
       }, token: 'Alice');
       expect(res.statusCode, 422);
       Map<String, dynamic> errors = api.json(res);
-      expect(errors.keys, containsAll(<String>['title', 'body', 'status']));
+      expect(errors.keys, unorderedEquals(<String>['title', 'body', 'status']));
+      expect(errors['title'], 'The title is required');
+      expect(errors['status'], startsWith('The selected status is invalid'));
     });
+
+    test(
+      'post tags: custom @Slug rule, @MaxItems, @Trim + @Lowercase',
+      () async {
+        Map<String, dynamic> post = <String, dynamic>{
+          'title': 't',
+          'body': 'b',
+        };
+        http.Response slug = await api.post('/api/posts', <String, dynamic>{
+          ...post,
+          'tags': <String>['ok', 'not a slug'],
+        }, token: 'Alice');
+        expect(slug.statusCode, 422);
+        expect(api.json(slug), <String, dynamic>{
+          'tags.1': 'The tags must be a slug, like dart-tips',
+        });
+
+        http.Response many = await api.post('/api/posts', <String, dynamic>{
+          ...post,
+          'tags': <String>['a', 'b', 'c', 'd', 'e', 'f'],
+        }, token: 'Alice');
+        expect(many.statusCode, 422);
+        expect(api.json(many), <String, dynamic>{
+          'tags': 'The tags may not have more than 5 items',
+        });
+      },
+    );
 
     test('optional field (status) can be left out', () async {
       int id = api.postIds['Draft post']!;
@@ -333,10 +525,10 @@ void main() {
     test('update post (owner) and replace tags', () async {
       int id = api.postIds['Draft post']!;
       http.Response res = await api.put('/api/posts/$id', <String, dynamic>{
-        'title': 'Draft post v2',
+        'title': '  Draft post v2  ',
         'body': 'new body',
         'status': 'draft',
-        'tags': <String>['news'],
+        'tags': <String>[' NEWS '],
       }, token: 'Alice');
       expect(res.statusCode, 200, reason: res.body);
       Map<String, dynamic> post = api.json(res);
@@ -379,6 +571,23 @@ void main() {
       expect(comments.first['body'], 'Nice post');
     });
 
+    test('comment with an empty body gives 422', () async {
+      int id = api.postIds['Dart tips']!;
+      http.Response res = await api.post(
+        '/api/posts/$id/comments',
+        <String, dynamic>{'body': '   '},
+        token: 'Bob',
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{'body': 'The body is required'});
+    });
+
+    test('typed path params: /posts/abc gives 404', () async {
+      expect((await api.get('/api/posts/abc')).statusCode, 404);
+      expect((await api.get('/api/posts/4.5')).statusCode, 404);
+      expect((await api.get('/api/posts/1/comments/x')).statusCode, 404);
+    });
+
     test('comment on a missing post gives 404', () async {
       http.Response res = await api.post(
         '/api/posts/99999/comments',
@@ -389,7 +598,7 @@ void main() {
     });
 
     test('list posts: pagination, orderBy desc, whereIn', () async {
-      http.Response res = await api.get('/api/posts?page=1&limit=2');
+      http.Response res = await api.get('/api/posts?page=1&per_page=2');
       expect(res.statusCode, 200, reason: res.body);
       Map<String, dynamic> page = api.json(res);
       expect(page['total'], 3);
@@ -401,11 +610,36 @@ void main() {
       expect(data.first['title'], 'Bob first');
       expect(data.first['author']['name'], 'Bob');
 
-      http.Response page2 = await api.get('/api/posts?page=2&limit=2');
+      http.Response page2 = await api.get('/api/posts?page=2&per_page=2');
       expect((api.json(page2)['data'] as List<dynamic>).length, 1);
 
       http.Response published = await api.get('/api/posts?status=published');
       expect(api.json(published)['total'], 2);
+    });
+
+    test('list posts: query DTO with enum list and @Exists', () async {
+      http.Response both = await api.get(
+        '/api/posts?status=draft&status=published',
+      );
+      expect(api.json(both)['total'], 3);
+
+      http.Response bob = await api.get(
+        '/api/posts?author_id=${api.userIds['Bob']}',
+      );
+      expect(bob.statusCode, 200, reason: bob.body);
+      expect(api.titles(api.json(bob)['data']), <String>['Bob first']);
+
+      http.Response nobody = await api.get('/api/posts?author_id=99999');
+      expect(nobody.statusCode, 422);
+      expect(api.json(nobody), <String, dynamic>{
+        'author_id': 'The selected author_id is invalid',
+      });
+
+      http.Response bad = await api.get('/api/posts?status=nope&per_page=abc');
+      expect(bad.statusCode, 422);
+      Map<String, dynamic> errors = api.json(bad);
+      expect(errors['per_page'], 'The per_page must be an integer');
+      expect(errors['status.0'], startsWith('The selected status is invalid'));
     });
 
     test('tag side of manyToMany', () async {
@@ -415,26 +649,41 @@ void main() {
     });
 
     test('users: where/orWhere search, pagination, count', () async {
-      http.Response res = await api.get('/api/users?search=bo&page=1&limit=10');
+      http.Response res = await api.get(
+        '/api/users?search=%20bo%20&page=1&per_page=10',
+      );
       expect(res.statusCode, 200, reason: res.body);
       Map<String, dynamic> page = api.json(res);
       expect(page['total'], 1);
       expect(page['data'].first['name'], 'Bob');
 
-      http.Response all = await api.get('/api/users?page=1&limit=2');
+      http.Response all = await api.get('/api/users?per_page=2');
       expect(api.json(all)['total'], 3);
       expect((api.json(all)['data'] as List<dynamic>).length, 2);
     });
 
-    test('users list without page fails inline validation (422)', () async {
-      http.Response res = await api.get('/api/users');
-      expect(res.statusCode, 422);
+    test('users list: defaults, @Min, @Max, integer (422)', () async {
+      http.Response plain = await api.get('/api/users');
+      expect(plain.statusCode, 200, reason: plain.body);
+      expect(api.json(plain)['per_page'], AppConstants.defaultPerPage);
+
+      http.Response bad = await api.get('/api/users?page=0&per_page=101');
+      expect(bad.statusCode, 422);
+      expect(api.json(bad), <String, dynamic>{
+        'page': 'The page must be greater than or equal 1',
+        'per_page': 'The per_page must be less than or equal 100',
+      });
+
+      http.Response text = await api.get('/api/users?page=abc');
+      expect(api.json(text), <String, dynamic>{
+        'page': 'The page must be an integer',
+      });
     });
 
     test('hasOne profile: create, then show user with relations', () async {
       http.Response res = await api.put(
         '/api/auth/me/profile',
-        <String, dynamic>{'bio': 'I write Dart', 'website': 'a.dev'},
+        <String, dynamic>{'bio': 'I write Dart', 'website': 'https://a.dev'},
         token: 'Alice',
       );
       expect(res.statusCode, 200, reason: res.body);
@@ -444,7 +693,7 @@ void main() {
 
       http.Response user = await api.get('/api/users/${api.userIds['Alice']}');
       Map<String, dynamic> body = api.json(user);
-      expect(body['profile']['website'], 'a.dev');
+      expect(body['profile']['website'], 'https://a.dev');
       expect(
         api.titles(body['posts']),
         unorderedEquals(<String>['Dart tips', 'Draft post v2']),
@@ -452,9 +701,51 @@ void main() {
       expect(body.containsKey('password'), false);
     });
 
-    test('missing user gives 404', () async {
+    test('profile: @Url fails (422)', () async {
+      http.Response res = await api.put(
+        '/api/auth/me/profile',
+        <String, dynamic>{'website': 'a.dev'},
+        token: 'Alice',
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'website': 'The website must be a url',
+      });
+    });
+
+    test('profile PATCH: Maybe<T> knows missing from null', () async {
+      http.Response clear = await api.patch(
+        '/api/auth/me/profile',
+        <String, dynamic>{'bio': null},
+        token: 'Alice',
+      );
+      expect(clear.statusCode, 200, reason: clear.body);
+      expect(api.json(clear)['bio'], isNull);
+      expect(api.json(clear)['website'], 'https://a.dev');
+
+      http.Response set = await api.patch(
+        '/api/auth/me/profile',
+        <String, dynamic>{'bio': 'Back again'},
+        token: 'Alice',
+      );
+      expect(api.json(set)['bio'], 'Back again');
+      expect(api.json(set)['website'], 'https://a.dev');
+
+      http.Response bad = await api.patch(
+        '/api/auth/me/profile',
+        <String, dynamic>{'website': 'nope'},
+        token: 'Alice',
+      );
+      expect(bad.statusCode, 422);
+      expect(api.json(bad), <String, dynamic>{
+        'website': 'The website must be a url',
+      });
+    });
+
+    test('missing user gives 404, /users/abc gives 404', () async {
       http.Response res = await api.get('/api/users/99999');
       expect(res.statusCode, 404);
+      expect((await api.get('/api/users/abc')).statusCode, 404);
     });
 
     test('stats: count, join + groupBy, cached', () async {
@@ -526,6 +817,7 @@ void main() {
       http.Response res = await api.get('/api/system/env');
       expect(api.json(res), <String, dynamic>{
         'app_name': 'dox-test',
+        'app_port': env.appPort,
         'missing_with_default': 'fallback',
       });
     });
@@ -538,6 +830,15 @@ void main() {
       expect(body['hash'], startsWith(r'$2'));
       expect(body['verified'], true);
       expect(body['wrong_verified'], false);
+
+      http.Response missing = await api.post(
+        '/api/system/hash',
+        <String, dynamic>{},
+      );
+      expect(missing.statusCode, 422);
+      expect(api.json(missing), <String, dynamic>{
+        'password': 'The password is required',
+      });
     });
 
     test('IoC container keeps one service instance', () async {
@@ -606,6 +907,7 @@ void main() {
           'last_name': 'Grohl',
           'email': 'Dave@Mail.COM',
           'password': 'secret123',
+          'password_confirmation': 'secret123',
         },
       );
       expect(res.statusCode, 201, reason: res.body);
@@ -639,7 +941,7 @@ void main() {
       expect(api.json(res), <String, dynamic>{'saved': false, 'total': before});
     });
 
-    test('transaction commits; schema trims and lowercases', () async {
+    test('transaction commits; DTO trims and lowercases', () async {
       int before = api.json(await api.get('/api/tags?limit=100')).length;
       http.Response res = await api.post('/api/tags', <String, dynamic>{
         'names': <String>[' Alpha ', 'BETA'],
@@ -666,37 +968,141 @@ void main() {
     });
   });
 
-  group('dox_validation schemas', () {
-    test('validateSchema gives 422 with field errors', () async {
+  group('DTO validation', () {
+    test('tags: @MinItems, @Length on items, @Range on a query', () async {
       http.Response res = await api.post('/api/tags', <String, dynamic>{
         'names': <String>[],
       });
       expect(res.statusCode, 422);
-      expect(api.json(res), contains('names'));
+      expect(api.json(res), <String, dynamic>{
+        'names': 'The names must have at least 1 items',
+      });
+
+      http.Response short = await api.post('/api/tags', <String, dynamic>{
+        'names': <String>['ok', ' x '],
+      });
+      expect(api.json(short), <String, dynamic>{
+        'names.1': 'The names must be between 2 and 100 characters',
+      });
 
       http.Response query = await api.get('/api/tags?limit=abc');
       expect(query.statusCode, 422);
-      expect(api.json(query), contains('limit'));
+      expect(api.json(query), <String, dynamic>{
+        'limit': 'The limit must be an integer',
+      });
+
+      http.Response range = await api.get('/api/tags?limit=0');
+      expect(api.json(range), <String, dynamic>{
+        'limit': 'The limit must be between 1 and 100',
+      });
     });
 
-    test('schema.parse() in a controller: ok and 422', () async {
+    test('typed path param: int n, and abc gives 404', () async {
       http.Response ok = await api.get('/api/system/twice/21');
       expect(api.json(ok), <String, dynamic>{'result': 42});
       http.Response bad = await api.get('/api/system/twice/abc');
-      expect(bad.statusCode, 422);
+      expect(bad.statusCode, 404);
+    });
+
+    test('nested DTO and List<Dto> pass', () async {
+      http.Response res = await api.post(
+        '/api/system/orders',
+        <String, dynamic>{
+          'address': <String, dynamic>{
+            'city': ' Bangkok ',
+            'post_code': '10110',
+          },
+          'items': <dynamic>[
+            <String, dynamic>{'name': 'Shoes', 'quantity': 2},
+            <String, dynamic>{'name': 'Socks', 'quantity': 3},
+          ],
+        },
+      );
+      expect(res.statusCode, 200, reason: res.body);
+      expect(api.json(res), <String, dynamic>{
+        'city': 'Bangkok',
+        'post_code': '10110',
+        'items': <dynamic>[
+          <String, dynamic>{'name': 'Shoes', 'quantity': 2},
+          <String, dynamic>{'name': 'Socks', 'quantity': 3},
+        ],
+        'total_quantity': 5,
+      });
+    });
+
+    test('nested DTO and List<Dto> fail with dotted keys', () async {
+      http.Response res = await api.post(
+        '/api/system/orders',
+        <String, dynamic>{
+          'address': <String, dynamic>{'city': 'Bangkok', 'post_code': '1011a'},
+          'items': <dynamic>[
+            <String, dynamic>{'name': 'Shoes', 'quantity': 2},
+            <String, dynamic>{'name': 'Socks', 'quantity': 0},
+            <String, dynamic>{'quantity': 100},
+          ],
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res), <String, dynamic>{
+        'address.post_code': 'The post_code format is invalid',
+        'items.1.quantity': 'The quantity must be greater than or equal 1',
+        'items.2.name': 'The name is required',
+      });
+    });
+
+    test(
+      '@Dto(strict: true) refuses unknown keys, @MinItems on a list',
+      () async {
+        http.Response res = await api.post(
+          '/api/system/orders',
+          <String, dynamic>{
+            'address': <String, dynamic>{
+              'city': 'Bangkok',
+              'post_code': '10110',
+            },
+            'items': <dynamic>[],
+            'coupon': 'FREE',
+          },
+        );
+        expect(res.statusCode, 422);
+        expect(api.json(res), <String, dynamic>{
+          'coupon': 'The coupon field is not allowed',
+        });
+      },
+    );
+
+    test('cache: @Positive ttl, required owner (422)', () async {
+      http.Response ttl = await api.put(
+        '/api/cache/memory/items/x',
+        <String, dynamic>{'value': 1, 'ttl': -5},
+      );
+      expect(ttl.statusCode, 422);
+      expect(api.json(ttl), <String, dynamic>{
+        'ttl': 'The ttl must be greater than 0',
+      });
+
+      http.Response owner = await api.delete('/api/cache/memory/locks/x');
+      expect(owner.statusCode, 422);
+      expect(api.json(owner), <String, dynamic>{
+        'owner': 'The owner is required',
+      });
     });
   });
 
   group('dox_openapi', () {
-    test('/docs, /openapi.json and /openapi.yaml are served', () async {
-      http.Response docs = await api.get('/docs');
-      expect(docs.statusCode, 200);
-      expect(docs.headers['content-type'], startsWith('text/html'));
+    test(
+      '/docs (Scalar), /openapi.json and /openapi.yaml are served',
+      () async {
+        http.Response docs = await api.get('/docs');
+        expect(docs.statusCode, 200);
+        expect(docs.headers['content-type'], startsWith('text/html'));
+        expect(docs.body.toLowerCase(), contains('scalar'));
 
-      http.Response yaml = await api.get('/openapi.yaml');
-      expect(yaml.statusCode, 200);
-      expect(yaml.body, contains('openapi: "3.1.0"'));
-    });
+        http.Response yaml = await api.get('/openapi.yaml');
+        expect(yaml.statusCode, 200);
+        expect(yaml.body, contains('openapi: "3.1.0"'));
+      },
+    );
 
     test('annotations and doc comments are in the document', () async {
       Map<String, dynamic> doc = api.json(await api.get('/openapi.json'));
@@ -720,6 +1126,36 @@ void main() {
       Map<String, dynamic> user = doc['components']['schemas']['User'];
       expect(user['properties'], contains('first_name'));
       expect(user['properties'], isNot(contains('password')));
+
+      // index routes inside a group have their own docs
+      expect(paths['/api/users']['get']['summary'], 'List users');
+      expect(paths['/api/posts']['get']['summary'], 'List posts');
+    });
+
+    test('request bodies and query params come from the DTOs', () async {
+      Map<String, dynamic> doc = api.json(await api.get('/openapi.json'));
+      Map<String, dynamic> paths = doc['paths'];
+
+      Map<String, dynamic> register = paths['/api/auth/register']['post'];
+      expect(register['responses'], contains('422'));
+      Map<String, dynamic> schema = api.resolve(
+        doc,
+        register['requestBody']['content']['application/json']['schema'],
+      );
+      expect(
+        schema['properties'].keys,
+        containsAll(<String>['password_confirmation', 'first_name']),
+      );
+      expect(
+        schema['required'],
+        containsAll(<String>['name', 'email', 'password']),
+      );
+
+      List<dynamic> params = paths['/api/users']['get']['parameters'];
+      expect(
+        api.names(params),
+        containsAll(<String>['page', 'per_page', 'search']),
+      );
     });
   });
 
@@ -988,7 +1424,7 @@ class Api {
       ...?extra,
     };
     if (withKey) {
-      headers[AppConstants.apiKeyHeader] = AppEnv.get('API_KEY');
+      headers[AppConstants.apiKeyHeader] = env.apiKey;
     }
     if (token != null) {
       headers['Authorization'] = 'Bearer ${tokens[token]}';
@@ -1041,6 +1477,56 @@ class Api {
     http.Request req = http.Request(method, uri(path));
     req.headers.addAll(headers ?? <String, String>{});
     return http.Response.fromStream(await req.send());
+  }
+
+  /// A 1x1 png, to pass `@Image()`.
+  static final List<int> tinyPng = base64Decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  );
+
+  Future<http.Response> patch(
+    String path,
+    Map<String, dynamic> body, {
+    String? token,
+  }) {
+    return http.patch(
+      uri(path),
+      headers: _headers(token, true),
+      body: jsonEncode(body),
+    );
+  }
+
+  /// POST a raw JSON text, like `[1, 2]`.
+  Future<http.Response> postRaw(String path, String body) {
+    return http.post(uri(path), headers: _headers(null, true), body: body);
+  }
+
+  /// multipart/form-data with one file field and some text fields
+  Future<http.Response> uploadBytes(
+    String path,
+    String field,
+    List<int> bytes,
+    String filename, {
+    Map<String, String> fields = const <String, String>{},
+  }) async {
+    http.MultipartRequest req = http.MultipartRequest('POST', uri(path));
+    req.fields.addAll(fields);
+    req.files.add(
+      http.MultipartFile.fromBytes(field, bytes, filename: filename),
+    );
+    return http.Response.fromStream(await req.send());
+  }
+
+  /// Follows a `$ref` to `#/components/schemas/...`.
+  Map<String, dynamic> resolve(
+    Map<String, dynamic> doc,
+    Map<String, dynamic> schema,
+  ) {
+    String? ref = schema[r'$ref'];
+    if (ref == null) {
+      return schema;
+    }
+    return doc['components']['schemas'][ref.split('/').last];
   }
 
   /// multipart/form-data with one `file` field

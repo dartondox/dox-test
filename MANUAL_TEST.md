@@ -8,7 +8,8 @@ Each step: a command, then what you should see.
 ```bash
 cp .env.example .env
 dart pub get
-dart run build_runner build                 # models + lib/openapi.g.dart
+dart run build_runner build                 # models, DTOs, env.g.dart, openapi.g.dart
+dart run ../dox/packages/dox-cli/bin/dox.dart env:check   # → The env is valid.
 docker compose up -d --wait                 # postgres, mysql, redis, minio
 dart run bin/migrate.dart run               # optional: the server also migrates
 dart run bin/server.dart                    # http://127.0.0.1:3100
@@ -23,6 +24,10 @@ J='Content-Type: application/json'
 ```
 
 Other database: `DB_CONNECTION=mysql dart run bin/server.dart` (or `sqlite`).
+
+Env keys are typed in `lib/config/env.dart` (`@DoxEnv`). A bad value stops the app:
+`APP_PORT=abc dart run ../dox/packages/dox-cli/bin/dox.dart env:check`
+→ `APP_PORT must be an int, not "abc"`, exit code 1.
 
 Stop: `Ctrl+C`, then `docker compose down`.
 
@@ -66,15 +71,14 @@ Stop: `Ctrl+C`, then `docker compose down`.
   `echo 'hello range' > /tmp/r.txt && curl -F note=x -F file=@/tmp/r.txt $B/api/files`
   → copy `name`, then `curl -i -H 'Range: bytes=0-4' $B/api/files/<name>/raw`
   → `206`, body `hello`, `content-range: bytes 0-4/12`
-- [ ] Path param: `curl -H "$K" $B/api/system/twice/21` → `{"result":42}`.
-  `.../twice/abc` → `422`
+- [ ] Typed path param (`int n`): `curl -H "$K" $B/api/system/twice/21` → `{"result":42}`.
+  `.../twice/abc` → `404`. Same for `curl -i $B/api/posts/abc`
 
-## 3. dox_auth (JWT) + form requests
+## 3. dox_auth (JWT)
 
 - [ ] Register:
-  `curl -H "$J" -d '{"name":"Ann","first_name":"Ann","last_name":"Lee","email":"Ann@Mail.COM","password":"secret123"}' $B/api/auth/register`
+  `curl -H "$J" -d '{"name":"Ann","first_name":"Ann","last_name":"Lee","email":"Ann@Mail.COM","password":"secret123","password_confirmation":"secret123"}' $B/api/auth/register`
   → `201`, `email: ann@mail.com` (lower case), `full_name: Ann Lee`, no password
-- [ ] Bad register: `curl -H "$J" -d '{"email":"x"}' $B/api/auth/register` → `422` with errors
 - [ ] Login: `curl -H "$J" -d '{"email":"ann@mail.com","password":"secret123"}' $B/api/auth/login`
   → copy `token`, then `T='Authorization: Bearer <token>'`
 - [ ] `curl -H "$T" $B/api/auth/me` → Ann. Without `-H "$T"` → `401`
@@ -83,7 +87,7 @@ Stop: `Ctrl+C`, then `docker compose down`.
 
 - [ ] Create post: `curl -H "$T" -H "$J" -d '{"title":"Hi","body":"text","status":"published","tags":["dart"]}' $B/api/posts`
   → `201`, `author`, `tags` (belongsTo, manyToMany)
-- [ ] `curl "$B/api/posts?page=1&limit=2"` → `total`, `per_page`, `data` (pagination)
+- [ ] `curl "$B/api/posts?page=1&per_page=2"` → `total`, `per_page`, `data` (pagination)
 - [ ] `curl $B/api/posts/1` → post with `author`, `comments`, `tags`
 - [ ] `curl $B/api/users/1` → `first_name`, `full_name` (@Computed), `profile`, `posts`
 - [ ] Soft delete: `curl -X DELETE -H "$T" $B/api/posts/1`, then `curl $B/api/posts/trashed`
@@ -98,18 +102,40 @@ Stop: `Ctrl+C`, then `docker compose down`.
 - [ ] Migrations: `dart run bin/migrate.dart status`
   → 6 migrations, the last is `add_names_to_users_table`
 
-## 5. dox_validation (schemas)
+## 5. Validation (DTOs)
 
-- [ ] `curl -H "$J" -d '{"names":[]}' $B/api/tags` → `422`, `names` error
-- [ ] `curl "$B/api/tags?limit=abc"` → `422`, `limit` error (v.coerce.int)
-- [ ] `curl -H "$J" -d '{"names":["  MiXed  "]}' $B/api/tags` → saved as `mixed` (trim + lower case)
+Every request input is a `@Dto` class in `lib/app/http/dtos/`.
+Bad input gets `422` with `{"key": "message"}`. The controller does not run.
+
+| Feature | Good | Bad → 422 body |
+| --- | --- | --- |
+| required + `@Dto(messages:)` | — | `curl -H "$J" -d '{}' $B/api/auth/register` → `{"name":"name is missing","email":"email is missing",...}` |
+| `@Length`, `@Email`, `@MinLength` | see step 3 | `-d '{"name":"A","email":"x","password":"1","password_confirmation":"1"}' .../register` → `{"name":"The name must be between 2 and 100 characters","email":"The email is not a valid email","password":"The password must be at least 6 characters"}` |
+| `validate()` (cross field) | see step 3 | `"password_confirmation":"other"` → `{"password_confirmation":"The passwords do not match"}` |
+| `@Unique` (+ `@Trim @Lowercase`) | — | register `" ANN@mail.com "` again → `{"email":"The email has already been taken"}` |
+| `@Unique(ignoreParam: 'id')` | `curl -X PUT -H "$T" -H "$J" -d '{"name":"Ann","email":"ann@mail.com"}' $B/api/users/1` → `200` (own email is fine) | same with the email of another user → `{"email":"The email has already been taken"}` |
+| query DTO: defaults, `@Min`, `@Max`, text → int | `curl "$B/api/users?search=%20an%20"` → `per_page: 10` | `curl "$B/api/users?page=0&per_page=101"` → `{"page":"The page must be greater than or equal 1","per_page":"The per_page must be less than or equal 100"}`. `?page=abc` → `{"page":"The page must be an integer"}` |
+| enum list + `@Exists` | `curl "$B/api/posts?status=draft&status=published&author_id=1"` | `?author_id=999` → `{"author_id":"The selected author_id is invalid"}`. `?status=nope` → `{"status.0":"The selected status is invalid. ..."}` |
+| enum + default, `@Trim` | `-d '{"title":" Hi ","body":"b"}' $B/api/posts` (with `$T`) → `title: Hi`, `status: draft` | `-d '{"status":"x"}'` → `title`, `body`, `status` errors |
+| custom rule `@Slug` + `@MaxItems(5)` | `"tags":[" Dart-Tips "]` → saved as `dart-tips` | `"tags":["not a slug"]` → `{"tags.0":"The tags must be a slug, like dart-tips"}`. 6 tags → `{"tags":"The tags may not have more than 5 items"}` |
+| `@Url`, nullable optional | `curl -X PUT -H "$T" -H "$J" -d '{"website":"https://a.dev"}' $B/api/auth/me/profile` | `{"website":"a.dev"}` → `{"website":"The website must be a url"}` |
+| `Maybe<T>` (PATCH) | `curl -X PATCH -H "$T" -H "$J" -d '{"bio":null}' $B/api/auth/me/profile` → `bio: null`, `website` stays. `-d '{}'` → nothing changes | `{"website":"nope"}` → `{"website":"The website must be a url"}` |
+| nested DTO, `List<Dto>`, `@Regex`, `@Min/@Max` | `curl -H "$K" -H "$J" -d '{"address":{"city":"Bangkok","post_code":"10110"},"items":[{"name":"Shoes","quantity":2}]}' $B/api/system/orders` → `total_quantity: 2` | `post_code "1011a"`, `quantity 0` → `{"address.post_code":"The post_code format is invalid","items.0.quantity":"The quantity must be greater than or equal 1"}` |
+| `@Dto(strict: true)` | — | add `"coupon":"FREE"` → `{"coupon":"The coupon field is not allowed"}` |
+| `_root` | — | `curl -H "$J" -d '[1,2]' $B/api/auth/register` → `{"_root":"The _root must be an object"}` |
+| `@MinItems`, items `@Length` | `-d '{"names":["  MiXed  "]}' $B/api/tags` → saved as `mixed` | `{"names":[]}` → `{"names":"The names must have at least 1 items"}` |
+| file `@Image`, `@MaxSize` | `echo iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg== \| base64 -d > /tmp/a.png && curl -F avatar=@/tmp/a.png $B/api/files/avatar` → `201` | `-F avatar=@/tmp/r.txt` → `{"avatar":"The avatar must be an image"}`. A png over 64 KB → `{"avatar":"The avatar may not be larger than 64KB"}` |
+| file is required | — | `curl -F note=x $B/api/files` → `{"file":"The file is required"}` |
 
 ## 6. dox_openapi
 
-- [ ] Open http://127.0.0.1:3100/docs → Swagger UI
+- [ ] Open http://127.0.0.1:3100/docs → Scalar page
+- [ ] "Register a user" shows the body from `RegisterUser` with snake_case keys
+  (`password_confirmation`, `first_name`) and a `422` answer (`ValidationError`)
+- [ ] "List users" shows the query params `page`, `per_page`, `search`
 - [ ] In the page: "Log in" has a summary, a description and a `401` answer (annotations)
 - [ ] Tag "Cache" holds all cache routes (`@Tags` on the class)
-- [ ] `GET /api/tags` shows "List tags (lower case annotation)" — see "Known issues" below
+- [ ] `GET /api/tags` shows "List tags (lower case annotation)"
 - [ ] http://127.0.0.1:3100/openapi.json and http://127.0.0.1:3100/openapi.yaml → the document
 - [ ] Files: `dart run ../dox/packages/dox-cli/bin/dox.dart openapi:generate`
   → `storage/openapi/openapi.json` and `openapi.yaml`
@@ -170,14 +196,11 @@ Swap `s3` for `local` or `memory`.
 ## 11. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
-  → all pass (83 checks)
+  → all pass (103 checks)
 
 ## Known issues (framework, not this app)
 
-- **Typed path params**: `twice(DoxRequest req, int n)` gives `500`
-  (`type 'String' is not a subtype of type 'int'`). Path params are always `String`.
-  The app uses `String n` for now.
-- **OpenAPI index routes**: `GET /api/users`, `/api/posts` and `/api/tags` show a plain
-  "GET /api/..." entry, without the doc comment or annotations.
-  All three are `Route.get('/', x.index)` inside a group, so the docs can not tell them apart.
+- **OpenAPI file uploads**: `POST /api/files`, `/api/files/avatar` and `/api/storage/{disk}`
+  show an `application/json` body in `/docs`, not `multipart/form-data`.
+  So you can not send a file from the Scalar page. Use curl.
 - **Client IP**: `req.ip()` gives `::ffff:127.0.0.1`, not `127.0.0.1`, for a local client.

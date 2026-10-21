@@ -11,7 +11,7 @@ AuthConfig authConfig = AuthConfig(
   defaultGuard: 'api',
   guards: <String, AuthGuard>{
     'api': AuthGuard(
-      driver: JwtAuthDriver(secret: SecretKey(AppEnv.get('APP_KEY'))),
+      driver: JwtAuthDriver(secret: SecretKey(env.appKey)),
       provider: AuthProvider(model: makeAuthUser),
     ),
   },

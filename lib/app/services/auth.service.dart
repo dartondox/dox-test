@@ -1,6 +1,6 @@
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/requests/register.request.dart';
+import 'package:dox_test/app/http/dtos/auth.dto.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/repositories/user.repository.dart';
 
@@ -10,20 +10,14 @@ class AuthService {
 
   AuthService(this.users);
 
-  Future<User> register(RegisterRequest req) async {
-    // UserObserver saves the email in lower case, so look it up that way.
-    User? existing = await users.findByEmail(req.email.toLowerCase());
-    if (existing != null) {
-      throw ValidationException(
-        message: <String, String>{'email': 'email is already taken'},
-      );
-    }
+  /// The DTO already checked that the email is free (@Unique).
+  Future<User> register(RegisterUser input) async {
     return await users.create(
-      req.name,
-      req.email,
-      Hash.make(req.password),
-      firstName: req.firstName,
-      lastName: req.lastName,
+      input.name,
+      input.email,
+      Hash.make(input.password),
+      firstName: input.firstName,
+      lastName: input.lastName,
     );
   }
 

@@ -1,5 +1,5 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/requests/register.request.dart';
+import 'package:dox_test/app/http/dtos/auth.dto.dart';
 import 'package:dox_test/app/http/serializers/user.serializer.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/auth.service.dart';
@@ -11,10 +11,10 @@ class AuthController {
 
   /// Register a user
   ///
-  /// The email is saved in lower case (UserObserver).
+  /// The email is saved in lower case.
   @Tags(<String>['Auth'])
-  Future<DoxResponse> register(RegisterRequest req) async {
-    User user = await service.register(req);
+  Future<DoxResponse> register(RegisterUser body) async {
+    User user = await service.register(body);
     return response(UserSerializer(user)).statusCode(201);
   }
 
@@ -24,11 +24,8 @@ class AuthController {
   @Tags(<String>['Auth'])
   @Response(200, Map<String, dynamic>, description: '{token, user}')
   @Response(401, null, description: 'Wrong email or password')
-  Future<Map<String, dynamic>> login(DoxRequest req) async {
-    return await service.login(
-      req.input('email').toString(),
-      req.input('password').toString(),
-    );
+  Future<Map<String, dynamic>> login(LoginUser body) async {
+    return await service.login(body.email, body.password);
   }
 
   /// The logged in user

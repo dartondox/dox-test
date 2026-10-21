@@ -4,7 +4,7 @@ import 'package:dox_core/dox_core.dart';
 /// Three cache stores. Pick one per call with `Cache().store('redis')`.
 CacheConfig cache = CacheConfig(
   /// default cache store
-  defaultStore: AppEnv.get('CACHE_STORE', 'file'),
+  defaultStore: env.cacheStore,
 
   /// cache stores
   stores: <String, Map<String, dynamic>>{
@@ -12,8 +12,8 @@ CacheConfig cache = CacheConfig(
     'memory': <String, dynamic>{'driver': 'memory', 'max_size': 1000},
     'redis': <String, dynamic>{
       'driver': 'redis',
-      'host': AppEnv.get('REDIS_HOST', '127.0.0.1'),
-      'port': AppEnv.getInt('REDIS_PORT', 6459),
+      'host': env.redisHost,
+      'port': env.redisPort,
       'prefix': 'dox_test:',
     },
   },

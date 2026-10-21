@@ -1,5 +1,5 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/schemas/tag.schemas.dart';
+import 'package:dox_test/app/http/dtos/tag.dto.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 import 'package:dox_test/app/services/tag.service.dart';
 
@@ -12,11 +12,10 @@ class TagController {
   ///
   /// `except=a,b` leaves those names out (whereNotIn).
   @summary('List tags (lower case annotation)')
-  Future<List<Tag>> index(DoxRequest req) async {
-    Map<String, dynamic> data = await req.validateSchema(TagSchemas.list);
-    String except = data['except'] ?? '';
+  Future<List<Tag>> index(ListTags query) async {
+    String except = query.except ?? '';
     return await service.list(
-      data['limit'] as int,
+      query.limit,
       except.isEmpty ? <String>[] : except.split(','),
     );
   }
@@ -26,16 +25,12 @@ class TagController {
   /// With `fail: true` the transaction rolls back and nothing is saved.
   @Summary('Create tags in a transaction')
   @Tags(<String>['Tag', 'ORM'])
-  Future<Map<String, dynamic>> store(DoxRequest req) async {
-    Map<String, dynamic> data = await req.validateSchema(TagSchemas.create);
-    return await service.createMany(
-      List<String>.from(data['names']),
-      data['fail'] as bool,
-    );
+  Future<Map<String, dynamic>> store(CreateTags body) async {
+    return await service.createMany(body.names, body.fail);
   }
 
-  /// GET /api/tags/{name}/posts
-  Future<Tag> posts(DoxRequest req, String name) async {
+  /// Get a tag with its posts
+  Future<Tag> posts(String name) async {
     return await service.withPosts(name);
   }
 }

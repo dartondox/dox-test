@@ -21,12 +21,15 @@ class UserRepository {
     return user;
   }
 
-  Future<User?> findByEmail(String email) async {
-    return await User().where('email', email).getFirst();
+  Future<void> update(int id, String name, String email) async {
+    User? user = await User().find(id);
+    user!.name = name;
+    user.email = email;
+    await user.save();
   }
 
   /// Find a user with the profile (hasOne) and posts (hasMany).
-  Future<User?> findWithRelations(dynamic id) async {
+  Future<User?> findWithRelations(int id) async {
     return await User().preload('profile').preload('posts').find(id);
   }
 
@@ -41,13 +44,13 @@ class UserRepository {
     return await query.paginate(currentPage: page, perPage: perPage);
   }
 
+  Future<Profile?> profileOf(int userId) async {
+    return await Profile().where('user_id', userId).getFirst();
+  }
+
   /// Create the profile, or update it when it exists.
-  Future<Profile> saveProfile(int userId, String? bio, String? website) async {
-    Profile? profile = await Profile().where('user_id', userId).getFirst();
-    profile ??= Profile();
+  Future<Profile> saveProfile(int userId, Profile profile) async {
     profile.userId = userId;
-    profile.bio = bio;
-    profile.website = website;
     await profile.save();
     return profile;
   }

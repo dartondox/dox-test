@@ -8,6 +8,7 @@ class PostRepository {
     int page,
     int perPage,
     List<String> statuses,
+    int? authorId,
   ) async {
     QueryBuilder<Post> query = Post()
         .preload('author')
@@ -16,11 +17,14 @@ class PostRepository {
     if (statuses.isNotEmpty) {
       query = query.whereIn('status', statuses);
     }
+    if (authorId != null) {
+      query = query.where('user_id', authorId);
+    }
     return await query.paginate(currentPage: page, perPage: perPage);
   }
 
   /// Find a post with author, comments (hasMany) and tags.
-  Future<Post?> findWithRelations(dynamic id) async {
+  Future<Post?> findWithRelations(int id) async {
     return await Post()
         .preload('author')
         .preload('comments')
@@ -28,7 +32,7 @@ class PostRepository {
         .find(id);
   }
 
-  Future<Post?> find(dynamic id) async {
+  Future<Post?> find(int id) async {
     return await Post().find(id);
   }
 
@@ -38,7 +42,7 @@ class PostRepository {
   }
 
   /// Soft delete: only sets `deleted_at`.
-  Future<void> softDelete(dynamic id) async {
+  Future<void> softDelete(int id) async {
     await Post().where('id', id).delete();
   }
 

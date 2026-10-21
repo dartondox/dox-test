@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_test/app/http/dtos/file.dto.dart';
 import 'package:dox_test/app/services/file.service.dart';
 
 class FileController {
@@ -8,22 +9,26 @@ class FileController {
 
   FileController(this.service);
 
-  /// POST /api/files (multipart form-data: file + note)
-  Future<DoxResponse> upload(DoxRequest req) async {
-    req.validate(<String, String>{'file': 'required', 'note': 'required'});
-    Map<String, dynamic> saved = await service.store(req.input('file'));
-    saved['note'] = req.input('note');
+  /// Upload a file with a note (form data)
+  Future<DoxResponse> upload(DoxRequest req, UploadFile body) async {
+    Map<String, dynamic> saved = await service.store(body.file);
+    saved['note'] = body.note;
     saved['is_form_data'] = req.isFormData();
     return response(saved).statusCode(201);
   }
 
-  /// GET /api/files/{name}
-  Future<StreamFile> download(DoxRequest req, String name) async {
+  /// Upload an avatar image (form data, 64 KB at most)
+  Future<DoxResponse> avatar(UploadAvatar body) async {
+    return response(await service.store(body.avatar)).statusCode(201);
+  }
+
+  /// Download an upload (streamed)
+  Future<StreamFile> download(String name) async {
     return await service.read(name);
   }
 
-  /// GET /api/files/{name}/raw (a File: Range gives 206 Partial Content)
-  File raw(DoxRequest req, String name) {
+  /// An upload as a File (Range gives 206 Partial Content)
+  File raw(String name) {
     return service.file(name);
   }
 }
