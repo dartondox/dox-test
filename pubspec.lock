@@ -222,6 +222,13 @@ packages:
       relative: true
     source: path
     version: "3.0.0-alpha.1"
+  dox_cache:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-cache"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
   dox_core:
     dependency: "direct main"
     description:
@@ -236,10 +243,38 @@ packages:
       relative: true
     source: path
     version: "3.0.0-alpha.1"
+  dox_openapi:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-openapi"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
   dox_orm:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-orm"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
+  dox_socketio:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-socketio"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
+  dox_storage:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-storage"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
+  dox_validation:
+    dependency: "direct overridden"
+    description:
+      path: "../dox/packages/dox-validation"
       relative: true
     source: path
     version: "3.0.0-alpha.1"

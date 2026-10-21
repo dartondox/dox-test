@@ -14,3 +14,13 @@ dependency_overrides:
     path: ../dox/packages/dox-orm
   dox_websocket:
     path: ../dox/packages/dox-websocket
+  dox_cache:
+    path: ../dox/packages/dox-cache
+  dox_openapi:
+    path: ../dox/packages/dox-openapi
+  dox_socketio:
+    path: ../dox/packages/dox-socketio
+  dox_storage:
+    path: ../dox/packages/dox-storage
+  dox_validation:
+    path: ../dox/packages/dox-validation

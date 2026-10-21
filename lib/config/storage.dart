@@ -1,10 +1,11 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_core/storage/local_storage_driver.dart';
 
-FileStorageConfig storage = FileStorageConfig(
-  /// default storage driver
-  defaultDriver: Env.get('STORAGE_DRIVER', 'local'),
+StorageConfig storage = StorageConfig(
+  /// default storage disk
+  defaultDisk: Env.get('STORAGE_DISK', 'local'),
 
-  // register storage driver list
-  drivers: <String, StorageDriverInterface>{'local': LocalStorageDriver()},
+  /// storage disks
+  disks: <String, Map<String, dynamic>>{
+    'local': <String, dynamic>{'driver': 'local', 'root': 'storage'},
+  },
 );

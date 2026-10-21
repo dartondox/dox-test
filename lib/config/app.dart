@@ -35,7 +35,7 @@ AppConfig appConfig = AppConfig(
   routers: <Router>[WebRouter(), ApiRouter(), WebsocketRouter()],
   responseHandler: ResponseHandler(),
   cache: cache,
-  fileStorage: storage,
+  storage: storage,
   cors: cors,
   services: services,
   logger: logger,

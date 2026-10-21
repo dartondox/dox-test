@@ -1,10 +1,11 @@
-import 'package:dox_core/cache/drivers/file/file_cache_driver.dart';
 import 'package:dox_core/dox_core.dart';
 
 CacheConfig cache = CacheConfig(
-  /// default cache driver
-  defaultDriver: Env.get('CACHE_DRIVER', 'file'),
+  /// default cache store
+  defaultStore: Env.get('CACHE_STORE', 'file'),
 
-  /// register cache driver list
-  drivers: <String, CacheDriverInterface>{'file': FileCacheDriver()},
+  /// cache stores
+  stores: <String, Map<String, dynamic>>{
+    'file': <String, dynamic>{'driver': 'file', 'path': 'storage/cache'},
+  },
 );
