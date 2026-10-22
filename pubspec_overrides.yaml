@@ -12,8 +12,12 @@ dependency_overrides:
     path: ../dox/packages/dox-http-native
   dox_migration:
     path: ../dox/packages/dox-migration
+  dox_mysql_native:
+    path: ../dox/packages/dox-mysql-native
   dox_orm:
     path: ../dox/packages/dox-orm
+  dox_postgres_native:
+    path: ../dox/packages/dox-postgres-native
   dox_websocket:
     path: ../dox/packages/dox-websocket
   dox_cache:
