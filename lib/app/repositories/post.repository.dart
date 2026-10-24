@@ -67,7 +67,7 @@ class PostRepository {
   /// Post count per author, with a join on users.
   Future<List<Map<String, dynamic>>> countPerAuthor() async {
     List<dynamic> rows = await QueryBuilder.table('posts')
-        .select('users.name as author, count(posts.id) as total')
+        .selectRaw('users.name as author, count(posts.id) as total')
         .join('users', 'users.id', 'posts.user_id')
         .whereNull('posts.deleted_at')
         .groupBy('users.name')
