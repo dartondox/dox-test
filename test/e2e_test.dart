@@ -519,7 +519,10 @@ void main() {
     test('missing post gives 404', () async {
       http.Response res = await api.get('/api/posts/99999');
       expect(res.statusCode, 404);
-      expect(res.body, 'post not found');
+      expect(jsonDecode(res.body), <String, dynamic>{
+        'code': 'not_found',
+        'message': 'post not found',
+      });
     });
 
     test('update post (owner) and replace tags', () async {
