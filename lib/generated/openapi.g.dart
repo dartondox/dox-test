@@ -879,6 +879,8 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       method: 'index',
       argumentTypes: <String>['DoxRequest'],
       summary: 'GET /inertia/notes',
+      description:
+          'A failed form comes back here with `errors` from the session.',
       tags: <String>['Inertia'],
       responses: <int, ResponseDoc>{
         200: ResponseDoc(description: 'Successful response'),
@@ -889,7 +891,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       method: 'store',
       argumentTypes: <String>['DoxRequest'],
       summary: 'POST /inertia/notes',
-      description: 'Dox has no session, so a bad form renders the page again with errors.',
+      description: 'A bad form redirects back with the errors in the session.',
       tags: <String>['Inertia'],
       schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateNote'},
       responses: <int, ResponseDoc>{
@@ -901,6 +903,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       method: 'destroy',
       argumentTypes: <String>['DoxRequest', 'int'],
       summary: 'DELETE /inertia/notes/{id}',
+      description: 'InertiaMiddleware turns the 302 into 303.',
       tags: <String>['Inertia'],
       params: <Map<String, dynamic>>[
         <String, dynamic>{'type': 'integer'},

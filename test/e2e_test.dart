@@ -1429,6 +1429,9 @@ void main() {
     bool madeHot = false;
     String version = '';
 
+    /// keeps the session and XSRF-TOKEN cookies, like a browser
+    Browser browser = Browser(api);
+
     setUpAll(() async {
       if (!await hot.exists()) {
         await hot.writeAsString('http://localhost:5173');
@@ -1514,45 +1517,81 @@ void main() {
         }),
       );
       Map<String, dynamic> props = api.json(res)['props'];
-      expect(props.keys.toSet(), <String>{'stats', 'tip'});
+      // errors is always sent, also on a partial reload
+      expect(props.keys.toSet(), <String>{'errors', 'stats', 'tip'});
       expect(props['tip'], 'Props can load later.');
     });
 
-    test('bad form renders the page again with errors', () async {
+    test('POST without the CSRF token gets 419', () async {
       http.Response res = await api.send(
         'POST',
         '/inertia/notes',
         headers: inertiaHeaders(),
-        body: jsonEncode(<String, String>{'text': 'x'}),
+        body: jsonEncode(<String, String>{'text': 'no token'}),
       );
-      expect(res.statusCode, 200);
+      expect(res.statusCode, 419);
+      expect(api.json(res)['code'], 'csrf_token_mismatch');
+    });
+
+    test('bad form redirects back, the next page has the errors', () async {
+      await browser.send('GET', '/inertia/notes', inertiaHeaders());
+      expect(browser.cookies.keys, contains('XSRF-TOKEN'));
+
+      http.Response res = await browser.send(
+        'POST',
+        '/inertia/notes',
+        inertiaHeaders(<String, String>{
+          'Referer': api.uri('/inertia/notes').toString(),
+        }),
+        jsonEncode(<String, String>{'text': 'x'}),
+      );
+      expect(res.statusCode, 302, reason: res.body);
+      expect(res.headers['location'], endsWith('/inertia/notes'));
+
+      res = await browser.send('GET', '/inertia/notes', inertiaHeaders());
       Map<String, dynamic> page = api.json(res);
       expect(page['component'], 'Notes');
       expect(page['props']['errors']['text'], contains('between 2 and 100'));
+
+      // the errors are gone on the page after
+      res = await browser.send('GET', '/inertia/notes', inertiaHeaders());
+      expect(api.json(res)['props']['errors'], <String, dynamic>{});
     });
 
-    test('POST redirects with 302, DELETE with 303', () async {
-      http.Response res = await api.send(
+    test('good form: 302, the flash message shows once', () async {
+      http.Response res = await browser.send(
         'POST',
         '/inertia/notes',
-        headers: inertiaHeaders(),
-        body: jsonEncode(<String, String>{'text': 'first note'}),
+        inertiaHeaders(),
+        jsonEncode(<String, String>{'text': 'first note'}),
       );
       // the browser follows a 302 after POST with GET. 303 is only needed
       // after PUT, PATCH and DELETE (Inertia protocol).
-      expect(res.statusCode, 302);
+      expect(res.statusCode, 302, reason: res.body);
       expect(res.headers['location'], '/inertia/notes');
 
-      res = await api.get('/inertia/notes', headers: inertiaHeaders());
-      List<dynamic> notes = api.json(res)['props']['notes'];
-      expect(notes.last['text'], 'first note');
+      res = await browser.send('GET', '/inertia/notes', inertiaHeaders());
+      Map<String, dynamic> page = api.json(res);
+      expect(page['flash'], <String, dynamic>{'message': 'Note saved'});
+      expect(page['props']['notes'].last['text'], 'first note');
 
-      res = await api.send(
+      res = await browser.send('GET', '/inertia/notes', inertiaHeaders());
+      expect(api.json(res)['flash'], isNull);
+    });
+
+    test('DELETE redirects with 303', () async {
+      http.Response res = await browser.send(
+        'GET',
+        '/inertia/notes',
+        inertiaHeaders(),
+      );
+      List<dynamic> notes = api.json(res)['props']['notes'];
+      res = await browser.send(
         'DELETE',
         '/inertia/notes/${notes.last['id']}',
-        headers: inertiaHeaders(),
+        inertiaHeaders(),
       );
-      expect(res.statusCode, 303);
+      expect(res.statusCode, 303, reason: res.body);
       expect(res.headers['location'], '/inertia/notes');
     });
 
@@ -1761,6 +1800,49 @@ class Api {
       ret[row['author'].toString()] = int.parse(row['total'].toString());
     }
     return ret;
+  }
+}
+
+/// Keeps cookies between requests, like a browser, and sends the
+/// XSRF-TOKEN cookie back in the X-XSRF-TOKEN header.
+class Browser {
+  Browser(this.api);
+
+  final Api api;
+  final Map<String, String> cookies = <String, String>{};
+
+  Future<http.Response> send(
+    String method,
+    String path,
+    Map<String, String> headers, [
+    String? body,
+  ]) async {
+    Map<String, String> all = <String, String>{...headers};
+    if (cookies.isNotEmpty) {
+      List<String> pairs = <String>[];
+      for (MapEntry<String, String> c in cookies.entries) {
+        pairs.add('${c.key}=${c.value}');
+      }
+      all['Cookie'] = pairs.join('; ');
+    }
+    String? token = cookies['XSRF-TOKEN'];
+    if (token != null) all['X-XSRF-TOKEN'] = Uri.decodeComponent(token);
+    http.Response res = await api.send(method, path, headers: all, body: body);
+    _keep(res.headers['set-cookie']);
+    return res;
+  }
+
+  /// package:http joins many Set-Cookie headers with a comma.
+  void _keep(String? header) {
+    if (header == null) return;
+    for (String one in header.split(RegExp(r',(?=\s*[\w-]+=)'))) {
+      Cookie c = Cookie.fromSetCookieValue(one.trim());
+      if (c.value.isEmpty || c.maxAge == 0) {
+        cookies.remove(c.name);
+      } else {
+        cookies[c.name] = c.value;
+      }
+    }
   }
 }
 

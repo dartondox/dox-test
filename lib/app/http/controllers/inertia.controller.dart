@@ -25,32 +25,24 @@ class InertiaController {
   }
 
   /// GET /inertia/notes
+  /// A failed form comes back here with `errors` from the session.
   Future<DoxResponse> index(DoxRequest req) {
-    return _notesPage(req, <String, dynamic>{});
+    return inertia(req, 'Notes', <String, dynamic>{'notes': notes.all()});
   }
 
   /// POST /inertia/notes
-  /// Dox has no session, so a bad form renders the page again with errors.
+  /// A bad form redirects back with the errors in the session.
   Future<DoxResponse> store(DoxRequest req) async {
-    try {
-      CreateNote body = await req.validate<CreateNote>();
-      notes.add(body.text);
-    } on ValidationException catch (e) {
-      return _notesPage(req, e.message as Map<String, dynamic>);
-    }
-    return Inertia.redirect(req, '/inertia/notes');
+    CreateNote body = await req.validate<CreateNote>();
+    notes.add(body.text);
+    Inertia.flash(req, 'message', 'Note saved');
+    return redirect('/inertia/notes');
   }
 
   /// DELETE /inertia/notes/{id}
+  /// InertiaMiddleware turns the 302 into 303.
   DoxResponse destroy(DoxRequest req, int id) {
     notes.remove(id);
-    return Inertia.redirect(req, '/inertia/notes');
-  }
-
-  Future<DoxResponse> _notesPage(DoxRequest req, Map<String, dynamic> errors) {
-    return inertia(req, 'Notes', <String, dynamic>{
-      'notes': notes.all(),
-      'errors': Inertia.always(errors),
-    });
+    return redirect('/inertia/notes');
   }
 }
