@@ -7,7 +7,7 @@ import 'package:dox_test/app/services/storage.service.dart';
 @Tags(<String>['Storage'])
 @Inject()
 class StorageController {
-  final StorageService service;
+  final FileStorageService service;
 
   StorageController(this.service);
 

@@ -193,7 +193,7 @@ Swap `s3` for `local` or `memory`.
 - [ ] Download: `curl -i $B/api/storage/s3/download/<key>` → `content-disposition: attachment`
 - [ ] Signed URL: `curl $B/api/storage/s3/signed/<key>` → a MinIO URL on port 9110.
   `curl '<url>'` → `hello`
-- [ ] Local signed URL: same with `local` → a `/files/...` URL (Route.files).
+- [ ] Local signed URL: same with `local` → a `/files/...` URL (Storage.route).
   `curl '<url>'` → `hello`. Change one letter of `signature` → `403`
 - [ ] Delete: `curl -X DELETE $B/api/storage/s3/files/<key>`, then stream → `404`
 - [ ] MinIO console: http://127.0.0.1:9111 (minioadmin / minioadmin), bucket `dox-test`

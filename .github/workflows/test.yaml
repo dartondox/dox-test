@@ -74,6 +74,11 @@ jobs:
           repository: dartondox/dox
           ref: ${{ inputs.dox_ref || 'main' }}
           path: dox
+      # dox_orm, dox_query_builder, dox_migration, dox_socketio and dox_storage
+      # live in their own repos. Clone their main next to dox-test, so the
+      # pubspec_overrides.yaml lines for them work (not on pub.dev yet).
+      - name: Clone dox-orm, dox-socketio and dox-storage
+        run: bash dox/ci/clone-siblings.sh
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1
         with:
@@ -82,6 +87,7 @@ jobs:
         working-directory: dox-test
         # the native packages come from pub.dev, with ready-built libraries.
         # dox_inertia, dox_queue and dox_scheduler come from pub.dev too.
+        # the other dox packages come from the local clones.
         run: |
           cp .env.example .env
           sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_queue|dox_scheduler):$/,+1d' pubspec_overrides.yaml
