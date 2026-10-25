@@ -675,14 +675,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       controller: 'SystemController',
       method: 'ping',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /ping',
-      tags: <String>['System'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(
-          description: 'Successful response',
-          schema: <String, dynamic>{'type': 'string'},
-        ),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'SystemController',
@@ -855,186 +848,85 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       controller: 'SystemController',
       method: 'noCors',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /no-cors',
-      tags: <String>['System'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(
-          description: 'Successful response',
-          schema: <String, dynamic>{'type': 'string'},
-        ),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'InertiaController',
       method: 'home',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /inertia',
-      tags: <String>['Inertia'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'InertiaController',
       method: 'index',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /inertia/notes',
-      description:
-          'A failed form comes back here with `errors` from the session.',
-      tags: <String>['Inertia'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'InertiaController',
       method: 'store',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'POST /inertia/notes',
-      description: 'A bad form redirects back with the errors in the session.',
-      tags: <String>['Inertia'],
-      schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateNote'},
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'InertiaController',
       method: 'destroy',
       argumentTypes: <String>['DoxRequest', 'int'],
-      summary: 'DELETE /inertia/notes/{id}',
-      description: 'InertiaMiddleware turns the 302 into 303.',
-      tags: <String>['Inertia'],
-      params: <Map<String, dynamic>>[
-        <String, dynamic>{'type': 'integer'},
-      ],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'sessionLogin',
       argumentTypes: <String>['DoxRequest', 'LoginUser'],
-      summary: 'POST /web-auth/login',
-      description:
-          'The session gets a new id. Wrong email or password gives 401.',
-      tags: <String>['WebAuth'],
-      schema: <String, dynamic>{'\$ref': '#/components/schemas/LoginUser'},
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'sessionUser',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /web-auth/me',
-      tags: <String>['WebAuth'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(
-          description: 'Successful response',
-          schema: <String, dynamic>{
-            'type': 'object',
-            'properties': <String, dynamic>{
-              'id': <String, dynamic>{
-                'type': <dynamic>['integer', 'null'],
-              },
-              'name': <String, dynamic>{
-                'type': <dynamic>['string', 'null'],
-              },
-              'email': <String, dynamic>{
-                'type': <dynamic>['string', 'null'],
-              },
-              'full_name': <String, dynamic>{
-                'type': <dynamic>['string', 'null'],
-              },
-            },
-          },
-        ),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'sessionLogout',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'POST /web-auth/logout',
-      description: 'All session data is removed and the session gets a new id.',
-      tags: <String>['WebAuth'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(
-          description: 'Successful response',
-          schema: <String, dynamic>{
-            'type': 'object',
-            'additionalProperties': <String, dynamic>{'type': 'boolean'},
-          },
-        ),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'loginPage',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /inertia/login',
-      tags: <String>['WebAuth'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'loginForm',
       argumentTypes: <String>['DoxRequest', 'LoginUser'],
-      summary: 'POST /inertia/login',
-      description: 'A bad form or a wrong password goes back with `errors`.',
-      tags: <String>['WebAuth'],
-      schema: <String, dynamic>{'\$ref': '#/components/schemas/LoginUser'},
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'dashboard',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /inertia/dashboard. `AuthMiddleware` sends a guest to the login.',
-      tags: <String>['WebAuth'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebAuthController',
       method: 'logoutForm',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'POST /inertia/logout',
-      tags: <String>['WebAuth'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'ViewController',
       method: 'index',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'GET /views',
-      description: 'A failed form comes back here with `errors` and `old()`.',
-      tags: <String>['View'],
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'ViewController',
       method: 'store',
       argumentTypes: <String>['DoxRequest'],
-      summary: 'POST /views/notes',
-      description: 'A bad form redirects back with the errors in the session.',
-      tags: <String>['View'],
-      schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateNote'},
-      responses: <int, ResponseDoc>{
-        200: ResponseDoc(description: 'Successful response'),
-      },
+      ignore: true,
     ),
     OpenApiOperation(
       controller: 'WebRouter',
@@ -1773,18 +1665,6 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
       },
       'required': <dynamic>['name', 'quantity'],
-    },
-    'CreateNote': <String, dynamic>{
-      'type': 'object',
-      'title': 'CreateNote',
-      'properties': <String, dynamic>{
-        'text': <String, dynamic>{
-          'type': 'string',
-          'minLength': 2,
-          'maxLength': 100,
-        },
-      },
-      'required': <dynamic>['text'],
     },
   },
 );

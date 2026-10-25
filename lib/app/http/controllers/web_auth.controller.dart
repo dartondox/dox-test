@@ -11,6 +11,7 @@ import 'package:dox_test/app/models/user/user.model.dart';
 /// ponytail: the method names differ from AuthController (login, me) on
 /// purpose. dox_openapi mixes up two routes with the same method name.
 @Inject()
+@ApiIgnore()
 class WebAuthController {
   /// The login of the `web` guard. A new one per call: Auth keeps the user.
   Auth _auth() => Auth(guard: 'web');

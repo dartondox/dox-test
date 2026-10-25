@@ -13,6 +13,7 @@ class SystemController {
   SystemController(this.service);
 
   /// GET /ping
+  @ApiIgnore()
   String ping(DoxRequest req) {
     return 'pong';
   }
@@ -100,6 +101,7 @@ class SystemController {
   }
 
   /// GET /no-cors
+  @ApiIgnore()
   String noCors(DoxRequest req) {
     return 'no cors here';
   }
