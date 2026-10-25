@@ -36,6 +36,11 @@ AppConfig appConfig = AppConfig(
   openApi: openApi,
   socketIo: socketIo,
 
+  /// Sessions live in Redis, so a logout ends the old session cookie too.
+  /// The default `cookie` driver keeps all data in the cookie: a copy of
+  /// an old cookie still works after logout.
+  session: SessionConfig(driver: 'cache', store: 'redis'),
+
   /// Bigger bodies get 413. Small on purpose, so it is easy to try.
   maxBodySize: env.maxBodySize,
   maxMultipartSize: env.maxMultipartSize,
