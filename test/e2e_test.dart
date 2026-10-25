@@ -14,7 +14,7 @@ import 'package:dox_test/config/app.dart';
 import 'package:dox_test/config/env.dart';
 import 'package:dox_test/config/schedule.dart';
 import 'package:dox_test/constants/app_constants.dart';
-import 'package:dox_test/jobs.g.dart';
+import 'package:dox_test/generated/jobs.g.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 

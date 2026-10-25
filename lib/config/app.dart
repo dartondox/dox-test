@@ -9,8 +9,8 @@ import 'package:dox_test/config/openapi.dart';
 import 'package:dox_test/config/services.dart';
 import 'package:dox_test/config/socketio.dart';
 import 'package:dox_test/config/storage.dart';
-import 'package:dox_test/container.g.dart';
-import 'package:dox_test/dtos.g.dart';
+import 'package:dox_test/generated/container.g.dart';
+import 'package:dox_test/generated/dtos.g.dart';
 
 AppConfig appConfig = AppConfig(
   appKey: env.appKey,

@@ -267,10 +267,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "8d80245cc15373dcc6b390b8b917099fe70f7078"
+      resolved-ref: "9465f570977d5e0d7c469867cbc902df8e283634"
       url: "https://github.com/dartondox/dox-queue"
     source: git
-    version: "3.0.0-alpha.1"
+    version: "3.0.0-alpha.2"
   dox_scheduler:
     dependency: "direct main"
     description:

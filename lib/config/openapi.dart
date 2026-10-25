@@ -1,6 +1,6 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/constants/app_constants.dart';
-import 'package:dox_test/openapi.g.dart';
+import 'package:dox_test/generated/openapi.g.dart';
 
 /// Docs at /docs, /openapi.json and /openapi.yaml.
 /// On when APP_ENV is development or local.

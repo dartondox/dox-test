@@ -25,10 +25,10 @@ import 'package:dox_test/app/services/tag.service.dart' as i19;
 import 'package:dox_test/app/services/user.service.dart' as i20;
 import 'package:dox_test/providers/auth_service_provider.dart' as i21;
 import 'package:dox_test/providers/orm_service_provider.dart' as i22;
-import 'package:dox_test/routes/api.dart' as i23;
-import 'package:dox_test/routes/web.dart' as i24;
-import 'package:dox_test/services/queue_service.dart' as i25;
-import 'package:dox_test/services/schedule_service.dart' as i26;
+import 'package:dox_test/providers/queue_service_provider.dart' as i23;
+import 'package:dox_test/providers/schedule_service_provider.dart' as i24;
+import 'package:dox_test/routes/api.dart' as i25;
+import 'package:dox_test/routes/web.dart' as i26;
 import 'package:dox_test/app/models/comment/comment.model.dart' as i27;
 import 'package:dox_test/app/models/post/post.model.dart' as i28;
 import 'package:dox_test/app/models/profile/profile.model.dart' as i29;
@@ -93,10 +93,10 @@ void registerContainer(IocContainer c) {
   c.service<i22.OrmServiceProvider>(
     (IocContainer c) => i22.OrmServiceProvider(),
   );
-  c.router<i23.ApiRouter>((IocContainer c) => i23.ApiRouter());
-  c.router<i24.WebRouter>((IocContainer c) => i24.WebRouter());
-  c.service<i25.AppQueueService>((IocContainer c) => i25.AppQueueService());
-  c.service<i26.ScheduleService>((IocContainer c) => i26.ScheduleService());
+  c.service<i23.AppQueueService>((IocContainer c) => i23.AppQueueService());
+  c.service<i24.ScheduleService>((IocContainer c) => i24.ScheduleService());
+  c.router<i25.ApiRouter>((IocContainer c) => i25.ApiRouter());
+  c.router<i26.WebRouter>((IocContainer c) => i26.WebRouter());
   c.bindModel<i27.Comment>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
