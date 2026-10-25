@@ -12,13 +12,12 @@ import 'package:dox_test/config/storage.dart';
 import 'package:dox_test/dtos.g.dart';
 import 'package:dox_test/routes/api.dart';
 import 'package:dox_test/routes/web.dart';
-import 'package:dox_test/routes/websocket.dart';
 
 AppConfig appConfig = AppConfig(
   appKey: env.appKey,
   serverPort: env.appPort,
 
-  /// One isolate: websocket rooms work without a Redis adapter.
+  /// One isolate: Socket.IO rooms work without a Redis adapter.
   totalIsolate: env.appTotalIsolate,
 
   /// Every @Dto class, from lib/dtos.g.dart (`dart run build_runner build`).
@@ -30,7 +29,7 @@ AppConfig appConfig = AppConfig(
     AppHeaderMiddleware(),
   ],
 
-  routers: <Router>[WebRouter(), ApiRouter(), WebsocketRouter()],
+  routers: <Router>[WebRouter(), ApiRouter()],
   responseHandler: ResponseHandler(),
   cache: cache,
   storage: storage,

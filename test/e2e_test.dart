@@ -13,7 +13,7 @@ import 'package:test/test.dart';
 import '../db/migration/migrations.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
-/// then calls every endpoint over HTTP and the websocket.
+/// then calls every endpoint over HTTP and Socket.IO.
 /// Tests run in order and share state (users, token, post ids).
 void main() {
   Api api = Api();
@@ -860,46 +860,6 @@ void main() {
     });
   });
 
-  group('websocket', () {
-    test('connect gets an id, echo goes to sender only', () async {
-      WsClient a = await WsClient.connect(api.wsUri);
-      expect(await a.next('connected'), contains('id'));
-      a.send('echo', 'hello');
-      expect(await a.next('echo'), 'hello');
-      await a.close();
-    });
-
-    test('broadcast reaches others, not the sender', () async {
-      WsClient a = await WsClient.connect(api.wsUri);
-      WsClient b = await WsClient.connect(api.wsUri);
-      await a.next('connected');
-      await b.next('connected');
-      a.send('broadcast', <String, String>{'text': 'hi all'});
-      expect(await b.next('broadcast'), <String, dynamic>{'text': 'hi all'});
-      expect(await a.nothing('broadcast'), true);
-      await a.close();
-      await b.close();
-    });
-
-    test('join room, then emit to the room', () async {
-      WsClient a = await WsClient.connect(api.wsUri);
-      WsClient b = await WsClient.connect(api.wsUri);
-      WsClient outsider = await WsClient.connect(api.wsUri);
-      await a.next('connected');
-      await b.next('connected');
-      await outsider.next('connected');
-      a.send('joinRoom', 'lobby');
-      b.send('joinRoom', 'lobby');
-      await Future<void>.delayed(Duration(milliseconds: 200));
-      a.send('chat', <String, String>{'room': 'lobby', 'text': 'hi lobby'});
-      expect(await b.next('chat'), 'hi lobby');
-      expect(await outsider.nothing('chat'), true);
-      await a.close();
-      await b.close();
-      await outsider.close();
-    });
-  });
-
   group('ORM: computed values, observers, transactions, whereNotIn', () {
     test('@Computed full_name and observer lowercases the email', () async {
       http.Response res = await api.post(
@@ -1401,7 +1361,6 @@ class Api {
   final Map<String, String> tokens = <String, String>{};
 
   String get base => 'http://127.0.0.1:${appConfig.serverPort}';
-  Uri get wsUri => Uri.parse('ws://127.0.0.1:${appConfig.serverPort}/ws');
   Uri get sioUri => Uri.parse(
     'ws://127.0.0.1:${appConfig.serverPort}/socket.io/?EIO=4&transport=websocket',
   );
@@ -1572,59 +1531,6 @@ class Api {
       ret[row['author'].toString()] = int.parse(row['total'].toString());
     }
     return ret;
-  }
-}
-
-/// Websocket client that keeps every message it gets.
-class WsClient {
-  final WebSocket socket;
-  final List<Map<String, dynamic>> _messages = <Map<String, dynamic>>[];
-
-  WsClient(this.socket) {
-    socket.listen(_onData);
-  }
-
-  static Future<WsClient> connect(Uri uri) async {
-    return WsClient(await WebSocket.connect(uri.toString()));
-  }
-
-  void _onData(dynamic data) {
-    _messages.add(jsonDecode(data.toString()));
-  }
-
-  void send(String event, dynamic message) {
-    socket.add(
-      jsonEncode(<String, dynamic>{'event': event, 'message': message}),
-    );
-  }
-
-  /// Wait up to 2 seconds for an event, return its message.
-  Future<dynamic> next(String event) async {
-    for (int i = 0; i < 40; i++) {
-      for (Map<String, dynamic> m in _messages) {
-        if (m['event'] == event) {
-          _messages.remove(m);
-          return m['message'];
-        }
-      }
-      await Future<void>.delayed(Duration(milliseconds: 50));
-    }
-    throw TimeoutException('no "$event" event');
-  }
-
-  /// True when the event does not come within 300 ms.
-  Future<bool> nothing(String event) async {
-    await Future<void>.delayed(Duration(milliseconds: 300));
-    for (Map<String, dynamic> m in _messages) {
-      if (m['event'] == event) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  Future<void> close() async {
-    await socket.close();
   }
 }
 

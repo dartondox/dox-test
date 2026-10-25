@@ -22,7 +22,7 @@ class PostService {
 
   PostService(this.posts, this.tags, this.comments);
 
-  Future<Pagination> list(ListPosts query) async {
+  Future<Pagination<Post>> list(ListPosts query) async {
     List<String> statuses = <String>[];
     for (PostStatus status in query.status) {
       statuses.add(status.name);

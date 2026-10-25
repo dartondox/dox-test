@@ -13,7 +13,7 @@ class UserController {
   /// List users
   ///
   /// Search by name or email, one page at a time.
-  Future<Pagination> index(ListUsers query) async {
+  Future<Pagination<User>> index(ListUsers query) async {
     return await service.list(query);
   }
 

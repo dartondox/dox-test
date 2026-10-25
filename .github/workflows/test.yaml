@@ -69,8 +69,10 @@ jobs:
           sdk: stable
       - name: Install and generate models
         working-directory: dox-test
+        # the native packages come from pub.dev, with ready-built libraries
         run: |
           cp .env.example .env
+          sed -i '/_native:$/,+1d' pubspec_overrides.yaml
           dart pub get
           dart run build_runner build
       - name: Migrate

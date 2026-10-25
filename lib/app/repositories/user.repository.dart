@@ -34,7 +34,7 @@ class UserRepository {
   }
 
   /// Search by name OR email, ordered by id, one page at a time.
-  Future<Pagination> search(String term, int page, int perPage) async {
+  Future<Pagination<User>> search(String term, int page, int perPage) async {
     QueryBuilder<User> query = User().orderBy('id');
     if (term.isNotEmpty) {
       query = query

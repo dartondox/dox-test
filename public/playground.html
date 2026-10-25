@@ -14,17 +14,7 @@
 </head>
 <body>
   <h1>dox-test playground</h1>
-  <p>Open this page in two tabs to see rooms and broadcasts. Docs: <a href="/docs">/docs</a></p>
-
-  <section>
-    <h2>WebSocket (dox_websocket) at /ws</h2>
-    <button onclick="wsConnect()">Connect</button>
-    <button onclick="wsSend('echo', 'hello')">Echo "hello"</button>
-    <button onclick="wsSend('broadcast', {text: 'hi all'})">Broadcast</button>
-    <button onclick="wsSend('joinRoom', 'lobby')">Join "lobby"</button>
-    <button onclick="wsSend('chat', {room: 'lobby', text: 'hi lobby'})">Chat to "lobby"</button>
-    <pre id="wsLog"></pre>
-  </section>
+  <p>Open this page in two tabs to see rooms. Docs: <a href="/docs">/docs</a></p>
 
   <section>
     <h2>Socket.IO (dox_socketio) at /chat</h2>
@@ -40,26 +30,12 @@
   <!-- pinned client version -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
   <script>
-    var ws = null;
     var io_ = null;
 
     function log(id, text) {
       var el = document.getElementById(id);
       el.textContent += new Date().toLocaleTimeString() + '  ' + text + '\n';
       el.scrollTop = el.scrollHeight;
-    }
-
-    function wsConnect() {
-      ws = new WebSocket('ws://' + location.host + '/ws');
-      ws.onopen = function () { log('wsLog', 'open'); };
-      ws.onclose = function () { log('wsLog', 'closed'); };
-      ws.onmessage = function (e) { log('wsLog', 'got ' + e.data); };
-    }
-
-    function wsSend(event, message) {
-      if (!ws) { log('wsLog', 'press Connect first'); return; }
-      ws.send(JSON.stringify({event: event, message: message}));
-      log('wsLog', 'sent ' + event);
     }
 
     function ioConnect() {

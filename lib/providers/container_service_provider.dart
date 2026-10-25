@@ -19,7 +19,6 @@ import 'package:dox_test/app/services/storage.service.dart';
 import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/app/services/tag.service.dart';
 import 'package:dox_test/app/services/user.service.dart';
-import 'package:dox_test/app/ws/chat.socket_controller.dart';
 
 /// Puts every repository, service and controller in the dox IoC container.
 /// Each class gets what it needs through its constructor.
@@ -51,7 +50,6 @@ class ContainerServiceProvider implements DoxService {
     ioc.registerSingleton<SystemController>(systemController);
     ioc.registerSingleton<CacheController>(cacheController);
     ioc.registerSingleton<StorageController>(storageController);
-    ioc.registerSingleton<ChatSocketController>(chatSocketController);
   }
 
   UserRepository userRepository(IocContainer i) {
@@ -136,9 +134,5 @@ class ContainerServiceProvider implements DoxService {
 
   SystemController systemController(IocContainer i) {
     return SystemController(i.get<SystemService>());
-  }
-
-  ChatSocketController chatSocketController(IocContainer i) {
-    return ChatSocketController();
   }
 }

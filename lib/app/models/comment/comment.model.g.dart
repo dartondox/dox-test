@@ -13,7 +13,7 @@ class CommentGenerator extends Model<Comment> {
   String get primaryKey => 'id';
 
   @override
-  Map<String, dynamic> get timestampsColumn => <String, dynamic>{
+  Map<String, dynamic> get timestampsColumn => const <String, dynamic>{
     'created_at': 'created_at',
     'updated_at': 'updated_at',
   };
@@ -21,14 +21,17 @@ class CommentGenerator extends Model<Comment> {
   @override
   String get tableName => 'comments';
 
-  int? get id => tempIdValue;
+  int? get id => tempIdValue as int?;
 
-  set id(dynamic val) => tempIdValue = val;
+  set id(int? val) => tempIdValue = val;
 
   Comment query() => Comment();
 
   @override
-  List<String> get tableColumns => <String>[
+  bool get readsRowDates => true;
+
+  @override
+  List<String> get tableColumns => const <String>[
     'id',
     'post_id',
     'user_id',
@@ -38,15 +41,15 @@ class CommentGenerator extends Model<Comment> {
   ];
 
   @override
-  List<String> get preloadList => <String>['user'];
+  List<String> get preloadList => const <String>['user'];
 
   @override
-  Map<String, Function> get relationsResultMatcher => <String, Function>{
+  Map<String, Function> get relationsResultMatcher => const <String, Function>{
     'user': getUser,
   };
 
   @override
-  Map<String, Function> get relationsQueryMatcher => <String, Function>{
+  Map<String, Function> get relationsQueryMatcher => const <String, Function>{
     'user': queryUser,
   };
 
@@ -74,16 +77,15 @@ class CommentGenerator extends Model<Comment> {
     ..postId = m['post_id'] as int?
     ..userId = m['user_id'] as int?
     ..body = m['body'] as String?
-    ..createdAt = m['created_at'] == null
-        ? null
+    ..createdAt = m['created_at'] is DateTime?
+        ? m['created_at'] as DateTime?
         : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] == null
-        ? null
+    ..updatedAt = m['updated_at'] is DateTime?
+        ? m['updated_at'] as DateTime?
         : DateTime.parse(m['updated_at'] as String);
-
   @override
-  Map<String, dynamic> convertToMap(dynamic i) {
-    Comment instance = i as Comment;
+  Map<String, dynamic> columnsToMap() {
+    Comment instance = this as Comment;
     Map<String, dynamic> map = <String, dynamic>{
       'id': instance.id,
       'post_id': instance.postId,
@@ -91,8 +93,16 @@ class CommentGenerator extends Model<Comment> {
       'body': instance.body,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
-      'user': toMap(instance.user),
     };
+
+    return map;
+  }
+
+  @override
+  Map<String, dynamic> convertToMap(dynamic i) {
+    Comment instance = i as Comment;
+    Map<String, dynamic> map = instance.columnsToMap();
+    map['user'] = toMap(instance.user);
 
     return map;
   }
