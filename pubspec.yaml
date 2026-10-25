@@ -10,11 +10,9 @@ dependencies:
   dox_migration: ^3.0.0-alpha.7
   dox_auth: ^3.0.0-alpha.7
   dox_socketio: ^3.0.0-alpha.7
-  # not on pub.dev yet
-  dox_queue:
-    git: {url: https://github.com/dartondox/dox-queue, ref: main}
-  dox_scheduler:
-    git: {url: https://github.com/dartondox/dox-scheduler, ref: main}
+  dox_queue: ^3.0.0-alpha.3
+  dox_scheduler: ^3.0.0-alpha.1
+  dox_inertia: ^3.0.0-alpha.2
 
 dev_dependencies:
   dox_builder: ^3.0.0-alpha.7

@@ -38,6 +38,7 @@ class _$AppEnv extends AppEnv {
     required this.awsSecretAccessKey,
     required this.awsEndpoint,
     required this.socketioEnabled,
+    required this.viteDevServer,
   });
 
   @override
@@ -100,6 +101,8 @@ class _$AppEnv extends AppEnv {
   final String awsEndpoint;
   @override
   final bool socketioEnabled;
+  @override
+  final String? viteDevServer;
 
   /// reads and checks every key once. Throws `EnvException` with all
   /// missing or bad keys.
@@ -142,6 +145,7 @@ class _$AppEnv extends AppEnv {
         r.string('AWS_SECRET_ACCESS_KEY') ?? d.awsSecretAccessKey;
     String awsEndpoint = r.string('AWS_ENDPOINT') ?? d.awsEndpoint;
     bool socketioEnabled = r.boolean('SOCKETIO_ENABLED') ?? d.socketioEnabled;
+    String? viteDevServer = r.string('VITE_DEV_SERVER');
 
     r.check();
     return _$AppEnv._(
@@ -175,6 +179,7 @@ class _$AppEnv extends AppEnv {
       awsSecretAccessKey: awsSecretAccessKey,
       awsEndpoint: awsEndpoint,
       socketioEnabled: socketioEnabled,
+      viteDevServer: viteDevServer,
     );
   }
 }
@@ -195,4 +200,7 @@ class _$AppEnvDefaults extends AppEnv {
   String? get dbPassword => throw StateError('DB_PASSWORD has no default');
   @override
   String? get dbDatabase => throw StateError('DB_DATABASE has no default');
+  @override
+  String? get viteDevServer =>
+      throw StateError('VITE_DEV_SERVER has no default');
 }

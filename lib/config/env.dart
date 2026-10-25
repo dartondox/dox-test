@@ -80,6 +80,10 @@ abstract class AppEnv {
   String get awsEndpoint => 'http://127.0.0.1:9110';
 
   bool get socketioEnabled => true;
+
+  /// The Vite dev server for the Inertia pages, like http://localhost:5173.
+  /// Empty means the built files in public/build.
+  String? get viteDevServer;
 }
 
 /// The env of the app. Read and checked once, on first use.

@@ -864,6 +864,82 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         ),
       },
     ),
+    OpenApiOperation(
+      controller: 'InertiaController',
+      method: 'home',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /inertia',
+      tags: <String>['Inertia'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'InertiaController',
+      method: 'index',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /inertia/notes',
+      tags: <String>['Inertia'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'InertiaController',
+      method: 'store',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /inertia/notes',
+      description: 'Dox has no session, so a bad form renders the page again with errors.',
+      tags: <String>['Inertia'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateNote'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'InertiaController',
+      method: 'destroy',
+      argumentTypes: <String>['DoxRequest', 'int'],
+      summary: 'DELETE /inertia/notes/{id}',
+      tags: <String>['Inertia'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebRouter',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['WebRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebRouter',
+      method: 'buildFile',
+      argumentTypes: <String>['String'],
+      summary: 'The file names have a hash, so the browser can keep them for a year.',
+      tags: <String>['WebRouter'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebRouter',
+      method: 'registerNoCors',
+      argumentTypes: <String>[],
+      tags: <String>['WebRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
   ],
   routes: <OpenApiRouteBinding>[
     OpenApiRouteBinding('POST', 'api/register', 'AuthController.register'),
@@ -990,8 +1066,17 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('GET', 'api/container', 'SystemController.container'),
     OpenApiRouteBinding('GET', 'api/ip', 'SystemController.ip'),
     OpenApiRouteBinding('GET', 'api/twice/{n}', 'SystemController.twice'),
+    OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
+    OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
+    OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
+    OpenApiRouteBinding(
+      'DELETE',
+      'inertia/notes/{id}',
+      'InertiaController.destroy',
+    ),
     OpenApiRouteBinding('GET', '/ping', 'SystemController.ping'),
     OpenApiRouteBinding('GET', '/playground', 'SystemController.playground'),
+    OpenApiRouteBinding('GET', '/build/{path*}', 'WebRouter.buildFile'),
     OpenApiRouteBinding('GET', '/no-cors', 'SystemController.noCors'),
   ],
   schemas: <String, Map<String, dynamic>>{
@@ -1515,6 +1600,18 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
       },
       'required': <dynamic>['name', 'quantity'],
+    },
+    'CreateNote': <String, dynamic>{
+      'type': 'object',
+      'title': 'CreateNote',
+      'properties': <String, dynamic>{
+        'text': <String, dynamic>{
+          'type': 'string',
+          'minLength': 2,
+          'maxLength': 100,
+        },
+      },
+      'required': <dynamic>['text'],
     },
   },
 );
