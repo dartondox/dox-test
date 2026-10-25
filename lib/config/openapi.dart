@@ -8,6 +8,7 @@ import 'package:dox_test/generated/openapi.g.dart';
 OpenApiConfig openApi = OpenApiConfig(
   info: const Info(title: 'dox-test API', version: '1.0.0'),
   registry: openApiRegistry,
+  include: <String>['/api/*'],
   securitySchemes: <String, SecurityScheme>{
     'apiKey': SecurityScheme.apiKey(name: AppConstants.apiKeyHeader),
   },
