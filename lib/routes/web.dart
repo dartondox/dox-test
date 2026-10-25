@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
+import 'package:dox_test/app/http/controllers/web_auth.controller.dart';
 
 /// Routes without a prefix.
 class WebRouter extends Router {
@@ -20,6 +22,9 @@ class WebRouter extends Router {
     /// Local signed URLs from Storage().signedUrl(): GET /files/{key*}
     Route.files('files');
 
+    /// Session login (the `web` guard), JSON answers.
+    Route.group('/web-auth', registerWebAuth);
+
     /// The Vite build of the Inertia pages (`npm run build`).
     Route.get('/build/{path*}', buildFile);
     Route.disabledCors(registerNoCors);
@@ -29,6 +34,15 @@ class WebRouter extends Router {
   DoxResponse buildFile(String path) {
     if (path.contains('..')) throw NotFoundHttpException();
     return response(File('public/build/$path')).cache(Duration(days: 365));
+  }
+
+  void registerWebAuth() {
+    Route.post('/login', (WebAuthController c) => c.sessionLogin);
+    Route.get('/me', <dynamic>[
+      AuthMiddleware(guard: 'web'),
+      (WebAuthController c) => c.sessionUser,
+    ]);
+    Route.post('/logout', (WebAuthController c) => c.sessionLogout);
   }
 
   void registerNoCors() {

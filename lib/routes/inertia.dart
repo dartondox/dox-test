@@ -1,5 +1,7 @@
+import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/inertia.controller.dart';
+import 'package:dox_test/app/http/controllers/web_auth.controller.dart';
 import 'package:dox_test/app/http/middleware/inertia.middleware.dart';
 
 /// Inertia pages (React). All routes here start with /inertia
@@ -21,5 +23,14 @@ class InertiaRouter extends Router {
     Route.get('/notes', (InertiaController c) => c.index);
     Route.post('/notes', (InertiaController c) => c.store);
     Route.delete('/notes/{id}', (InertiaController c) => c.destroy);
+
+    /// Session login (the `web` guard)
+    Route.get('/login', (WebAuthController c) => c.loginPage);
+    Route.post('/login', (WebAuthController c) => c.loginForm);
+    Route.get('/dashboard', <dynamic>[
+      AuthMiddleware(guard: 'web', redirectTo: '/inertia/login'),
+      (WebAuthController c) => c.dashboard,
+    ]);
+    Route.post('/logout', (WebAuthController c) => c.logoutForm);
   }
 }

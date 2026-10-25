@@ -1595,6 +1595,199 @@ void main() {
       expect(res.headers['location'], '/inertia/notes');
     });
 
+    group('session login (web guard)', () {
+      /// a new browser with no cookies
+      Browser guest = Browser(api);
+      Map<String, String> json = <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      String login = jsonEncode(<String, String>{
+        'email': 'sess@mail.com',
+        'password': 'secret123',
+      });
+
+      test('a user to log in with', () async {
+        http.Response res = await api.post(
+          '/api/auth/register',
+          <String, dynamic>{
+            'name': 'Sess',
+            'email': 'sess@mail.com',
+            'password': 'secret123',
+            'password_confirmation': 'secret123',
+          },
+        );
+        expect(res.statusCode, 201, reason: res.body);
+      });
+
+      test('POST /web-auth/login without the CSRF token gets 419', () async {
+        http.Response res = await api.send(
+          'POST',
+          '/web-auth/login',
+          headers: json,
+          body: login,
+        );
+        expect(res.statusCode, 419);
+      });
+
+      test('wrong password gives 401, /web-auth/me stays 401', () async {
+        http.Response res = await guest.send('GET', '/web-auth/me', json);
+        expect(res.statusCode, 401);
+        expect(guest.cookies.keys, contains('XSRF-TOKEN'));
+
+        res = await guest.send(
+          'POST',
+          '/web-auth/login',
+          json,
+          jsonEncode(<String, String>{
+            'email': 'sess@mail.com',
+            'password': 'wrong',
+          }),
+        );
+        expect(res.statusCode, 401, reason: res.body);
+        expect(api.json(res)['message'], 'Wrong email or password');
+
+        res = await guest.send('GET', '/web-auth/me', json);
+        expect(res.statusCode, 401);
+      });
+
+      test('login gives a new session id, then /web-auth/me works', () async {
+        Map<String, String> before = <String, String>{...guest.cookies};
+        http.Response res = await guest.send(
+          'POST',
+          '/web-auth/login',
+          json,
+          login,
+        );
+        expect(res.statusCode, 200, reason: res.body);
+        expect(api.json(res)['email'], 'sess@mail.com');
+        expect(api.json(res).containsKey('password'), false);
+        // the session cookie and the CSRF token are new (session fixation)
+        expect(guest.cookies, isNot(before));
+        expect(guest.cookies['XSRF-TOKEN'], isNot(before['XSRF-TOKEN']));
+
+        res = await guest.send('GET', '/web-auth/me', json);
+        expect(res.statusCode, 200, reason: res.body);
+        expect(api.json(res)['name'], 'Sess');
+      });
+
+      test('the session login does not work as a JWT on /api', () async {
+        http.Response res = await guest.send('GET', '/api/auth/me', json);
+        expect(res.statusCode, 401);
+      });
+
+      test('logout ends the login, the old cookie is no use', () async {
+        Map<String, String> loggedIn = <String, String>{...guest.cookies};
+        http.Response res = await guest.send('POST', '/web-auth/logout', json);
+        expect(res.statusCode, 200, reason: res.body);
+        expect(guest.cookies, isNot(loggedIn));
+
+        res = await guest.send('GET', '/web-auth/me', json);
+        expect(res.statusCode, 401);
+
+        // a copy of the cookie from before the logout
+        Browser old = Browser(api)..cookies.addAll(loggedIn);
+        res = await old.send('GET', '/web-auth/me', json);
+        expect(res.statusCode, 401, reason: 'old session cookie still works');
+      });
+
+      test('the JWT API still works', () async {
+        http.Response res = await api.post('/api/auth/login', <String, dynamic>{
+          'email': 'sess@mail.com',
+          'password': 'secret123',
+        });
+        expect(res.statusCode, 200, reason: res.body);
+        api.tokens['Sess'] = api.json(res)['token'];
+        res = await api.get('/api/auth/me', token: 'Sess');
+        expect(res.statusCode, 200, reason: res.body);
+        expect(api.json(res)['name'], 'Sess');
+      });
+
+      test('Inertia: dashboard redirects a guest to the login', () async {
+        Browser page = Browser(api);
+        http.Response res = await page.send(
+          'GET',
+          '/inertia/dashboard',
+          inertiaHeaders(),
+        );
+        expect(res.statusCode, 302, reason: res.body);
+        expect(res.headers['location'], '/inertia/login');
+
+        res = await page.send('GET', '/inertia/login', inertiaHeaders());
+        expect(res.statusCode, 200, reason: res.body);
+        Map<String, dynamic> body = api.json(res);
+        expect(body['component'], 'Login');
+        expect(body['props']['auth'], <String, dynamic>{'user': null});
+      });
+
+      test('Inertia: bad login goes back with errors', () async {
+        Browser page = Browser(api);
+        await page.send('GET', '/inertia/login', inertiaHeaders());
+        Map<String, String> headers = inertiaHeaders(<String, String>{
+          'Referer': api.uri('/inertia/login').toString(),
+        });
+
+        http.Response res = await page.send(
+          'POST',
+          '/inertia/login',
+          headers,
+          jsonEncode(<String, String>{'email': 'nope', 'password': 'x'}),
+        );
+        expect(res.statusCode, 302, reason: res.body);
+        res = await page.send('GET', '/inertia/login', inertiaHeaders());
+        expect(
+          api.json(res)['props']['errors']['email'],
+          'The email is not a valid email',
+        );
+
+        res = await page.send(
+          'POST',
+          '/inertia/login',
+          headers,
+          jsonEncode(<String, String>{
+            'email': 'sess@mail.com',
+            'password': 'wrong',
+          }),
+        );
+        expect(res.statusCode, 302, reason: res.body);
+        expect(res.headers['location'], endsWith('/inertia/login'));
+        res = await page.send('GET', '/inertia/login', inertiaHeaders());
+        Map<String, dynamic> props = api.json(res)['props'];
+        expect(props['errors']['email'], 'Wrong email or password');
+        expect(props['auth']['user'], isNull);
+      });
+
+      test('Inertia: login -> dashboard -> logout -> login again', () async {
+        Browser page = Browser(api);
+        await page.send('GET', '/inertia/login', inertiaHeaders());
+        http.Response res = await page.send(
+          'POST',
+          '/inertia/login',
+          inertiaHeaders(),
+          login,
+        );
+        expect(res.statusCode, 302, reason: res.body);
+        expect(res.headers['location'], '/inertia/dashboard');
+
+        res = await page.send('GET', '/inertia/dashboard', inertiaHeaders());
+        expect(res.statusCode, 200, reason: res.body);
+        Map<String, dynamic> body = api.json(res);
+        expect(body['component'], 'Dashboard');
+        Map<String, dynamic> user = body['props']['auth']['user'];
+        expect(user['name'], 'Sess');
+        expect(user['email'], 'sess@mail.com');
+        expect(user.containsKey('password'), false);
+
+        res = await page.send('POST', '/inertia/logout', inertiaHeaders());
+        expect(res.statusCode, 302, reason: res.body);
+        expect(res.headers['location'], '/inertia/login');
+
+        res = await page.send('GET', '/inertia/dashboard', inertiaHeaders());
+        expect(res.statusCode, 302);
+        expect(res.headers['location'], '/inertia/login');
+      });
+    });
+
     test('/build serves no file outside public/build', () async {
       http.Response res = await api.get('/build/%2e%2e/%2e%2e/pubspec.yaml');
       expect(res.statusCode, 404);

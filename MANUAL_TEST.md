@@ -83,6 +83,29 @@ Stop: `Ctrl+C`, then `docker compose down`.
   → copy `token`, then `T='Authorization: Bearer <token>'`
 - [ ] `curl -H "$T" $B/api/auth/me` → Ann. Without `-H "$T"` → `401`
 
+### Session login (`web` guard)
+
+Guards are in `lib/config/auth.dart`: `api` (JWT, the default) and `web` (session).
+Sessions are kept in Redis (`session:` in `lib/config/app.dart`), so a logout also ends a copied cookie.
+Routes: `/web-auth/*` in `lib/routes/web.dart` (JSON), `/inertia/*` pages in section 10.
+
+```bash
+C=/tmp/web.txt; rm -f $C
+curl -s -c $C -b $C $B/web-auth/me -o /dev/null      # gets the XSRF-TOKEN cookie
+X="X-XSRF-TOKEN: $(awk '$6=="XSRF-TOKEN"{print $7}' $C | python3 -c 'import sys,urllib.parse;print(urllib.parse.unquote(sys.stdin.read().strip()))')"
+```
+
+- [ ] `curl -i -H "$J" -d '{"email":"ann@mail.com","password":"secret123"}' $B/web-auth/login`
+  → `419` (no CSRF token)
+- [ ] `curl -i -c $C -b $C -H "$J" -H "$X" -d '{"email":"ann@mail.com","password":"wrong"}' $B/web-auth/login`
+  → `401`, `Wrong email or password`
+- [ ] `curl -c $C -b $C -H "$J" -H "$X" -d '{"email":"ann@mail.com","password":"secret123"}' $B/web-auth/login`
+  → Ann. `cat $C`: `dox_session` and `XSRF-TOKEN` have new values (the session got a new id)
+- [ ] Read the new token again (the `X=...` line), then `curl -b $C $B/web-auth/me` → Ann
+- [ ] `cp $C /tmp/old.txt`, then `curl -c $C -b $C -H "$X" -X POST $B/web-auth/logout` → `{"logged_out":true}`
+- [ ] `curl -i -b $C $B/web-auth/me` → `401`. `curl -i -b /tmp/old.txt $B/web-auth/me` → `401` (old cookie is no use)
+- [ ] `curl -i -b /tmp/old.txt $B/api/auth/me` → `401` (a session is not a JWT)
+
 ## 4. dox_orm + dox_migration
 
 - [ ] Create post: `curl -H "$T" -H "$J" -d '{"title":"Hi","body":"text","status":"published","tags":["dart"]}' $B/api/posts`
@@ -219,6 +242,15 @@ dart run bin/server.dart   # restart after each build: the asset version is read
   `cache-control: max-age=31536000`, no `content-disposition`
 - [ ] `curl -i -H 'X-Inertia: true' -H 'X-Inertia-Version: old' $B/inertia` → `409`, `x-inertia-location`
 
+Session login pages (`Login.jsx`, `Dashboard.jsx`, the nav in `Nav.jsx`). Use the user from section 3.
+
+- [ ] Logged out: the nav shows `Login`. Open http://127.0.0.1:3100/inertia/dashboard → you land on `/inertia/login`
+- [ ] Log in with a wrong password → red `Wrong email or password` next to the email. The email stays, the password is empty
+- [ ] Email `nope` → red `The email is not a valid email`
+- [ ] Right password → `/inertia/dashboard`, "Logged in as **Ann** (ann@mail.com)".
+  The nav shows `Dashboard | Ann [Logout]` (shared prop `auth.user`)
+- [ ] Click `Logout` → `/inertia/login`, the nav shows `Login` again. Open `/inertia/dashboard` → back on the login page
+
 ## 11. Production build (AOT)
 
 - [ ] `dart run ../dox/packages/dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
@@ -228,7 +260,7 @@ dart run bin/server.dart   # restart after each build: the asset version is read
 ## 12. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
-  → all pass (111 checks)
+  → all pass (123 checks)
 - [ ] `npm ci && npm run build` → `public/build/.vite/manifest.json` (CI runs it too)
 
 ## Known issues (framework, not this app)
@@ -237,3 +269,8 @@ dart run bin/server.dart   # restart after each build: the asset version is read
   show an `application/json` body in `/docs`, not `multipart/form-data`.
   So you can not send a file from the Scalar page. Use curl.
 - **Client IP**: `req.ip()` gives `::ffff:127.0.0.1`, not `127.0.0.1`, for a local client.
+- **OpenAPI docs of two routes with the same method name**: dox_openapi drops the `Route.group`
+  prefix from the route path it saves (`/web-auth/login` is saved as `/login`). It then matches
+  a route by HTTP method, the end of the path and the method name only, not the controller.
+  So `POST /web-auth/login` with a method named `login` gave its docs to `POST /api/auth/login`.
+  This app names the session methods `sessionLogin`, `sessionUser`, `sessionLogout` to avoid it.

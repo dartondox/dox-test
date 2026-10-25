@@ -913,6 +913,107 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'sessionLogin',
+      argumentTypes: <String>['DoxRequest', 'LoginUser'],
+      summary: 'POST /web-auth/login',
+      description:
+          'The session gets a new id. Wrong email or password gives 401.',
+      tags: <String>['WebAuth'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/LoginUser'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'sessionUser',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /web-auth/me',
+      tags: <String>['WebAuth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'properties': <String, dynamic>{
+              'id': <String, dynamic>{
+                'type': <dynamic>['integer', 'null'],
+              },
+              'name': <String, dynamic>{
+                'type': <dynamic>['string', 'null'],
+              },
+              'email': <String, dynamic>{
+                'type': <dynamic>['string', 'null'],
+              },
+              'full_name': <String, dynamic>{
+                'type': <dynamic>['string', 'null'],
+              },
+            },
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'sessionLogout',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /web-auth/logout',
+      description: 'All session data is removed and the session gets a new id.',
+      tags: <String>['WebAuth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'loginPage',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /inertia/login',
+      tags: <String>['WebAuth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'loginForm',
+      argumentTypes: <String>['DoxRequest', 'LoginUser'],
+      summary: 'POST /inertia/login',
+      description: 'A bad form or a wrong password goes back with `errors`.',
+      tags: <String>['WebAuth'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/LoginUser'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'dashboard',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /inertia/dashboard. `AuthMiddleware` sends a guest to the login.',
+      tags: <String>['WebAuth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebAuthController',
+      method: 'logoutForm',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /inertia/logout',
+      tags: <String>['WebAuth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
       controller: 'WebRouter',
       method: 'register',
       argumentTypes: <String>[],
@@ -930,6 +1031,15 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       params: <Map<String, dynamic>>[
         <String, dynamic>{'type': 'string'},
       ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebRouter',
+      method: 'registerWebAuth',
+      argumentTypes: <String>[],
+      tags: <String>['WebRouter'],
       responses: <int, ResponseDoc>{
         200: ResponseDoc(description: 'Successful response'),
       },
@@ -1077,9 +1187,24 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'inertia/notes/{id}',
       'InertiaController.destroy',
     ),
+    OpenApiRouteBinding('GET', 'inertia/login', 'WebAuthController.loginPage'),
+    OpenApiRouteBinding('POST', 'inertia/login', 'WebAuthController.loginForm'),
+    OpenApiRouteBinding(
+      'GET',
+      'inertia/dashboard',
+      'WebAuthController.dashboard',
+    ),
+    OpenApiRouteBinding(
+      'POST',
+      'inertia/logout',
+      'WebAuthController.logoutForm',
+    ),
     OpenApiRouteBinding('GET', '/ping', 'SystemController.ping'),
     OpenApiRouteBinding('GET', '/playground', 'SystemController.playground'),
     OpenApiRouteBinding('GET', '/build/{path*}', 'WebRouter.buildFile'),
+    OpenApiRouteBinding('POST', '/login', 'WebAuthController.sessionLogin'),
+    OpenApiRouteBinding('GET', '/me', 'WebAuthController.sessionUser'),
+    OpenApiRouteBinding('POST', '/logout', 'WebAuthController.sessionLogout'),
     OpenApiRouteBinding('GET', '/no-cors', 'SystemController.noCors'),
   ],
   schemas: <String, Map<String, dynamic>>{

@@ -14,5 +14,11 @@ AuthConfig authConfig = AuthConfig(
       driver: JwtAuthDriver(secret: SecretKey(env.appKey)),
       provider: AuthProvider(model: makeAuthUser),
     ),
+
+    /// Session login for browser pages (/web-auth and /inertia).
+    'web': AuthGuard(
+      driver: SessionAuthDriver(),
+      provider: AuthProvider(model: makeAuthUser),
+    ),
   },
 );
