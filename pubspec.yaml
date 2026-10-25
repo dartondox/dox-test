@@ -12,7 +12,7 @@ dependencies:
   dox_socketio: ^3.0.0-alpha.7
   dox_queue: ^3.0.0-alpha.3
   dox_scheduler: ^3.0.0-alpha.1
-  dox_inertia: ^3.0.0-alpha.1
+  dox_inertia: ^3.0.0-alpha.2
 
 dev_dependencies:
   dox_builder: ^3.0.0-alpha.7

@@ -208,7 +208,7 @@ dart run bin/server.dart   # restart after each build: the asset version is read
 - [ ] "Load tip" → `Props can load later.` (optional prop, partial reload)
 - [ ] Notes: add `x` → `The text must be between 2 and 100 characters`. Add `hello` → in the list. `x` deletes it
 - [ ] Click Home / Notes: no full page reload (Network tab: JSON with `x-inertia: true`)
-- [ ] `curl -i $B/inertia` → HTML with `<div id="app" data-page="...">` and the script tags
+- [ ] `curl -i $B/inertia` → HTML with `<script data-page="app" type="application/json">` and the script tags
 - [ ] Production only: `curl -I $B/build/assets/<file>.js` → `content-type: text/javascript`,
   `cache-control: max-age=31536000`, no `content-disposition`
 - [ ] `curl -i -H 'X-Inertia: true' -H 'X-Inertia-Version: old' $B/inertia` → `409`, `x-inertia-location`
@@ -231,7 +231,3 @@ dart run bin/server.dart   # restart after each build: the asset version is read
   show an `application/json` body in `/docs`, not `multipart/form-data`.
   So you can not send a file from the Scalar page. Use curl.
 - **Client IP**: `req.ip()` gives `::ffff:127.0.0.1`, not `127.0.0.1`, for a local client.
-- **Inertia v3 first page**: `@inertiajs/react` 3 reads the first page from
-  `<script data-page="app" type="application/json">`. `dox_inertia` writes
-  `<div id="app" data-page="...">` (v2). So `resources/js/app.jsx` passes the
-  page to `createInertiaApp` itself.

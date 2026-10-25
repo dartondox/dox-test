@@ -1467,12 +1467,12 @@ void main() {
       );
       expect(res.body, contains('@react-refresh'));
 
-      Match? data = RegExp(r'<div id="app" data-page="([^"]*)"></div>')
-          .firstMatch(res.body);
+      Match? data = RegExp(
+        r'<script data-page="app" type="application/json">(.*?)</script>'
+        r'<div id="app"></div>',
+      ).firstMatch(res.body);
       expect(data, isNotNull, reason: res.body);
-      Map<String, dynamic> page = jsonDecode(
-        data![1]!.replaceAll('&quot;', '"').replaceAll('&amp;', '&'),
-      );
+      Map<String, dynamic> page = jsonDecode(data![1]!);
       expect(page['component'], 'Home');
       expect(page['url'], '/inertia');
       expect(page['props']['appName'], env.appName); // shared prop
