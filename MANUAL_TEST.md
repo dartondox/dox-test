@@ -251,13 +251,26 @@ Session login pages (`Login.jsx`, `Dashboard.jsx`, the nav in `Nav.jsx`). Use th
   The nav shows `Dashboard | Ann [Logout]` (shared prop `auth.user`)
 - [ ] Click `Logout` → `/inertia/login`, the nav shows `Login` again. Open `/inertia/dashboard` → back on the login page
 
-## 11. Production build (AOT)
+## 11. dox_view (server-rendered pages, browser)
+
+The templates are in `resources/views` (`.dox.html`), the routes in `lib/routes/views.dart`.
+They use the same notes as the Inertia pages. No Node needed.
+
+- [ ] Open http://127.0.0.1:3100/views → "Notes" page in the layout, `dox-test` in the nav, `Notes` link marked `active`
+- [ ] Add `x` → red `The text must be between 2 and 100 characters`, and `x` stays in the field (old input).
+  Reload → the error is gone
+- [ ] Add `<b>hi</b>` → green `Note saved`, and the list shows `<b>hi</b>` as text, not bold (escaped). Reload → `Note saved` is gone
+- [ ] View source: the hidden `_token` field is in the form
+- [ ] `curl -i -X POST -d 'text=hi' $B/views/notes` → `419` (no CSRF token)
+- [ ] Change `resources/views/notes/index.dox.html` and reload: the change shows with no restart (`APP_ENV=development`)
+
+## 12. Production build (AOT)
 
 - [ ] `dart run ../dox/packages/dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
 - [ ] Stop `dart run`, then `./build/bundle/bin/server` from the project folder
   → starts in well under a second. `curl $B/ping` → `pong`
 
-## 12. Automatic checks
+## 13. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
   → all pass (123 checks)

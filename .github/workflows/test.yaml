@@ -86,11 +86,11 @@ jobs:
       - name: Install and generate models
         working-directory: dox-test
         # the native packages come from pub.dev, with ready-built libraries.
-        # dox_inertia, dox_queue and dox_scheduler come from pub.dev too.
+        # dox_inertia, dox_view, dox_queue and dox_scheduler come from pub.dev too.
         # the other dox packages come from the local clones.
         run: |
           cp .env.example .env
-          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_queue|dox_scheduler):$/,+1d' pubspec_overrides.yaml
+          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_view|dox_queue|dox_scheduler):$/,+1d' pubspec_overrides.yaml
           dart pub get
           dart run build_runner build
       - name: Migrate

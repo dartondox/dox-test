@@ -36,3 +36,5 @@ dependency_overrides:
     path: ../dox-storage
   dox_validation:
     path: ../dox/packages/dox-validation
+  dox_view:
+    path: ../dox-view
