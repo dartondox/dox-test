@@ -1,0 +1,27 @@
+@component('layouts/main', { title: 'Notes' })
+  <h1>Notes</h1>
+
+  @if(session('message'))
+    @alert({ type: 'success' })
+      {{ session('message') }}
+    @end
+  @end
+
+  <form method="POST" action="/views/notes">
+    {{ csrfField() }}
+    <input name="text" value="{{ old('text') }}" placeholder="New note">
+    <button>Add</button>
+    @if(errors.text)
+      @!alert({ type: 'error', message: errors.text })
+    @end
+  </form>
+
+  <ul>
+    @each((note, i) in notes)
+      <li>{{ i + 1 }}. {{ note.text }}</li>
+    @else
+      <li>No notes yet</li>
+    @end
+  </ul>
+  <p>{{ notes.length }} {{ notes.length == 1 ? 'note' : 'notes' }}</p>
+@end

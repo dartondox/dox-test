@@ -1795,6 +1795,105 @@ void main() {
       expect(res.statusCode, 404);
     });
   });
+
+  group('dox_view', () {
+    /// keeps the session cookie, like a browser
+    Browser browser = Browser(api);
+    String token = '';
+
+    /// POST the note form like a browser does: the `_token` field from
+    /// csrfField(), no X-XSRF-TOKEN header
+    Future<http.Response> postNote(String text) async {
+      List<String> pairs = <String>[];
+      for (MapEntry<String, String> c in browser.cookies.entries) {
+        pairs.add('${c.key}=${c.value}');
+      }
+      http.Response res = await api.send(
+        'POST',
+        '/views/notes',
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': pairs.join('; '),
+          'Referer': api.uri('/views').toString(),
+        },
+        body: Uri(
+          queryParameters: <String, String>{'_token': token, 'text': text},
+        ).query,
+      );
+      browser._keep(res.headers['set-cookie']);
+      return res;
+    }
+
+    Future<String> page() async {
+      http.Response res = await browser.send(
+        'GET',
+        '/views',
+        <String, String>{},
+      );
+      expect(res.statusCode, 200);
+      return res.body;
+    }
+
+    test('GET /views renders the layout, nav, component and form', () async {
+      http.Response res = await browser.send(
+        'GET',
+        '/views',
+        <String, String>{},
+      );
+      expect(res.statusCode, 200);
+      expect(res.headers['content-type'], startsWith('text/html'));
+      String html = res.body;
+      expect(html, contains('<title>Notes - ${env.appName}</title>'));
+      expect(html, contains('<a href="/views" class="active">Notes</a>'));
+      Match? field = RegExp(
+        r'<input type="hidden" name="_token" value="([^"]+)">',
+      ).firstMatch(html);
+      expect(field, isNotNull, reason: html);
+      token = field![1]!;
+      // a tag alone on its line leaves no line of spaces
+      expect(html, isNot(contains('\n  \n')));
+    });
+
+    test('POST without the CSRF token gets 419', () async {
+      http.Response res = await api.send(
+        'POST',
+        '/views/notes',
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'text=hello',
+      );
+      expect(res.statusCode, 419);
+    });
+
+    test('bad form redirects back with errors and old input', () async {
+      http.Response res = await postNote('x');
+      expect(res.statusCode, 302, reason: res.body);
+      expect(res.headers['location'], endsWith('/views'));
+
+      String html = await page();
+      expect(html, contains('between 2 and 100'));
+      expect(html, contains('value="x"'));
+      expect(html, contains('color: red'));
+
+      // the errors are gone on the page after
+      html = await page();
+      expect(html, isNot(contains('between 2 and 100')));
+    });
+
+    test('a good form saves, shows the flash once, escapes the note', () async {
+      http.Response res = await postNote('<b>view note</b>');
+      expect(res.statusCode, 302, reason: res.body);
+
+      String html = await page();
+      expect(html, contains('Note saved'));
+      expect(html, contains('&lt;b&gt;view note&lt;/b&gt;</li>'));
+      expect(html, isNot(contains('<b>view note</b>')));
+
+      html = await page();
+      expect(html, isNot(contains('Note saved')));
+    });
+  });
 }
 
 Future<Profile?> profileOf(int userId) async {
