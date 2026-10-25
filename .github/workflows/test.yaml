@@ -10,6 +10,17 @@ on:
         default: main
 
 jobs:
+  # the React + Vite pages of /inertia build
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci && npm run build
+
   e2e:
     runs-on: ubuntu-latest
     strategy:
@@ -69,10 +80,11 @@ jobs:
           sdk: stable
       - name: Install and generate models
         working-directory: dox-test
-        # the native packages come from pub.dev, with ready-built libraries
+        # the native packages come from pub.dev, with ready-built libraries.
+        # dox_inertia, dox_queue and dox_scheduler come from pub.dev too.
         run: |
           cp .env.example .env
-          sed -i '/_native:$/,+1d' pubspec_overrides.yaml
+          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_queue|dox_scheduler):$/,+1d' pubspec_overrides.yaml
           dart pub get
           dart run build_runner build
       - name: Migrate

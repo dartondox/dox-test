@@ -227,6 +227,13 @@ packages:
       relative: true
     source: path
     version: "3.0.0-alpha.8"
+  dox_inertia:
+    dependency: "direct main"
+    description:
+      path: "../dox-inertia"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.1"
   dox_migration:
     dependency: "direct main"
     description:
@@ -265,20 +272,16 @@ packages:
   dox_queue:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: "9465f570977d5e0d7c469867cbc902df8e283634"
-      url: "https://github.com/dartondox/dox-queue"
-    source: git
-    version: "3.0.0-alpha.2"
+      path: "../dox-queue"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.3"
   dox_scheduler:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: "8eee862ce24947f6f9533ef774543956d1b509d6"
-      url: "https://github.com/dartondox/dox-scheduler"
-    source: git
+      path: "../dox-scheduler"
+      relative: true
+    source: path
     version: "3.0.0-alpha.1"
   dox_socketio:
     dependency: "direct main"

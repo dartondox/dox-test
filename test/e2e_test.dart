@@ -1421,6 +1421,148 @@ void main() {
       expect(task.isDue(DateTime.utc(2026, 10, 25, 2, 30)), false);
     });
   });
+
+  group('dox_inertia', () {
+    /// The Vite dev server url in public/hot: the page gets dev script
+    /// tags, so the tests need no `npm run build`.
+    File hot = File('public/hot');
+    bool madeHot = false;
+    String version = '';
+
+    setUpAll(() async {
+      if (!await hot.exists()) {
+        await hot.writeAsString('http://localhost:5173');
+        madeHot = true;
+      }
+    });
+
+    tearDownAll(() async {
+      if (madeHot) await hot.delete();
+    });
+
+    /// headers of a request from the Inertia client
+    Map<String, String> inertiaHeaders([Map<String, String>? extra]) {
+      return <String, String>{
+        'X-Inertia': 'true',
+        'X-Inertia-Version': version,
+        'Content-Type': 'application/json',
+        ...?extra,
+      };
+    }
+
+    test('first visit gets HTML with the page and the script tags', () async {
+      http.Response res = await api.get('/inertia');
+      expect(res.statusCode, 200);
+      expect(res.headers['content-type'], startsWith('text/html'));
+      expect(res.headers['vary'], 'X-Inertia');
+      expect(
+        res.body,
+        contains(
+          '<script type="module" src="http://localhost:5173/@vite/client">',
+        ),
+      );
+      expect(
+        res.body,
+        contains('src="http://localhost:5173/resources/js/app.jsx"'),
+      );
+      expect(res.body, contains('@react-refresh'));
+
+      Match? data = RegExp(r'<div id="app" data-page="([^"]*)"></div>')
+          .firstMatch(res.body);
+      expect(data, isNotNull, reason: res.body);
+      Map<String, dynamic> page = jsonDecode(
+        data![1]!.replaceAll('&quot;', '"').replaceAll('&amp;', '&'),
+      );
+      expect(page['component'], 'Home');
+      expect(page['url'], '/inertia');
+      expect(page['props']['appName'], env.appName); // shared prop
+      expect(page['props']['greeting'], 'Hello from Dox');
+      version = page['version'] ?? '';
+    });
+
+    test('X-Inertia request gets the page as JSON', () async {
+      http.Response res = await api.get('/inertia', headers: inertiaHeaders());
+      expect(res.statusCode, 200);
+      expect(res.headers['x-inertia'], 'true');
+      Map<String, dynamic> page = api.json(res);
+      expect(page['component'], 'Home');
+      Map<String, dynamic> props = page['props'];
+      expect(props.keys, containsAll(<String>['appName', 'greeting', 'time']));
+      // deferred and optional props are not sent on a full visit
+      expect(props.containsKey('stats'), false);
+      expect(props.containsKey('tip'), false);
+      expect(page['deferredProps'], <String, dynamic>{
+        'default': <String>['stats'],
+      });
+    });
+
+    test('stale X-Inertia-Version gets 409 with X-Inertia-Location', () async {
+      http.Response res = await api.get(
+        '/inertia',
+        headers: inertiaHeaders(<String, String>{'X-Inertia-Version': 'old'}),
+      );
+      expect(res.statusCode, 409);
+      expect(res.headers['x-inertia-location'], api.uri('/inertia').toString());
+    });
+
+    test('partial reload sends only the asked props', () async {
+      http.Response res = await api.get(
+        '/inertia',
+        headers: inertiaHeaders(<String, String>{
+          'X-Inertia-Partial-Component': 'Home',
+          'X-Inertia-Partial-Data': 'stats,tip',
+        }),
+      );
+      Map<String, dynamic> props = api.json(res)['props'];
+      expect(props.keys.toSet(), <String>{'stats', 'tip'});
+      expect(props['tip'], 'Props can load later.');
+    });
+
+    test('bad form renders the page again with errors', () async {
+      http.Response res = await api.send(
+        'POST',
+        '/inertia/notes',
+        headers: inertiaHeaders(),
+        body: jsonEncode(<String, String>{'text': 'x'}),
+      );
+      expect(res.statusCode, 200);
+      Map<String, dynamic> page = api.json(res);
+      expect(page['component'], 'Notes');
+      expect(page['props']['errors']['text'], contains('between 2 and 100'));
+    });
+
+    test('POST redirects with 302, DELETE with 303', () async {
+      http.Response res = await api.send(
+        'POST',
+        '/inertia/notes',
+        headers: inertiaHeaders(),
+        body: jsonEncode(<String, String>{'text': 'first note'}),
+      );
+      // the browser follows a 302 after POST with GET. 303 is only needed
+      // after PUT, PATCH and DELETE (Inertia protocol).
+      expect(res.statusCode, 302);
+      expect(res.headers['location'], '/inertia/notes');
+
+      res = await api.get('/inertia/notes', headers: inertiaHeaders());
+      List<dynamic> notes = api.json(res)['props']['notes'];
+      expect(notes.last['text'], 'first note');
+
+      res = await api.send(
+        'DELETE',
+        '/inertia/notes/${notes.last['id']}',
+        headers: inertiaHeaders(),
+      );
+      expect(res.statusCode, 303);
+      expect(res.headers['location'], '/inertia/notes');
+    });
+
+    test('/build serves no file outside public/build', () async {
+      http.Response res = await api.get('/build/%2e%2e/%2e%2e/pubspec.yaml');
+      expect(res.statusCode, 404);
+      res = await api.get('/build/assets/missing.js');
+      expect(res.statusCode, 404);
+    });
+  });
 }
 
 Future<Profile?> profileOf(int userId) async {
@@ -1520,9 +1662,12 @@ class Api {
     String method,
     String path, {
     Map<String, String>? headers,
+    String? body,
   }) async {
     http.Request req = http.Request(method, uri(path));
+    req.followRedirects = false;
     req.headers.addAll(headers ?? <String, String>{});
+    if (body != null) req.body = body;
     return http.Response.fromStream(await req.send());
   }
 

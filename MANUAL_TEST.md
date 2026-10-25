@@ -184,16 +184,46 @@ Swap `s3` for `local` or `memory`.
 - [ ] Join "lobby" in both tabs, Message in tab 1 → tab 1 `ack: sent`, tab 2 `message {...}`
 - [ ] Type a space as name, Connect → `connect_error: name is empty` (namespace middleware)
 
-## 10. Production build (AOT)
+## 10. dox_inertia (React + Vite, browser)
+
+The pages are in `resources/js/Pages`, the routes in `lib/routes/inertia.dart`.
+Needs Node. Run `npm install` once.
+
+Dev mode (hot reload):
+
+```bash
+npm run dev                                                    # terminal 1, Vite on :5173
+VITE_DEV_SERVER=http://localhost:5173 dart run bin/server.dart # terminal 2
+```
+
+Production build:
+
+```bash
+npm run build              # → public/build, with .vite/manifest.json
+dart run bin/server.dart   # restart after each build: the asset version is read once
+```
+
+- [ ] Open http://127.0.0.1:3100/inertia → "Hello from Dox", `dox-test` in the nav (shared prop)
+- [ ] "Loading stats..." then `Notes: 0` (deferred prop)
+- [ ] "Load tip" → `Props can load later.` (optional prop, partial reload)
+- [ ] Notes: add `x` → `The text must be between 2 and 100 characters`. Add `hello` → in the list. `x` deletes it
+- [ ] Click Home / Notes: no full page reload (Network tab: JSON with `x-inertia: true`)
+- [ ] `curl -i $B/inertia` → HTML with `<div id="app" data-page="...">` and the script tags
+- [ ] Production only: `curl -I $B/build/assets/<file>.js` → `content-type: text/javascript`,
+  `cache-control: max-age=31536000`, no `content-disposition`
+- [ ] `curl -i -H 'X-Inertia: true' -H 'X-Inertia-Version: old' $B/inertia` → `409`, `x-inertia-location`
+
+## 11. Production build (AOT)
 
 - [ ] `dart run ../dox/packages/dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
 - [ ] Stop `dart run`, then `./build/bundle/bin/server` from the project folder
   → starts in well under a second. `curl $B/ping` → `pong`
 
-## 11. Automatic checks
+## 12. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
-  → all pass (100 checks)
+  → all pass (111 checks)
+- [ ] `npm ci && npm run build` → `public/build/.vite/manifest.json` (CI runs it too)
 
 ## Known issues (framework, not this app)
 
@@ -201,3 +231,7 @@ Swap `s3` for `local` or `memory`.
   show an `application/json` body in `/docs`, not `multipart/form-data`.
   So you can not send a file from the Scalar page. Use curl.
 - **Client IP**: `req.ip()` gives `::ffff:127.0.0.1`, not `127.0.0.1`, for a local client.
+- **Inertia v3 first page**: `@inertiajs/react` 3 reads the first page from
+  `<script data-page="app" type="application/json">`. `dox_inertia` writes
+  `<div id="app" data-page="...">` (v2). So `resources/js/app.jsx` passes the
+  page to `createInertiaApp` itself.
