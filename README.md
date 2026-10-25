@@ -82,7 +82,7 @@ It checks out this repo into `dox-test` and `dartondox/dox` into `dox`, so the
 ## Code layout
 
 - `lib/routes` -> `lib/app/http/controllers` -> `lib/app/services` -> `lib/app/repositories` -> `lib/app/models`
-- `lib/providers`: dox services (database + observers, auth, IoC container)
+- `lib/providers`: dox providers (database + observers, auth, IoC container)
 - `lib/app/ws`: the Socket.IO `/chat` namespace
 - `lib/app/http/dtos`: `@Dto` classes for request input. `lib/app/http/rules`: custom rules
 - `public/playground.html`: the browser test page at `/playground`

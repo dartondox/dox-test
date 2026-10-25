@@ -27,14 +27,14 @@ import 'package:dox_test/app/services/storage.service.dart' as i21;
 import 'package:dox_test/app/services/system.service.dart' as i22;
 import 'package:dox_test/app/services/tag.service.dart' as i23;
 import 'package:dox_test/app/services/user.service.dart' as i24;
-import 'package:dox_test/providers/auth_service_provider.dart' as i25;
-import 'package:dox_test/providers/inertia_service_provider.dart' as i26;
-import 'package:dox_test/providers/orm_service_provider.dart' as i27;
-import 'package:dox_test/providers/queue_service_provider.dart' as i28;
-import 'package:dox_test/providers/schedule_service_provider.dart' as i29;
-import 'package:dox_test/providers/socketio_service_provider.dart' as i30;
-import 'package:dox_test/providers/storage_service_provider.dart' as i31;
-import 'package:dox_test/providers/view_service_provider.dart' as i32;
+import 'package:dox_test/providers/auth_provider.dart' as i25;
+import 'package:dox_test/providers/inertia_provider.dart' as i26;
+import 'package:dox_test/providers/orm_provider.dart' as i27;
+import 'package:dox_test/providers/queue_provider.dart' as i28;
+import 'package:dox_test/providers/schedule_provider.dart' as i29;
+import 'package:dox_test/providers/socketio_provider.dart' as i30;
+import 'package:dox_test/providers/storage_provider.dart' as i31;
+import 'package:dox_test/providers/view_provider.dart' as i32;
 import 'package:dox_test/routes/api.dart' as i33;
 import 'package:dox_test/routes/inertia.dart' as i34;
 import 'package:dox_test/routes/views.dart' as i35;
@@ -46,7 +46,7 @@ import 'package:dox_test/app/models/tag/tag.model.dart' as i40;
 import 'package:dox_test/app/models/user/user.model.dart' as i41;
 
 /// Puts every class of the app into the container: the
-/// `@Inject()` classes, routers, services and model binders.
+/// `@Inject()` classes, routers, providers and model binders.
 /// Use it in `AppConfig(container: registerContainer)`.
 void registerContainer(IocContainer c) {
   c.singleton<i1.AuthController>(
@@ -111,20 +111,20 @@ void registerContainer(IocContainer c) {
   c.singleton<i24.UserService>(
     (IocContainer c) => i24.UserService(c.get<i15.UserRepository>()),
   );
-  c.service<i25.AuthServiceProvider>(
-    (IocContainer c) => i25.AuthServiceProvider(),
+  c.provider<i25.AppAuthProvider>((IocContainer c) => i25.AppAuthProvider());
+  c.provider<i26.AppInertiaProvider>(
+    (IocContainer c) => i26.AppInertiaProvider(),
   );
-  c.service<i26.AppInertiaService>((IocContainer c) => i26.AppInertiaService());
-  c.service<i27.OrmServiceProvider>(
-    (IocContainer c) => i27.OrmServiceProvider(),
+  c.provider<i27.ORMProvider>((IocContainer c) => i27.ORMProvider());
+  c.provider<i28.AppQueueProvider>((IocContainer c) => i28.AppQueueProvider());
+  c.provider<i29.ScheduleProvider>((IocContainer c) => i29.ScheduleProvider());
+  c.provider<i30.AppSocketIoProvider>(
+    (IocContainer c) => i30.AppSocketIoProvider(),
   );
-  c.service<i28.AppQueueService>((IocContainer c) => i28.AppQueueService());
-  c.service<i29.ScheduleService>((IocContainer c) => i29.ScheduleService());
-  c.service<i30.AppSocketIoService>(
-    (IocContainer c) => i30.AppSocketIoService(),
+  c.provider<i31.AppStorageProvider>(
+    (IocContainer c) => i31.AppStorageProvider(),
   );
-  c.service<i31.AppStorageService>((IocContainer c) => i31.AppStorageService());
-  c.service<i32.AppViewService>((IocContainer c) => i32.AppViewService());
+  c.provider<i32.AppViewProvider>((IocContainer c) => i32.AppViewProvider());
   c.router<i33.ApiRouter>((IocContainer c) => i33.ApiRouter());
   c.router<i34.InertiaRouter>((IocContainer c) => i34.InertiaRouter());
   c.router<i35.ViewsRouter>((IocContainer c) => i35.ViewsRouter());

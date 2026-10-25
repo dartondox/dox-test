@@ -3,6 +3,6 @@ import 'package:dox_test/config/schedule.dart';
 
 /// Runs the schedule inside the server when
 /// `ScheduleConfig(inProcess: true)`. Off here: bin/schedule.dart runs it.
-class ScheduleService extends SchedulerService {
-  ScheduleService() : super(schedule: schedule, config: scheduleConfig);
+class ScheduleProvider extends SchedulerProvider {
+  ScheduleProvider() : super(schedule: schedule, config: scheduleConfig);
 }

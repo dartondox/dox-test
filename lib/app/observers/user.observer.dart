@@ -3,7 +3,7 @@ import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/jobs/welcome_user.job.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 
-/// Listens to User model events. Added in OrmServiceProvider.
+/// Listens to User model events. Added in ORMProvider.
 class UserObserver extends ModelObserver<User> {
   /// Runs before every insert and update.
   @override
