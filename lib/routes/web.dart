@@ -5,8 +5,8 @@ import 'package:dox_test/app/http/controllers/system.controller.dart';
 class WebRouter extends Router {
   @override
   void register() {
-    Route.get<SystemController>('/ping', (SystemController c) => c.ping);
-    Route.get<SystemController>(
+    Route.get('/ping', (SystemController c) => c.ping);
+    Route.get(
       '/playground',
       (SystemController c) => c.playground,
     );
@@ -17,6 +17,6 @@ class WebRouter extends Router {
   }
 
   void registerNoCors() {
-    Route.get<SystemController>('/no-cors', (SystemController c) => c.noCors);
+    Route.get('/no-cors', (SystemController c) => c.noCors);
   }
 }
