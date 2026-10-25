@@ -6,7 +6,6 @@ import 'package:dox_test/config/cors.dart';
 import 'package:dox_test/config/env.dart';
 import 'package:dox_test/config/logger.dart';
 import 'package:dox_test/config/openapi.dart';
-import 'package:dox_test/config/services.dart';
 import 'package:dox_test/config/socketio.dart';
 import 'package:dox_test/config/storage.dart';
 import 'package:dox_test/generated/container.g.dart';
@@ -33,7 +32,6 @@ AppConfig appConfig = AppConfig(
   cache: cache,
   storage: storage,
   cors: cors,
-  services: services,
   logger: logger,
   openApi: openApi,
   socketIo: socketIo,
