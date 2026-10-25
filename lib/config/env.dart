@@ -30,7 +30,7 @@ abstract class AppEnv {
 
   int get appPort => 3100;
 
-  /// One isolate: websocket rooms work without a Redis adapter.
+  /// One isolate: Socket.IO rooms work without a Redis adapter.
   int get appTotalIsolate => 1;
 
   String get appUrl => 'http://127.0.0.1:3100';

@@ -3,8 +3,8 @@
 A small blog app (users, profiles, posts, comments, tags) that runs on the
 **local** Dox framework code in `../dox/packages` (see `pubspec_overrides.yaml`).
 It uses every Dox package: ORM, migrations, auth, validation, cache, storage,
-OpenAPI, websocket and Socket.IO.
-An end-to-end test calls every endpoint over HTTP, the websocket and Socket.IO.
+OpenAPI and Socket.IO.
+An end-to-end test calls every endpoint over HTTP and Socket.IO.
 
 **Check it by hand:** see [MANUAL_TEST.md](MANUAL_TEST.md).
 
@@ -26,7 +26,7 @@ docker compose down             # stop them when done
 ## 2. Run the app
 
 ```bash
-dart run bin/server.dart        # http://127.0.0.1:3100 , ws://127.0.0.1:3100/ws , Socket.IO /chat
+dart run bin/server.dart        # http://127.0.0.1:3100 , Socket.IO /chat
 dart run bin/migrate.dart       # only run the migrations (also: rollback, reset, refresh, status)
 ```
 
@@ -82,8 +82,8 @@ It checks out this repo into `dox-test` and `dartondox/dox` into `dox`, so the
 ## Code layout
 
 - `lib/routes` -> `lib/app/http/controllers` -> `lib/app/services` -> `lib/app/repositories` -> `lib/app/models`
-- `lib/providers`: dox services (database + observers, auth, websocket, IoC container)
-- `lib/app/ws`: websocket events and the Socket.IO `/chat` namespace
+- `lib/providers`: dox services (database + observers, auth, IoC container)
+- `lib/app/ws`: the Socket.IO `/chat` namespace
 - `lib/app/http/dtos`: `@Dto` classes for request input. `lib/app/http/rules`: custom rules
 - `public/playground.html`: the browser test page at `/playground`
 - `lib/config`: all config. Env keys are typed in `lib/config/env.dart` (`@DoxEnv`). `lib/constants`: global constants.

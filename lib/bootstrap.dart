@@ -1,6 +1,5 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_migration/dox_migration.dart';
-import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/config/app.dart';
 import 'package:dox_test/config/database.dart';
 
@@ -14,10 +13,9 @@ class Bootstrap {
 
   /// A Migrator on the database picked by `DB_CONNECTION`.
   Future<Migrator> migrator() async {
-    ConnectionConfig config = databaseConfig.getConnectionConfig();
     return Migrator(
       migrations: migrations,
-      connection: await config.getDatabaseConnection(),
+      config: databaseConfig.getConnectionConfig(),
     );
   }
 

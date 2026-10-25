@@ -27,7 +27,7 @@ class AppConstants {
   /// Storage disks that the /api/storage routes may use.
   static const List<String> storageDisks = <String>['local', 'memory', 's3'];
 
-  /// Browser page to try websocket and Socket.IO.
+  /// Browser page to try Socket.IO.
   static const String playgroundFile = 'public/playground.html';
 
   /// Socket.IO namespace and the room used by the playground.

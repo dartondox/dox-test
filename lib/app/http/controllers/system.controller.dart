@@ -92,7 +92,7 @@ class SystemController {
     return <String, int>{'result': n * 2};
   }
 
-  /// Browser page to try websocket and Socket.IO
+  /// Browser page to try Socket.IO
   @ApiIgnore()
   File playground(DoxRequest req) {
     return File(AppConstants.playgroundFile);

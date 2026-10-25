@@ -12,7 +12,7 @@ class UserService {
 
   UserService(this.users);
 
-  Future<Pagination> list(ListUsers query) async {
+  Future<Pagination<User>> list(ListUsers query) async {
     return await users.search(query.search ?? '', query.page, query.perPage);
   }
 

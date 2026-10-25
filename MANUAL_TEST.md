@@ -175,12 +175,9 @@ Swap `s3` for `local` or `memory`.
 - [ ] Delete: `curl -X DELETE $B/api/storage/s3/files/<key>`, then stream → `404`
 - [ ] MinIO console: http://127.0.0.1:9111 (minioadmin / minioadmin), bucket `dox-test`
 
-## 9. dox_websocket + dox_socketio (browser)
+## 9. dox_socketio (browser)
 
 - [ ] Open http://127.0.0.1:3100/playground in **two tabs**
-- [ ] WebSocket box: Connect → `connected`. Echo → `echo hello` in the same tab only
-- [ ] Broadcast in tab 1 → shows in tab 2, not in tab 1
-- [ ] Join "lobby" in both tabs, Chat in tab 1 → tab 2 gets `hi lobby`
 - [ ] Socket.IO box: Connect → `connected, id ..., welcome {...}`
   (transport becomes `websocket` after the polling start)
 - [ ] Ping → `ack: pong`
@@ -196,7 +193,7 @@ Swap `s3` for `local` or `memory`.
 ## 11. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
-  → all pass (103 checks)
+  → all pass (100 checks)
 
 ## Known issues (framework, not this app)
 

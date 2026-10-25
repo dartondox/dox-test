@@ -15,7 +15,7 @@ class PostController {
   /// List posts
   ///
   /// Newest first. Filter by status and author.
-  Future<Pagination> index(ListPosts query) async {
+  Future<Pagination<Post>> index(ListPosts query) async {
     return await service.list(query);
   }
 

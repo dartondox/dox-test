@@ -4,7 +4,7 @@ import 'package:dox_test/app/models/post/post.model.dart';
 /// All database access for posts.
 class PostRepository {
   /// One page of posts with author (belongsTo) and tags (manyToMany).
-  Future<Pagination> paginate(
+  Future<Pagination<Post>> paginate(
     int page,
     int perPage,
     List<String> statuses,
