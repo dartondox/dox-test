@@ -6,6 +6,7 @@ import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// Endpoints that check core features (request, response, env, hashing).
+@Inject()
 class SystemController {
   final SystemService service;
 

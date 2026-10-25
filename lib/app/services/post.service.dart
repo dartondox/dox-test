@@ -15,6 +15,7 @@ import 'package:dox_test/constants/app_constants.dart';
 import 'package:dox_test/constants/post_status.dart';
 
 /// Post and comment logic.
+@Inject()
 class PostService {
   final PostRepository posts;
   final TagRepository tags;

@@ -5,6 +5,7 @@ import 'package:dox_test/app/models/tag/tag.model.dart';
 class TagRollbackException implements Exception {}
 
 /// All database access for tags and the `post_tag` pivot table.
+@Inject()
 class TagRepository {
   Future<Tag> firstOrCreate(String name) async {
     Tag? tag = await Tag().where('name', name).getFirst();

@@ -1,6 +1,8 @@
+import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 
 /// All database access for comments.
+@Inject()
 class CommentRepository {
   Future<Comment> create(int postId, int userId, String body) async {
     Comment comment = Comment();

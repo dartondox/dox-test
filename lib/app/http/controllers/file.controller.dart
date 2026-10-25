@@ -4,6 +4,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/dtos/file.dto.dart';
 import 'package:dox_test/app/services/file.service.dart';
 
+@Inject()
 class FileController {
   final FileService service;
 

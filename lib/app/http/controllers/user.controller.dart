@@ -5,6 +5,7 @@ import 'package:dox_test/app/models/profile/profile.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/user.service.dart';
 
+@Inject()
 class UserController {
   final UserService service;
 

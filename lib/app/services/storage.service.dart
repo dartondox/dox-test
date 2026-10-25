@@ -2,6 +2,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// Upload, read and sign files on one disk: local, memory or s3.
+@Inject()
 class StorageService {
   Storage disk(String name) {
     if (!AppConstants.storageDisks.contains(name)) {

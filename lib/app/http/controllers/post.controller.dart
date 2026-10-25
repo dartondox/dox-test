@@ -7,6 +7,7 @@ import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/post.service.dart';
 
+@Inject()
 class PostController {
   final PostService service;
 

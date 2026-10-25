@@ -3,6 +3,7 @@ import 'package:dox_test/app/models/profile/profile.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 
 /// All database access for users and profiles.
+@Inject()
 class UserRepository {
   Future<User> create(
     String name,

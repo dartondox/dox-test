@@ -4,6 +4,7 @@ import 'package:dox_test/app/http/serializers/user.serializer.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/auth.service.dart';
 
+@Inject()
 class AuthController {
   final AuthService service;
 

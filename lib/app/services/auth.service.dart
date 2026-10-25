@@ -5,6 +5,7 @@ import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/repositories/user.repository.dart';
 
 /// Register and login logic.
+@Inject()
 class AuthService {
   final UserRepository users;
 

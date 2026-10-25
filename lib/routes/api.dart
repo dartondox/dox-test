@@ -15,8 +15,6 @@ class ApiRouter extends Router {
   @override
   String get prefix => 'api';
 
-  IocContainer get ioc => Dox().ioc;
-
   @override
   void register() {
     Route.group('/auth', registerAuth);
@@ -30,80 +28,131 @@ class ApiRouter extends Router {
   }
 
   void registerAuth() {
-    AuthController auth = ioc.get<AuthController>();
-    Route.post('/register', auth.register);
-    Route.post('/login', auth.login);
-    Route.get('/me', <dynamic>[AuthMiddleware(), auth.me]);
-    UserController users = ioc.get<UserController>();
-    Route.put('/me/profile', <dynamic>[AuthMiddleware(), users.saveProfile]);
-    Route.patch('/me/profile', <dynamic>[AuthMiddleware(), users.patchProfile]);
+    Route.post<AuthController>('/register', (AuthController c) => c.register);
+    Route.post<AuthController>('/login', (AuthController c) => c.login);
+    Route.get<AuthController>('/me', <dynamic>[
+      AuthMiddleware(),
+      (AuthController c) => c.me,
+    ]);
+    Route.put<UserController>('/me/profile', <dynamic>[
+      AuthMiddleware(),
+      (UserController c) => c.saveProfile,
+    ]);
+    Route.patch<UserController>('/me/profile', <dynamic>[
+      AuthMiddleware(),
+      (UserController c) => c.patchProfile,
+    ]);
   }
 
   void registerUsers() {
-    UserController users = ioc.get<UserController>();
-    Route.get('/', users.index);
-    Route.get('/{id}', users.show);
-    Route.put('/{id}', <dynamic>[AuthMiddleware(), users.update]);
+    Route.get<UserController>('/', (UserController c) => c.index);
+    Route.get<UserController>('/{id}', (UserController c) => c.show);
+    Route.put<UserController>('/{id}', <dynamic>[
+      AuthMiddleware(),
+      (UserController c) => c.update,
+    ]);
   }
 
   void registerPosts() {
-    PostController posts = ioc.get<PostController>();
     // Fixed paths first, so `{id}` does not catch them.
-    Route.get('/trashed', posts.trashed);
-    Route.get('/stats', posts.stats);
-    Route.get('/', posts.index);
-    Route.get('/{id}', posts.show);
-    Route.get('/{id}/summary', posts.summary);
-    Route.get('/{postId}/comments/{commentId}', posts.showComment);
+    Route.get<PostController>('/trashed', (PostController c) => c.trashed);
+    Route.get<PostController>('/stats', (PostController c) => c.stats);
+    Route.get<PostController>('/', (PostController c) => c.index);
+    Route.get<PostController>('/{id}', (PostController c) => c.show);
+    Route.get<PostController>('/{id}/summary', (PostController c) => c.summary);
+    Route.get<PostController>(
+      '/{postId}/comments/{commentId}',
+      (PostController c) => c.showComment,
+    );
     Route.middleware(<dynamic>[AuthMiddleware()], registerPostWrites);
   }
 
   void registerPostWrites() {
-    PostController posts = ioc.get<PostController>();
-    Route.post('/', posts.store);
-    Route.put('/{id}', posts.update);
-    Route.delete('/{id}', posts.destroy);
-    Route.post('/{id}/comments', posts.addComment);
+    Route.post<PostController>('/', (PostController c) => c.store);
+    Route.put<PostController>('/{id}', (PostController c) => c.update);
+    Route.delete<PostController>('/{id}', (PostController c) => c.destroy);
+    Route.post<PostController>(
+      '/{id}/comments',
+      (PostController c) => c.addComment,
+    );
   }
 
   void registerTags() {
-    TagController tags = ioc.get<TagController>();
-    Route.get('/', tags.index);
-    Route.post('/', tags.store);
-    Route.get('/{name}/posts', tags.posts);
+    Route.get<TagController>('/', (TagController c) => c.index);
+    Route.post<TagController>('/', (TagController c) => c.store);
+    Route.get<TagController>('/{name}/posts', (TagController c) => c.posts);
   }
 
   void registerFiles() {
-    FileController files = ioc.get<FileController>();
-    Route.post('/', files.upload);
-    Route.post('/avatar', files.avatar);
-    Route.get('/{name}', files.download);
-    Route.get('/{name}/raw', files.raw);
+    Route.post<FileController>('/', (FileController c) => c.upload);
+    Route.post<FileController>('/avatar', (FileController c) => c.avatar);
+    Route.get<FileController>('/{name}', (FileController c) => c.download);
+    Route.get<FileController>('/{name}/raw', (FileController c) => c.raw);
   }
 
   /// {store} is memory, file or redis.
   void registerCache() {
-    CacheController cache = ioc.get<CacheController>();
-    Route.put('/{store}/items/{key}', cache.put);
-    Route.get('/{store}/items/{key}', cache.get);
-    Route.delete('/{store}/items/{key}', cache.forget);
-    Route.post('/{store}/remember/{key}', cache.remember);
-    Route.post('/{store}/increment/{key}', cache.increment);
-    Route.put('/{store}/tags/{tag}/{key}', cache.putTagged);
-    Route.get('/{store}/tags/{tag}/{key}', cache.getTagged);
-    Route.delete('/{store}/tags/{tag}', cache.flushTag);
-    Route.post('/{store}/locks/{name}', cache.lock);
-    Route.delete('/{store}/locks/{name}', cache.release);
+    Route.put<CacheController>(
+      '/{store}/items/{key}',
+      (CacheController c) => c.put,
+    );
+    Route.get<CacheController>(
+      '/{store}/items/{key}',
+      (CacheController c) => c.get,
+    );
+    Route.delete<CacheController>(
+      '/{store}/items/{key}',
+      (CacheController c) => c.forget,
+    );
+    Route.post<CacheController>(
+      '/{store}/remember/{key}',
+      (CacheController c) => c.remember,
+    );
+    Route.post<CacheController>(
+      '/{store}/increment/{key}',
+      (CacheController c) => c.increment,
+    );
+    Route.put<CacheController>(
+      '/{store}/tags/{tag}/{key}',
+      (CacheController c) => c.putTagged,
+    );
+    Route.get<CacheController>(
+      '/{store}/tags/{tag}/{key}',
+      (CacheController c) => c.getTagged,
+    );
+    Route.delete<CacheController>(
+      '/{store}/tags/{tag}',
+      (CacheController c) => c.flushTag,
+    );
+    Route.post<CacheController>(
+      '/{store}/locks/{name}',
+      (CacheController c) => c.lock,
+    );
+    Route.delete<CacheController>(
+      '/{store}/locks/{name}',
+      (CacheController c) => c.release,
+    );
   }
 
   /// {disk} is local, memory or s3. {key*} takes the rest of the path.
   void registerStorage() {
-    StorageController storage = ioc.get<StorageController>();
-    Route.post('/{disk}', storage.upload);
-    Route.get('/{disk}/stream/{key*}', storage.stream);
-    Route.get('/{disk}/download/{key*}', storage.download);
-    Route.get('/{disk}/signed/{key*}', storage.signed);
-    Route.delete('/{disk}/files/{key*}', storage.delete);
+    Route.post<StorageController>('/{disk}', (StorageController c) => c.upload);
+    Route.get<StorageController>(
+      '/{disk}/stream/{key*}',
+      (StorageController c) => c.stream,
+    );
+    Route.get<StorageController>(
+      '/{disk}/download/{key*}',
+      (StorageController c) => c.download,
+    );
+    Route.get<StorageController>(
+      '/{disk}/signed/{key*}',
+      (StorageController c) => c.signed,
+    );
+    Route.delete<StorageController>(
+      '/{disk}/files/{key*}',
+      (StorageController c) => c.delete,
+    );
   }
 
   /// Every system route needs the API key header.
@@ -112,18 +161,23 @@ class ApiRouter extends Router {
   }
 
   void registerSystemRoutes() {
-    SystemController system = ioc.get<SystemController>();
-    Route.get('/query', system.query);
-    Route.post('/echo', system.echo);
-    Route.get('/env', system.env);
-    Route.post('/hash', system.hash);
-    Route.post('/orders', system.order);
-    Route.get('/cookie', system.setCookie);
-    Route.get('/cookie/read', system.readCookie);
-    Route.get('/teapot', system.teapot);
-    Route.get('/crash', system.crash);
-    Route.get('/container', system.container);
-    Route.get('/ip', system.ip);
-    Route.get('/twice/{n}', system.twice);
+    Route.get<SystemController>('/query', (SystemController c) => c.query);
+    Route.post<SystemController>('/echo', (SystemController c) => c.echo);
+    Route.get<SystemController>('/env', (SystemController c) => c.env);
+    Route.post<SystemController>('/hash', (SystemController c) => c.hash);
+    Route.post<SystemController>('/orders', (SystemController c) => c.order);
+    Route.get<SystemController>('/cookie', (SystemController c) => c.setCookie);
+    Route.get<SystemController>(
+      '/cookie/read',
+      (SystemController c) => c.readCookie,
+    );
+    Route.get<SystemController>('/teapot', (SystemController c) => c.teapot);
+    Route.get<SystemController>('/crash', (SystemController c) => c.crash);
+    Route.get<SystemController>(
+      '/container',
+      (SystemController c) => c.container,
+    );
+    Route.get<SystemController>('/ip', (SystemController c) => c.ip);
+    Route.get<SystemController>('/twice/{n}', (SystemController c) => c.twice);
   }
 }
