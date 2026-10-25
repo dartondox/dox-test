@@ -6,13 +6,13 @@ import 'package:dox_test/app/models/user/user.model.dart';
 class UserObserver extends ModelObserver<User> {
   /// Runs before every insert and update.
   @override
-  void saving(User user) {
+  void onSaving(User user) {
     user.email = user.email?.trim().toLowerCase();
   }
 
   /// Runs after a new user is saved.
   @override
-  void created(User user) {
+  void onCreated(User user) {
     Logger.info('user created', <String, dynamic>{'id': user.id});
   }
 }
