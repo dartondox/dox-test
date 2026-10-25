@@ -8,6 +8,7 @@ import '2024_01_01_000003_create_posts_table.dart' as m3;
 import '2024_01_01_000004_create_comments_table.dart' as m4;
 import '2024_01_01_000005_create_tags_table.dart' as m5;
 import '2024_01_01_000006_add_names_to_users_table.dart' as m6;
+import '2024_01_01_000007_create_queue_tables.dart' as m7;
 
 /// all Dart migrations of db/migration, sorted by name
 final List<MigrationEntry> migrations = <MigrationEntry>[
@@ -25,5 +26,9 @@ final List<MigrationEntry> migrations = <MigrationEntry>[
   MigrationEntry(
     '2024_01_01_000006_add_names_to_users_table',
     m6.AddNamesToUsersTable(),
+  ),
+  MigrationEntry(
+    '2024_01_01_000007_create_queue_tables',
+    m7.CreateQueueTables(),
   ),
 ];

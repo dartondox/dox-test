@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: dartondox/dox
-          ref: ${{ inputs.dox_ref || 'develop' }}
+          ref: ${{ inputs.dox_ref || 'main' }}
           path: dox
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1

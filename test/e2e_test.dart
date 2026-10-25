@@ -3,10 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_orm/dox_orm.dart' show QueryBuilder;
+import 'package:dox_queue/dox_queue.dart';
+import 'package:dox_scheduler/dox_scheduler.dart';
+import 'package:dox_test/app/jobs/welcome_user.job.dart';
+import 'package:dox_test/app/models/profile/profile.model.dart';
+import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/bootstrap.dart';
 import 'package:dox_test/config/app.dart';
 import 'package:dox_test/config/env.dart';
+import 'package:dox_test/config/schedule.dart';
 import 'package:dox_test/constants/app_constants.dart';
+import 'package:dox_test/generated/jobs.g.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
@@ -1352,6 +1360,83 @@ void main() {
       await c.close();
     });
   });
+
+  group('dox_queue', () {
+    test('register puts WelcomeUser on the queue, a worker runs it', () async {
+      http.Response res = await api.post(
+        '/api/auth/register',
+        <String, dynamic>{
+          'name': 'Queue',
+          'email': 'queue@x.com',
+          'password': 'secret123',
+          'password_confirmation': 'secret123',
+        },
+      );
+      expect(res.statusCode, 201, reason: res.body);
+      int id = api.json(res)['id'];
+      expect(await profileOf(id), isNull);
+      expect(await QueryBuilder.table('jobs').count(), greaterThan(0));
+
+      await Worker(
+        driver: Queue.driver,
+        jobs: jobRegistry,
+        options: WorkerOptions(stopWhenEmpty: true),
+      ).run();
+
+      expect((await profileOf(id))?.bio, WelcomeUser.bio);
+      expect(await QueryBuilder.table('jobs').count(), 0);
+      expect(await QueryBuilder.table('failed_jobs').count(), 0);
+    });
+
+    test('dispatchSync runs the job at once, with no worker', () async {
+      User user = User();
+      user.name = 'Sync';
+      user.email = 'sync@x.com';
+      user.password = 'not-a-real-hash';
+      await user.save();
+      expect(await profileOf(user.id!), isNull);
+      await WelcomeUser(userId: user.id!).dispatchSync();
+      expect((await profileOf(user.id!))?.bio, WelcomeUser.bio);
+    });
+  });
+
+  group('dox_scheduler', () {
+    test('user-stats runs at minute 0 and saves the user count', () async {
+      Schedule s = Schedule();
+      schedule(s);
+      Scheduler scheduler = Scheduler(
+        tasks: s.tasks,
+        store: Scheduler.lockStore(Dox().cache, scheduleConfig.store),
+        clock: FakeClock(DateTime.utc(2026, 10, 25, 2)),
+      );
+      Map<String, TaskOutcome> outcomes = await scheduler.runDue();
+      expect(outcomes['user-stats'], TaskOutcome.ran);
+      expect(await Cache().get('stats:user_count'), await User().count());
+    });
+
+    test('user-stats is not due at minute 30', () {
+      Schedule s = Schedule();
+      schedule(s);
+      ScheduledTask task = s.find('user-stats')!;
+      expect(task.isDue(DateTime.utc(2026, 10, 25, 2, 30)), false);
+    });
+  });
+}
+
+Future<Profile?> profileOf(int userId) async {
+  return await Profile().where('user_id', userId).getFirst();
+}
+
+/// A clock that gives a fixed time, so a schedule runs with no waiting.
+class FakeClock extends ScheduleClock {
+  FakeClock(this.time);
+
+  DateTime time;
+
+  @override
+  DateTime now() {
+    return time;
+  }
 }
 
 /// Small HTTP helper for the tests.
