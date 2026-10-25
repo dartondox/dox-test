@@ -1,7 +1,7 @@
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_inertia/dox_inertia.dart';
-import 'package:dox_test/app/http/dtos/auth/auth.dto.dart';
+import 'package:dox_test/app/dtos/auth/auth.dto.dart';
 import 'package:dox_test/app/http/serializers/user.serializer.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 

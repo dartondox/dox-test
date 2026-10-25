@@ -1,5 +1,5 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/file/file.dto.dart';
+import 'package:dox_test/app/dtos/file/file.dto.dart';
 import 'package:dox_test/app/services/storage.service.dart';
 
 /// /api/storage/{disk}/... where disk is local, memory or s3.

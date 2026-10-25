@@ -1,6 +1,6 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
-import 'package:dox_test/app/http/dtos/post/post.dto.dart';
+import 'package:dox_test/app/dtos/post/post.dto.dart';
 import 'package:dox_test/app/http/serializers/post.serializer.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 import 'package:dox_test/app/models/post/post.model.dart';

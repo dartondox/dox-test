@@ -127,7 +127,7 @@ X="X-XSRF-TOKEN: $(awk '$6=="XSRF-TOKEN"{print $7}' $C | python3 -c 'import sys,
 
 ## 5. Validation (DTOs)
 
-Every request input is a `@Dto` class in `lib/app/http/dtos/`.
+Every request input is a `@Dto` class in `lib/app/dtos/`.
 Bad input gets `422` with `{"key": "message"}`. The controller does not run.
 
 | Feature | Good | Bad → 422 body |

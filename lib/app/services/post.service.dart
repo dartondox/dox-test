@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/exceptions/forbidden.exception.dart';
-import 'package:dox_test/app/http/dtos/post/post.dto.dart';
+import 'package:dox_test/app/dtos/post/post.dto.dart';
 import 'package:dox_test/app/models/comment/comment.model.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
