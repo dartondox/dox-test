@@ -191,35 +191,35 @@ packages:
       path: "../dox/packages/dox-annotation"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_auth:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-auth"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_builder:
     dependency: "direct dev"
     description:
       path: "../dox/packages/dox-builder"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_cache:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-cache"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_core:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-core"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_http_native:
     dependency: "direct overridden"
     description:
@@ -233,7 +233,7 @@ packages:
       path: "../dox/packages/dox-migration"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_mysql_native:
     dependency: "direct overridden"
     description:
@@ -247,14 +247,14 @@ packages:
       path: "../dox/packages/dox-openapi"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_orm:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-orm"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_postgres_native:
     dependency: "direct overridden"
     description:
@@ -286,21 +286,21 @@ packages:
       path: "../dox/packages/dox-socketio"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_storage:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-storage"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   dox_validation:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-validation"
       relative: true
     source: path
-    version: "3.0.0-alpha.9"
+    version: "3.0.0-alpha.10"
   ffi:
     dependency: transitive
     description:
