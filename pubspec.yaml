@@ -5,7 +5,7 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
-  dox_core: ^3.0.0-alpha.11
+  dox_core: ^3.0.0-alpha.13
   dox_orm: ^3.0.0-alpha.11
   dox_migration: ^3.0.0-alpha.11
   dox_auth: ^3.0.0-alpha.11
