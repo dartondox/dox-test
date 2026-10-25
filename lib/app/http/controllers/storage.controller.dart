@@ -5,6 +5,7 @@ import 'package:dox_test/app/services/storage.service.dart';
 /// /api/storage/{disk}/... where disk is local, memory or s3.
 /// `{key*}` takes the rest of the path, slashes too.
 @Tags(<String>['Storage'])
+@Inject()
 class StorageController {
   final StorageService service;
 

@@ -2,6 +2,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// Tries every `Cache()` feature on one store: memory, file or redis.
+@Inject()
 class CacheService {
   /// The cache of one store. Unknown names give 404.
   Cache store(String name) {

@@ -2,6 +2,7 @@ import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 
 /// All database access for posts.
+@Inject()
 class PostRepository {
   /// One page of posts with author (belongsTo) and tags (manyToMany).
   Future<Pagination<Post>> paginate(

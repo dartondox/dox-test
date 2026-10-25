@@ -3,6 +3,7 @@ import 'package:dox_test/app/http/dtos/system.dto.dart';
 import 'package:dox_test/config/env.dart';
 
 /// Small helpers to check env, hashing and the IoC container.
+@Inject()
 class SystemService {
   /// Counts calls. Same number across requests proves one shared instance.
   int _calls = 0;

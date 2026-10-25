@@ -4,6 +4,7 @@ import 'package:dox_test/app/services/cache.service.dart';
 
 /// /api/cache/{store}/... where store is memory, file or redis.
 @Tags(<String>['Cache'])
+@Inject()
 class CacheController {
   final CacheService service;
 

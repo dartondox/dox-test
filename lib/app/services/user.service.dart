@@ -7,6 +7,7 @@ import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/repositories/user.repository.dart';
 
 /// User logic.
+@Inject()
 class UserService {
   final UserRepository users;
 

@@ -3,6 +3,7 @@ import 'package:dox_test/app/models/tag/tag.model.dart';
 import 'package:dox_test/app/repositories/tag.repository.dart';
 
 /// Tag logic.
+@Inject()
 class TagService {
   final TagRepository tags;
 

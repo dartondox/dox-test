@@ -3,6 +3,7 @@ import 'package:dox_test/app/http/dtos/tag.dto.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 import 'package:dox_test/app/services/tag.service.dart';
 
+@Inject()
 class TagController {
   final TagService service;
 

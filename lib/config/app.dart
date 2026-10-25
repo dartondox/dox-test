@@ -9,9 +9,8 @@ import 'package:dox_test/config/openapi.dart';
 import 'package:dox_test/config/services.dart';
 import 'package:dox_test/config/socketio.dart';
 import 'package:dox_test/config/storage.dart';
+import 'package:dox_test/container.g.dart';
 import 'package:dox_test/dtos.g.dart';
-import 'package:dox_test/routes/api.dart';
-import 'package:dox_test/routes/web.dart';
 
 AppConfig appConfig = AppConfig(
   appKey: env.appKey,
@@ -29,7 +28,7 @@ AppConfig appConfig = AppConfig(
     AppHeaderMiddleware(),
   ],
 
-  routers: <Router>[WebRouter(), ApiRouter()],
+  container: registerContainer,
   responseHandler: ResponseHandler(),
   cache: cache,
   storage: storage,
