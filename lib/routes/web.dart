@@ -5,6 +5,13 @@ import 'package:dox_test/app/http/controllers/system.controller.dart';
 
 /// Routes without a prefix.
 class WebRouter extends Router {
+  /// Session and CSRF only on browser routes, not on /api.
+  @override
+  List<dynamic> get middleware => <dynamic>[
+    const SessionMiddleware(),
+    const CsrfMiddleware(),
+  ];
+
   @override
   void register() {
     Route.get('/ping', (SystemController c) => c.ping);

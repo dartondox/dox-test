@@ -7,8 +7,13 @@ class InertiaRouter extends Router {
   @override
   String get prefix => 'inertia';
 
+  /// Session and CSRF only on browser routes, not on /api.
   @override
-  List<dynamic> get middleware => <dynamic>[HandleInertiaRequests()];
+  List<dynamic> get middleware => <dynamic>[
+    const SessionMiddleware(),
+    const CsrfMiddleware(),
+    HandleInertiaRequests(),
+  ];
 
   @override
   void register() {

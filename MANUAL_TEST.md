@@ -206,7 +206,13 @@ dart run bin/server.dart   # restart after each build: the asset version is read
 - [ ] Open http://127.0.0.1:3100/inertia → "Hello from Dox", `dox-test` in the nav (shared prop)
 - [ ] "Loading stats..." then `Notes: 0` (deferred prop)
 - [ ] "Load tip" → `Props can load later.` (optional prop, partial reload)
-- [ ] Notes: add `x` → `The text must be between 2 and 100 characters`. Add `hello` → in the list. `x` deletes it
+- [ ] Notes: add `x` → `The text must be between 2 and 100 characters` (redirect back, errors from the session).
+  Reload → the error is gone
+- [ ] Add `hello` → green `Note saved` and `hello` in the list. Reload → `Note saved` is gone (flash shows once)
+- [ ] `x` deletes the note (Network tab: `DELETE` gets `303`)
+- [ ] DevTools → Application → Cookies: `dox_session` (HttpOnly) and `XSRF-TOKEN` (not HttpOnly)
+- [ ] `curl -i -X POST -H 'X-Inertia: true' -H 'Content-Type: application/json' -d '{"text":"hi"}' $B/inertia/notes`
+  → `419`, `csrf_token_mismatch` (no CSRF token)
 - [ ] Click Home / Notes: no full page reload (Network tab: JSON with `x-inertia: true`)
 - [ ] `curl -i $B/inertia` → HTML with `<script data-page="app" type="application/json">` and the script tags
 - [ ] Production only: `curl -I $B/build/assets/<file>.js` → `content-type: text/javascript`,

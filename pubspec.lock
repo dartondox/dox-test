@@ -191,35 +191,35 @@ packages:
       path: "../dox/packages/dox-annotation"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_auth:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-auth"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_builder:
     dependency: "direct dev"
     description:
       path: "../dox/packages/dox-builder"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_cache:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-cache"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_core:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-core"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_http_native:
     dependency: "direct overridden"
     description:
@@ -233,14 +233,14 @@ packages:
       path: "../dox-inertia"
       relative: true
     source: path
-    version: "3.0.0-alpha.2"
+    version: "3.0.0-alpha.3"
   dox_migration:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-migration"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_mysql_native:
     dependency: "direct overridden"
     description:
@@ -254,14 +254,14 @@ packages:
       path: "../dox/packages/dox-openapi"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_orm:
     dependency: "direct main"
     description:
       path: "../dox/packages/dox-orm"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_postgres_native:
     dependency: "direct overridden"
     description:
@@ -289,21 +289,21 @@ packages:
       path: "../dox/packages/dox-socketio"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_storage:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-storage"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   dox_validation:
     dependency: "direct overridden"
     description:
       path: "../dox/packages/dox-validation"
       relative: true
     source: path
-    version: "3.0.0-alpha.10"
+    version: "3.0.0-alpha.11"
   ffi:
     dependency: transitive
     description:
