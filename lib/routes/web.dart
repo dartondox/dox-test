@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
 import 'package:dox_test/app/http/controllers/web_auth.controller.dart';
 
@@ -20,7 +21,7 @@ class WebRouter extends Router {
     Route.get('/playground', (SystemController c) => c.playground);
 
     /// Local signed URLs from Storage().signedUrl(): GET /files/{key*}
-    Route.files('files');
+    Storage.route('files');
 
     /// Session login (the `web` guard), JSON answers.
     Route.group('/web-auth', registerWebAuth);

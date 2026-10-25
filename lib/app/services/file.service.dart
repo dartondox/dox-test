@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// Upload and read files with dox Storage.

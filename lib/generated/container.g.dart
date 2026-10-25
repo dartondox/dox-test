@@ -31,14 +31,16 @@ import 'package:dox_test/providers/inertia_service_provider.dart' as i25;
 import 'package:dox_test/providers/orm_service_provider.dart' as i26;
 import 'package:dox_test/providers/queue_service_provider.dart' as i27;
 import 'package:dox_test/providers/schedule_service_provider.dart' as i28;
-import 'package:dox_test/routes/api.dart' as i29;
-import 'package:dox_test/routes/inertia.dart' as i30;
-import 'package:dox_test/routes/web.dart' as i31;
-import 'package:dox_test/app/models/comment/comment.model.dart' as i32;
-import 'package:dox_test/app/models/post/post.model.dart' as i33;
-import 'package:dox_test/app/models/profile/profile.model.dart' as i34;
-import 'package:dox_test/app/models/tag/tag.model.dart' as i35;
-import 'package:dox_test/app/models/user/user.model.dart' as i36;
+import 'package:dox_test/providers/socketio_service_provider.dart' as i29;
+import 'package:dox_test/providers/storage_service_provider.dart' as i30;
+import 'package:dox_test/routes/api.dart' as i31;
+import 'package:dox_test/routes/inertia.dart' as i32;
+import 'package:dox_test/routes/web.dart' as i33;
+import 'package:dox_test/app/models/comment/comment.model.dart' as i34;
+import 'package:dox_test/app/models/post/post.model.dart' as i35;
+import 'package:dox_test/app/models/profile/profile.model.dart' as i36;
+import 'package:dox_test/app/models/tag/tag.model.dart' as i37;
+import 'package:dox_test/app/models/user/user.model.dart' as i38;
 
 /// Puts every class of the app into the container: the
 /// `@Inject()` classes, routers, services and model binders.
@@ -60,7 +62,7 @@ void registerContainer(IocContainer c) {
     (IocContainer c) => i5.PostController(c.get<i19.PostService>()),
   );
   c.singleton<i6.StorageController>(
-    (IocContainer c) => i6.StorageController(c.get<i20.StorageService>()),
+    (IocContainer c) => i6.StorageController(c.get<i20.FileStorageService>()),
   );
   c.singleton<i7.SystemController>(
     (IocContainer c) => i7.SystemController(c.get<i21.SystemService>()),
@@ -93,7 +95,9 @@ void registerContainer(IocContainer c) {
       c.get<i11.CommentRepository>(),
     ),
   );
-  c.singleton<i20.StorageService>((IocContainer c) => i20.StorageService());
+  c.singleton<i20.FileStorageService>(
+    (IocContainer c) => i20.FileStorageService(),
+  );
   c.singleton<i21.SystemService>((IocContainer c) => i21.SystemService());
   c.singleton<i22.TagService>(
     (IocContainer c) => i22.TagService(c.get<i13.TagRepository>()),
@@ -110,32 +114,36 @@ void registerContainer(IocContainer c) {
   );
   c.service<i27.AppQueueService>((IocContainer c) => i27.AppQueueService());
   c.service<i28.ScheduleService>((IocContainer c) => i28.ScheduleService());
-  c.router<i29.ApiRouter>((IocContainer c) => i29.ApiRouter());
-  c.router<i30.InertiaRouter>((IocContainer c) => i30.InertiaRouter());
-  c.router<i31.WebRouter>((IocContainer c) => i31.WebRouter());
-  c.bindModel<i32.Comment>((String id) {
+  c.service<i29.AppSocketIoService>(
+    (IocContainer c) => i29.AppSocketIoService(),
+  );
+  c.service<i30.AppStorageService>((IocContainer c) => i30.AppStorageService());
+  c.router<i31.ApiRouter>((IocContainer c) => i31.ApiRouter());
+  c.router<i32.InertiaRouter>((IocContainer c) => i32.InertiaRouter());
+  c.router<i33.WebRouter>((IocContainer c) => i33.WebRouter());
+  c.bindModel<i34.Comment>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i32.Comment().find(key);
+    return i34.Comment().find(key);
   });
-  c.bindModel<i33.Post>((String id) {
+  c.bindModel<i35.Post>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i33.Post().find(key);
+    return i35.Post().find(key);
   });
-  c.bindModel<i34.Profile>((String id) {
+  c.bindModel<i36.Profile>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i34.Profile().find(key);
+    return i36.Profile().find(key);
   });
-  c.bindModel<i35.Tag>((String id) {
+  c.bindModel<i37.Tag>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i35.Tag().find(key);
+    return i37.Tag().find(key);
   });
-  c.bindModel<i36.User>((String id) {
+  c.bindModel<i38.User>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i36.User().find(key);
+    return i38.User().find(key);
   });
 }

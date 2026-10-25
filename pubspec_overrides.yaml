@@ -13,11 +13,13 @@ dependency_overrides:
   dox_inertia:
     path: ../dox-inertia
   dox_migration:
-    path: ../dox/packages/dox-migration
+    path: ../dox-orm/packages/dox-migration
   dox_mysql_native:
     path: ../dox-mysql-native
   dox_orm:
-    path: ../dox/packages/dox-orm
+    path: ../dox-orm/packages/dox-orm
+  dox_query_builder:
+    path: ../dox-orm/packages/dox-query-builder
   dox_postgres_native:
     path: ../dox-postgres-native
   dox_queue:
@@ -29,8 +31,8 @@ dependency_overrides:
   dox_openapi:
     path: ../dox/packages/dox-openapi
   dox_socketio:
-    path: ../dox/packages/dox-socketio
+    path: ../dox-socketio
   dox_storage:
-    path: ../dox/packages/dox-storage
+    path: ../dox-storage
   dox_validation:
     path: ../dox/packages/dox-validation

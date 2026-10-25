@@ -1,9 +1,10 @@
 import 'package:dox_core/dox_core.dart';
+import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// Upload, read and sign files on one disk: local, memory or s3.
 @Inject()
-class StorageService {
+class FileStorageService {
   Storage disk(String name) {
     if (!AppConstants.storageDisks.contains(name)) {
       throw NotFoundHttpException(message: 'unknown storage disk "$name"');
@@ -34,7 +35,7 @@ class StorageService {
     return await disk(name).download(key);
   }
 
-  /// local: a /files/... link checked by Route.files. s3: a SigV4 link.
+  /// local: a /files/... link checked by Storage.route. s3: a SigV4 link.
   Future<Map<String, dynamic>> signedUrl(String name, String key) async {
     String url = await disk(name)
         .signedUrl(key, expiresIn: Duration(minutes: 10));

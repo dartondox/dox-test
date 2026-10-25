@@ -237,7 +237,7 @@ packages:
   dox_migration:
     dependency: "direct main"
     description:
-      path: "../dox/packages/dox-migration"
+      path: "../dox-orm/packages/dox-migration"
       relative: true
     source: path
     version: "3.0.0-alpha.11"
@@ -258,7 +258,7 @@ packages:
   dox_orm:
     dependency: "direct main"
     description:
-      path: "../dox/packages/dox-orm"
+      path: "../dox-orm/packages/dox-orm"
       relative: true
     source: path
     version: "3.0.0-alpha.11"
@@ -269,6 +269,13 @@ packages:
       relative: true
     source: path
     version: "3.0.0-alpha.8"
+  dox_query_builder:
+    dependency: "direct overridden"
+    description:
+      path: "../dox-orm/packages/dox-query-builder"
+      relative: true
+    source: path
+    version: "3.0.0-alpha.11"
   dox_queue:
     dependency: "direct main"
     description:
@@ -286,17 +293,17 @@ packages:
   dox_socketio:
     dependency: "direct main"
     description:
-      path: "../dox/packages/dox-socketio"
+      path: "../dox-socketio"
       relative: true
     source: path
-    version: "3.0.0-alpha.11"
+    version: "3.0.0-alpha.12"
   dox_storage:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
-      path: "../dox/packages/dox-storage"
+      path: "../dox-storage"
       relative: true
     source: path
-    version: "3.0.0-alpha.11"
+    version: "3.0.0-alpha.12"
   dox_validation:
     dependency: "direct overridden"
     description:

@@ -1251,7 +1251,7 @@ void main() {
       });
     }
 
-    test('Route.files: a changed signature gives 403', () async {
+    test('Storage.route: a changed signature gives 403', () async {
       http.Response up = await api.upload('/api/storage/local', 'x', 'a.txt');
       String key = api.json(up)['key'];
       String url = api.json(

@@ -1,9 +1,9 @@
-import 'package:dox_core/dox_core.dart';
+import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/config/env.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
 /// `local` and `memory` work with no setup. `s3` is MinIO from docker compose.
-StorageConfig storage = StorageConfig(
+StorageConfig storageConfig = StorageConfig(
   /// default storage disk
   defaultDisk: env.storageDisk,
 
@@ -12,7 +12,7 @@ StorageConfig storage = StorageConfig(
     'local': <String, dynamic>{
       'driver': 'local',
       'root': AppConstants.storageRoot,
-      // Route.files('files') serves signed URLs here
+      // Storage.route('files') serves signed URLs here
       'url': '${env.appUrl}/files',
     },
     'memory': <String, dynamic>{'driver': 'memory'},
