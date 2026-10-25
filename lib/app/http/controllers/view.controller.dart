@@ -5,6 +5,7 @@ import 'package:dox_view/dox_view.dart';
 
 /// The dox_view pages (resources/views). Same notes as the Inertia demo.
 @Inject()
+@ApiIgnore()
 class ViewController {
   final NoteService notes;
 

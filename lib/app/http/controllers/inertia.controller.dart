@@ -5,6 +5,7 @@ import 'package:dox_test/app/services/note.service.dart';
 
 /// The Inertia pages (resources/js/Pages).
 @Inject()
+@ApiIgnore()
 class InertiaController {
   final NoteService notes;
 
