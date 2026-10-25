@@ -1,6 +1,6 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
-import 'package:dox_test/app/http/dtos/user.dto.dart';
+import 'package:dox_test/app/http/dtos/user/user.dto.dart';
 import 'package:dox_test/app/models/profile/profile.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/services/user.service.dart';

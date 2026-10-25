@@ -1,5 +1,5 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/note.dto.dart';
+import 'package:dox_test/app/http/dtos/note/note.dto.dart';
 import 'package:dox_test/app/services/note.service.dart';
 import 'package:dox_view/dox_view.dart';
 
