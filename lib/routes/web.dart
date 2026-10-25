@@ -6,10 +6,7 @@ class WebRouter extends Router {
   @override
   void register() {
     Route.get('/ping', (SystemController c) => c.ping);
-    Route.get(
-      '/playground',
-      (SystemController c) => c.playground,
-    );
+    Route.get('/playground', (SystemController c) => c.playground);
 
     /// Local signed URLs from Storage().signedUrl(): GET /files/{key*}
     Route.files('files');

@@ -27,11 +27,13 @@ import 'package:dox_test/providers/auth_service_provider.dart' as i21;
 import 'package:dox_test/providers/orm_service_provider.dart' as i22;
 import 'package:dox_test/routes/api.dart' as i23;
 import 'package:dox_test/routes/web.dart' as i24;
-import 'package:dox_test/app/models/comment/comment.model.dart' as i25;
-import 'package:dox_test/app/models/post/post.model.dart' as i26;
-import 'package:dox_test/app/models/profile/profile.model.dart' as i27;
-import 'package:dox_test/app/models/tag/tag.model.dart' as i28;
-import 'package:dox_test/app/models/user/user.model.dart' as i29;
+import 'package:dox_test/services/queue_service.dart' as i25;
+import 'package:dox_test/services/schedule_service.dart' as i26;
+import 'package:dox_test/app/models/comment/comment.model.dart' as i27;
+import 'package:dox_test/app/models/post/post.model.dart' as i28;
+import 'package:dox_test/app/models/profile/profile.model.dart' as i29;
+import 'package:dox_test/app/models/tag/tag.model.dart' as i30;
+import 'package:dox_test/app/models/user/user.model.dart' as i31;
 
 /// Puts every class of the app into the container: the
 /// `@Inject()` classes, routers, services and model binders.
@@ -93,29 +95,31 @@ void registerContainer(IocContainer c) {
   );
   c.router<i23.ApiRouter>((IocContainer c) => i23.ApiRouter());
   c.router<i24.WebRouter>((IocContainer c) => i24.WebRouter());
-  c.bindModel<i25.Comment>((String id) {
+  c.service<i25.AppQueueService>((IocContainer c) => i25.AppQueueService());
+  c.service<i26.ScheduleService>((IocContainer c) => i26.ScheduleService());
+  c.bindModel<i27.Comment>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i25.Comment().find(key);
+    return i27.Comment().find(key);
   });
-  c.bindModel<i26.Post>((String id) {
+  c.bindModel<i28.Post>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i26.Post().find(key);
+    return i28.Post().find(key);
   });
-  c.bindModel<i27.Profile>((String id) {
+  c.bindModel<i29.Profile>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i27.Profile().find(key);
+    return i29.Profile().find(key);
   });
-  c.bindModel<i28.Tag>((String id) {
+  c.bindModel<i30.Tag>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i28.Tag().find(key);
+    return i30.Tag().find(key);
   });
-  c.bindModel<i29.User>((String id) {
+  c.bindModel<i31.User>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i29.User().find(key);
+    return i31.User().find(key);
   });
 }
