@@ -3,14 +3,14 @@
 // ignore_for_file: type=lint
 
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/auth.dto.dart';
-import 'package:dox_test/app/http/dtos/cache.dto.dart';
-import 'package:dox_test/app/http/dtos/file.dto.dart';
-import 'package:dox_test/app/http/dtos/note.dto.dart';
-import 'package:dox_test/app/http/dtos/post.dto.dart';
-import 'package:dox_test/app/http/dtos/system.dto.dart';
-import 'package:dox_test/app/http/dtos/tag.dto.dart';
-import 'package:dox_test/app/http/dtos/user.dto.dart';
+import 'package:dox_test/app/dtos/auth/auth.dto.dart';
+import 'package:dox_test/app/dtos/cache/cache.dto.dart';
+import 'package:dox_test/app/dtos/file/file.dto.dart';
+import 'package:dox_test/app/dtos/note/note.dto.dart';
+import 'package:dox_test/app/dtos/post/post.dto.dart';
+import 'package:dox_test/app/dtos/system/system.dto.dart';
+import 'package:dox_test/app/dtos/tag/tag.dto.dart';
+import 'package:dox_test/app/dtos/user/user.dto.dart';
 
 /// Every DTO of the app. Use it in `AppConfig(dtos: dtos)`.
 const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[

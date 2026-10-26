@@ -1,6 +1,6 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_inertia/dox_inertia.dart';
-import 'package:dox_test/app/http/dtos/note.dto.dart';
+import 'package:dox_test/app/dtos/note/note.dto.dart';
 import 'package:dox_test/app/services/note.service.dart';
 
 /// The Inertia pages (resources/js/Pages).

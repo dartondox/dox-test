@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/file.dto.dart';
+import 'package:dox_test/app/dtos/file/file.dto.dart';
 import 'package:dox_test/app/services/file.service.dart';
 
 @Inject()

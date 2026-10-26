@@ -1,5 +1,5 @@
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/tag.dto.dart';
+import 'package:dox_test/app/dtos/tag/tag.dto.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 import 'package:dox_test/app/services/tag.service.dart';
 

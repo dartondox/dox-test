@@ -6,7 +6,7 @@ import 'package:dox_test/config/database.dart';
 
 /// Connects the query builder to the database and adds model observers.
 /// It runs on each isolate, so every isolate has the observer.
-class OrmServiceProvider implements DoxService {
+class ORMProvider extends DoxProvider {
   @override
   void setup() {
     SqlQueryBuilder.initializeWithDatabaseConfig(databaseConfig);

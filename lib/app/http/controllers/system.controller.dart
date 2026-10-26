@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dox_core/dox_core.dart';
-import 'package:dox_test/app/http/dtos/system.dto.dart';
+import 'package:dox_test/app/dtos/system/system.dto.dart';
 import 'package:dox_test/app/services/system.service.dart';
 import 'package:dox_test/constants/app_constants.dart';
 
