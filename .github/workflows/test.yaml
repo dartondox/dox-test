@@ -91,7 +91,7 @@ jobs:
           repository: dartondox/dox
           ref: ${{ steps.dox.outputs.ref }}
           path: dox
-      # dox_orm, dox_query_builder, dox_migration, dox_socketio, dox_storage,
+      # dox_orm, dox_migration, dox_socketio, dox_storage,
       # dox_queue and dox_scheduler live in their own repos. Clone them next
       # to dox-test (main, or the branch with the same name as this one), so
       # the pubspec_overrides.yaml lines for them work.

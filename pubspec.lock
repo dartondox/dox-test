@@ -189,10 +189,10 @@ packages:
     dependency: transitive
     description:
       name: dox_annotation
-      sha256: d9e4ef97943edcf957cb1e956dceb40c357661e17b84edd8215a023f65253423
+      sha256: "740c89ceb420351d74f036083063af68cd52e1630a3b8da3124c17f4976f3b07"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.15"
+    version: "3.0.0-alpha.17"
   dox_auth:
     dependency: "direct main"
     description:
@@ -205,10 +205,10 @@ packages:
     dependency: "direct dev"
     description:
       name: dox_builder
-      sha256: a79a07dcc8fe8081c72bb0ffde5290c30658ac65eec7477308e66140bc521638
+      sha256: "39cf5349d57c3b6458642ad974d61f4239fa6234dfbb030a561f95179adc807c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.15"
+    version: "3.0.0-alpha.17"
   dox_cache:
     dependency: transitive
     description:
@@ -245,10 +245,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_migration
-      sha256: c8f220fae2ab54b0571bf592e7c186cf3c5eed8b18a1c95fe3b46d08b6bb5ce6
+      sha256: "330c653face05d13836a75fe2abfdc91df6632dd3801a1b671a9babc2fe66bbe"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.11"
+    version: "3.0.0-alpha.12"
   dox_mysql_native:
     dependency: transitive
     description:
@@ -261,18 +261,18 @@ packages:
     dependency: transitive
     description:
       name: dox_openapi
-      sha256: df42bc479899afb57bb1fa50022c40537a510dd2e85ad73a5d7f260db4828927
+      sha256: f06f09f62a806ac4b66f6304bab2ea6aca5f0cca8bc17e84990efa5d5c971358
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.15"
+    version: "3.0.0-alpha.17"
   dox_orm:
     dependency: "direct main"
     description:
       name: dox_orm
-      sha256: d7091708892d081786b49f0e3a6beef97f545389fa3230b72f2a224703ced685
+      sha256: "47bc95c2c3827f504ca4a1b12a5901b111d571be4142a15ee299e7aaec0b0346"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.11"
+    version: "3.0.0-alpha.12"
   dox_postgres_native:
     dependency: transitive
     description:
@@ -285,10 +285,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_queue
-      sha256: "07fa80b0996ce181d41401dce8ed0edc0000f34004495925878317c994b06397"
+      sha256: "02bc90bf3cb82ff1b69f0eaab5892cd3548f51a3103862929bf80efeb04eeb3a"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.4"
+    version: "3.0.0-alpha.5"
   dox_scheduler:
     dependency: "direct main"
     description:
@@ -317,10 +317,10 @@ packages:
     dependency: transitive
     description:
       name: dox_validation
-      sha256: "44045e4dfab713dd52aefbb07b9dde25b0edd656db769e6aac09041d8c9ad3fe"
+      sha256: "1ebbe666bc0de5222fb615b0a27e404a39379920b0710cb86b20c5f961046346"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-alpha.15"
+    version: "3.0.0-alpha.17"
   dox_view:
     dependency: "direct main"
     description:

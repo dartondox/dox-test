@@ -18,8 +18,6 @@ dependency_overrides:
     path: ../dox-mysql-native
   dox_orm:
     path: ../dox-orm/packages/dox-orm
-  dox_query_builder:
-    path: ../dox-orm/packages/dox-query-builder
   dox_postgres_native:
     path: ../dox-postgres-native
   dox_queue:
