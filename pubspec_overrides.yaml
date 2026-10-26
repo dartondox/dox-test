@@ -3,7 +3,7 @@ dependency_overrides:
   dox_annotation:
     path: ../dox/packages/dox-annotation
   dox_auth:
-    path: ../dox/packages/dox-auth
+    path: ../dox-auth
   dox_builder:
     path: ../dox/packages/dox-builder
   dox_core:
@@ -27,12 +27,12 @@ dependency_overrides:
   dox_cache:
     path: ../dox/packages/dox-cache
   dox_openapi:
-    path: ../dox/packages/dox-openapi
+    path: ../dox-openapi
   dox_socketio:
     path: ../dox-socketio
   dox_storage:
     path: ../dox-storage
   dox_validation:
-    path: ../dox/packages/dox-validation
+    path: ../dox-validation
   dox_view:
     path: ../dox-view
