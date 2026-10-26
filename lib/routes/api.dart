@@ -57,6 +57,7 @@ class ApiRouter extends Router {
     Route.get('/', (PostController c) => c.index);
     Route.get('/{id}', (PostController c) => c.show);
     Route.get('/{id}/summary', (PostController c) => c.summary);
+    Route.post('/{id}/views', (PostController c) => c.addView);
     Route.get(
       '/{postId}/comments/{commentId}',
       (PostController c) => c.showComment,

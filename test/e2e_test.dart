@@ -524,6 +524,28 @@ void main() {
       });
     });
 
+    test('views: post.increment() changes the row and the field', () async {
+      int id = api.postIds['Dart tips']!;
+      expect(api.json(await api.get('/api/posts/$id'))['views'], 0);
+
+      /// the response is the model after increment(), not read again
+      for (int views = 1; views <= 2; views++) {
+        http.Response res = await api.post(
+          '/api/posts/$id/views',
+          <String, dynamic>{},
+        );
+        expect(res.statusCode, 200, reason: res.body);
+        expect(api.json(res)['views'], views);
+      }
+      expect(api.json(await api.get('/api/posts/$id'))['views'], 2);
+
+      http.Response missing = await api.post(
+        '/api/posts/99999/views',
+        <String, dynamic>{},
+      );
+      expect(missing.statusCode, 404);
+    });
+
     test('missing post gives 404', () async {
       http.Response res = await api.get('/api/posts/99999');
       expect(res.statusCode, 404);

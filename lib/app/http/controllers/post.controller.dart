@@ -47,6 +47,13 @@ class PostController {
     return <String, String>{'message': 'deleted'};
   }
 
+  /// Count a view of a post
+  ///
+  /// Adds 1 to `views` with `post.increment('views')`.
+  Future<Post> addView(int id) async {
+    return await service.view(id);
+  }
+
   /// Deleted posts
   Future<List<Post>> trashed() async {
     return await service.trashed();

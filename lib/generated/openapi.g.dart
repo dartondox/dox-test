@@ -260,6 +260,23 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiOperation(
       controller: 'PostController',
+      method: 'addView',
+      argumentTypes: <String>['int'],
+      summary: 'Count a view of a post',
+      description: 'Adds 1 to `views` with `post.increment(\'views\')`.',
+      tags: <String>['Post'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'\$ref': '#/components/schemas/Post'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'PostController',
       method: 'trashed',
       argumentTypes: <String>[],
       summary: 'Deleted posts',
@@ -996,6 +1013,11 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'PostController.summary',
     ),
     OpenApiRouteBinding(
+      'POST',
+      'api/posts/{id}/views',
+      'PostController.addView',
+    ),
+    OpenApiRouteBinding(
       'GET',
       'api/posts/{postId}/comments/{commentId}',
       'PostController.showComment',
@@ -1307,6 +1329,9 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
         'status': <String, dynamic>{
           'type': <dynamic>['string', 'null'],
+        },
+        'views': <String, dynamic>{
+          'type': <dynamic>['integer', 'null'],
         },
         'deleted_at': <String, dynamic>{
           'type': <dynamic>['string', 'null'],

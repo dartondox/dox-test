@@ -42,9 +42,15 @@ class PostRepository {
     return post;
   }
 
-  /// Soft delete: only sets `deleted_at`.
-  Future<void> softDelete(int id) async {
-    await Post().where('id', id).delete();
+  /// Soft delete: only sets `deleted_at`. It returns the rows it changed:
+  /// 0 when the post is not there (or already deleted).
+  Future<int> softDelete(int id) async {
+    return await Post().where('id', id).delete();
+  }
+
+  /// Add 1 to `views` in one query. `post.views` is the new value after it.
+  Future<int> addView(Post post) async {
+    return await post.increment('views');
   }
 
   /// Only the soft deleted posts.

@@ -37,6 +37,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
     'title',
     'body',
     'status',
+    'views',
     'deleted_at',
     'created_at',
     'updated_at',
@@ -123,6 +124,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
     ..title = m['title'] as String?
     ..body = m['body'] as String?
     ..status = m['status'] as String?
+    ..views = m['views'] as int?
     ..deletedAt = m['deleted_at'] is DateTime?
         ? m['deleted_at'] as DateTime?
         : DateTime.parse(m['deleted_at'] as String)
@@ -141,6 +143,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
       'title': instance.title,
       'body': instance.body,
       'status': instance.status,
+      'views': instance.views,
       'deleted_at': instance.deletedAt?.toIso8601String(),
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
@@ -166,5 +169,49 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
     }
 
     return map;
+  }
+
+  @override
+  bool setColumnValue(String column, dynamic value) {
+    Post instance = this as Post;
+    switch (column) {
+      case 'id':
+        if (value is! int?) return false;
+        instance.id = value;
+        return true;
+      case 'user_id':
+        if (value is! int?) return false;
+        instance.userId = value;
+        return true;
+      case 'title':
+        if (value is! String?) return false;
+        instance.title = value;
+        return true;
+      case 'body':
+        if (value is! String?) return false;
+        instance.body = value;
+        return true;
+      case 'status':
+        if (value is! String?) return false;
+        instance.status = value;
+        return true;
+      case 'views':
+        if (value is! int?) return false;
+        instance.views = value;
+        return true;
+      case 'deleted_at':
+        if (value is! DateTime?) return false;
+        instance.deletedAt = value;
+        return true;
+      case 'created_at':
+        if (value is! DateTime?) return false;
+        instance.createdAt = value;
+        return true;
+      case 'updated_at':
+        if (value is! DateTime?) return false;
+        instance.updatedAt = value;
+        return true;
+    }
+    return false;
   }
 }

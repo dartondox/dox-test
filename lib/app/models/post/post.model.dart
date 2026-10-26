@@ -20,6 +20,10 @@ class Post extends PostGenerator {
   @Column()
   String? status;
 
+  /// how many times the post was viewed. `increment('views')` adds 1.
+  @Column()
+  int? views;
+
   @Column()
   DateTime? deletedAt;
 
