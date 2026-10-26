@@ -65,8 +65,25 @@ class PostService {
 
   Future<void> delete(User user, int id) async {
     await _findOwned(user, id);
-    await posts.softDelete(id);
+
+    /// 0 rows: another request deleted it after _findOwned()
+    if (await posts.softDelete(id) == 0) {
+      throw NotFoundHttpException(message: 'post not found');
+    }
     await _clearStats();
+  }
+
+  /// Count one view. The post is not read again: increment() sets
+  /// `post.views` to the new value.
+  Future<Post> view(int id) async {
+    Post? post = await posts.find(id);
+    if (post == null) {
+      throw NotFoundHttpException(message: 'post not found');
+    }
+    if (await posts.addView(post) == 0) {
+      throw NotFoundHttpException(message: 'post not found');
+    }
+    return post;
   }
 
   Future<List<Post>> trashed() async {

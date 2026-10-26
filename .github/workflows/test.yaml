@@ -69,15 +69,33 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: dox-test
+      # dox on the dox_ref input, else on the branch with the same name as
+      # this one (a change in dox and dox-test together), else on main
+      - name: Pick the dox branch
+        id: dox
+        env:
+          DOX_REF: ${{ inputs.dox_ref }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          ref=${DOX_REF:-}
+          if [ -z "$ref" ]; then
+            ref=main
+            if git ls-remote --exit-code --heads https://github.com/dartondox/dox.git "$BRANCH" >/dev/null; then
+              ref=$BRANCH
+            fi
+          fi
+          echo "dox: $ref"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           repository: dartondox/dox
-          ref: ${{ inputs.dox_ref || 'main' }}
+          ref: ${{ steps.dox.outputs.ref }}
           path: dox
-      # dox_orm, dox_query_builder, dox_migration, dox_socketio and dox_storage
-      # live in their own repos. Clone their main next to dox-test, so the
-      # pubspec_overrides.yaml lines for them work (not on pub.dev yet).
-      - name: Clone dox-orm, dox-socketio and dox-storage
+      # dox_orm, dox_query_builder, dox_migration, dox_socketio, dox_storage,
+      # dox_queue and dox_scheduler live in their own repos. Clone them next
+      # to dox-test (main, or the branch with the same name as this one), so
+      # the pubspec_overrides.yaml lines for them work.
+      - name: Clone dox-orm, dox-socketio, dox-storage, dox-queue and dox-scheduler
         run: bash dox/ci/clone-siblings.sh
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1
@@ -86,11 +104,13 @@ jobs:
       - name: Install and generate models
         working-directory: dox-test
         # the native packages come from pub.dev, with ready-built libraries.
-        # dox_inertia, dox_view, dox_queue and dox_scheduler come from pub.dev too.
-        # the other dox packages come from the local clones.
+        # dox_inertia and dox_view come from pub.dev too.
+        # the other dox packages come from the local clones. dox_queue and
+        # dox_scheduler too: dox_queue on pub.dev needs ioredis 2, and
+        # dox_cache of dox main needs ioredis 3.
         run: |
           cp .env.example .env
-          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_view|dox_queue|dox_scheduler):$/,+1d' pubspec_overrides.yaml
+          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_view):$/,+1d' pubspec_overrides.yaml
           dart pub get
           dart run build_runner build
       - name: Migrate

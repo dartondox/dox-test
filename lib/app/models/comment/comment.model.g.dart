@@ -106,4 +106,36 @@ class CommentGenerator extends Model<Comment> {
 
     return map;
   }
+
+  @override
+  bool setColumnValue(String column, dynamic value) {
+    Comment instance = this as Comment;
+    switch (column) {
+      case 'id':
+        if (value is! int?) return false;
+        instance.id = value;
+        return true;
+      case 'post_id':
+        if (value is! int?) return false;
+        instance.postId = value;
+        return true;
+      case 'user_id':
+        if (value is! int?) return false;
+        instance.userId = value;
+        return true;
+      case 'body':
+        if (value is! String?) return false;
+        instance.body = value;
+        return true;
+      case 'created_at':
+        if (value is! DateTime?) return false;
+        instance.createdAt = value;
+        return true;
+      case 'updated_at':
+        if (value is! DateTime?) return false;
+        instance.updatedAt = value;
+        return true;
+    }
+    return false;
+  }
 }
