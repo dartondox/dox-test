@@ -229,10 +229,10 @@ packages:
     dependency: transitive
     description:
       name: dox_http_native
-      sha256: d50bd45b9c03aa5acb9b073111e936719fc1660570b7235805f890727c543177
+      sha256: c1fb8319d7deaf0322d48b93b56c580eafb95cff9fcbf61f55477331a1496ebe
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_inertia:
     dependency: "direct main"
     description:
