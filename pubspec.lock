@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "9bfb8122e2505aca17219018593c384a87166cfe860d11c7ae927e7f978eb05f"
+      sha256: "1c5591cc6f252d5f440d96ab87c03e43504be552a3fa49d7cb7563f04c51fb0a"
       url: "https://pub.dev"
     source: hosted
-    version: "110.0.0"
+    version: "111.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "74c36179c4de542efea24c9dff78324375e4b118a2c1e14e8a7659f457947f8d"
+      sha256: "6c39bd5486a310e56217bed7cb1691377959f31be4227e41750107db7e6dd55c"
       url: "https://pub.dev"
     source: hosted
-    version: "14.6.0"
+    version: "14.7.0"
   args:
     dependency: transitive
     description:
@@ -189,50 +189,50 @@ packages:
     dependency: transitive
     description:
       name: dox_annotation
-      sha256: bbb17d5d7852d69da3378840a22211d4d2d3af32b26c9f9112af413b1e495582
+      sha256: "2da3490b7c6426594e2cb99fb307848dd127d3018d20a4b09f7e689527abec03"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_auth:
     dependency: "direct main"
     description:
       name: dox_auth
-      sha256: dc0d60d715063ad614c9c70cc0167618a179e2beb8edb84f1557f555d94d5d2c
+      sha256: "0747a2146af07af3b3577404b11780a65fdee0148c16aef3242f5c381eb7f11b"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_builder:
     dependency: "direct dev"
     description:
       name: dox_builder
-      sha256: "0c2eb7fc0160eea16ee7e3e138a68c3ef1ecc1979e02a21927799a3d129b1aab"
+      sha256: d7c8b9e617bab8dfc476dd6e43e8fb6ea0f9221e5d86c6739b60fb0fffd37347
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_cache:
     dependency: transitive
     description:
       name: dox_cache
-      sha256: "20a7176bd6d2a7c32c6a18b184f5ad19838d9e9e1a8780a431914d290bd30724"
+      sha256: bb6a02d7df1f630f2733e68479cfcdac96fc145f975c145b06686a15a062997d
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_core:
     dependency: "direct main"
     description:
       name: dox_core
-      sha256: c1238103d4b742303d5f483f42f6857dbfd02205eaee4041c529c21610d38bcd
+      sha256: "4dd87235beef5c99474e1bee2a86e4e01b3ab8bfe78cd5f2f28bf3882198f406"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_http_native:
     dependency: transitive
     description:
       name: dox_http_native
-      sha256: c1fb8319d7deaf0322d48b93b56c580eafb95cff9fcbf61f55477331a1496ebe
+      sha256: "6c59ad187c185f742de9a17e76eaf3b9a6b7eb9dafc0632ae61992f9a9b0dd73"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   dox_inertia:
     dependency: "direct main"
     description:
@@ -309,10 +309,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_storage
-      sha256: "575caf3f1e5d616eecb4d0586bf070089bfd2a39c2e0604d7c26e3e183e87df7"
+      sha256: "82aacdf50db3368ba701a020135fbac5f1b54311d4ba247ee39d10f2bba48f15"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_validation:
     dependency: transitive
     description:
