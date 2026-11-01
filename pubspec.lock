@@ -245,10 +245,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_migration
-      sha256: "68f64ccfac281484b35d3108438065dceaef1f0732c127125cbcc3756ecac185"
+      sha256: "1ceb3b550d9091cbb3898226d13720cd239361ed7605cd74dd3948d71cf80016"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_mysql_native:
     dependency: transitive
     description:
@@ -269,10 +269,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_orm
-      sha256: a6196284c279dff389f08c0e6b7af9f8ab1cc51a5b51b2e450fa4ec30e90397e
+      sha256: c6c11a5c24a11a74d34393141b7e58e9790278b7a2a0d13cc4d2c35ec5f0c9d6
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dox_postgres_native:
     dependency: transitive
     description:
