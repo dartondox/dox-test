@@ -579,7 +579,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       controller: 'CacheController',
       method: 'lock',
       argumentTypes: <String>['String', 'String', 'TakeLock'],
-      summary: 'Take a lock (memory and redis only)',
+      summary: 'Take a lock (memory, file and redis)',
       tags: <String>['Cache'],
       params: <Map<String, dynamic>>[
         <String, dynamic>{'type': 'string'},

@@ -180,7 +180,7 @@ Swap `redis` for `memory` or `file` in every URL.
 - [ ] Lock: `curl -X POST $B/api/cache/redis/locks/report` twice
   → first `"got":true` + `owner`, second `"got":false`.
   Release: `curl -X DELETE "$B/api/cache/redis/locks/report?owner=<owner>"` → `"released":true`
-- [ ] `file` store lock → `422` (file has no locks)
+- [ ] `file` store lock → `200`, held until its owner releases it (like memory and redis)
 - [ ] See the keys in redis: `docker exec dox-test-redis redis-cli keys 'dox_test:*'`
 
 ## 8. dox_storage (local, memory, s3 = MinIO)

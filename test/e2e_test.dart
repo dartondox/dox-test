@@ -1202,7 +1202,7 @@ void main() {
       });
     }
 
-    for (String store in <String>['memory', 'redis']) {
+    for (String store in <String>['memory', 'file', 'redis']) {
       test('$store: lock is held until its owner releases it', () async {
         String path = '/api/cache/$store/locks/report';
         Map<String, dynamic> first = api.json(
@@ -1218,19 +1218,16 @@ void main() {
         expect(api.json(wrong)['released'], false);
         http.Response right = await api.delete('$path?owner=${first['owner']}');
         expect(api.json(right)['released'], true);
-        expect(
-          api.json(await api.post(path, <String, dynamic>{}))['got'],
-          true,
+        Map<String, dynamic> again = api.json(
+          await api.post(path, <String, dynamic>{}),
         );
+        expect(again['got'], true);
+        // a file or redis lock outlives the server: free it for the next run
+        await api.delete('$path?owner=${again['owner']}');
       });
     }
 
-    test('file store has no locks (422), unknown store (404)', () async {
-      http.Response lock = await api.post(
-        '/api/cache/file/locks/x',
-        <String, dynamic>{},
-      );
-      expect(lock.statusCode, 422);
+    test('unknown store (404)', () async {
       http.Response unknown = await api.get('/api/cache/nope/items/x');
       expect(unknown.statusCode, 404);
     });
