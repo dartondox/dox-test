@@ -80,7 +80,8 @@ jobs:
           ref=${DOX_REF:-}
           if [ -z "$ref" ]; then
             ref=main
-            if git ls-remote --exit-code --heads https://github.com/dartondox/dox.git "$BRANCH" >/dev/null; then
+            # refs/heads/ makes it an exact match (feat/main does not match main)
+            if git ls-remote --exit-code https://github.com/dartondox/dox.git "refs/heads/$BRANCH" >/dev/null; then
               ref=$BRANCH
             fi
           fi
