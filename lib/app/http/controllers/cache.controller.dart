@@ -69,7 +69,7 @@ class CacheController {
     return await service.flushTag(store, tag);
   }
 
-  /// Take a lock (memory and redis only)
+  /// Take a lock (memory, file and redis)
   @Response(200, Map<String, dynamic>, description: '{got, owner}')
   @Response(422, null, description: 'This store has no locks')
   Future<Map<String, dynamic>> lock(
