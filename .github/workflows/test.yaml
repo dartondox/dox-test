@@ -91,26 +91,37 @@ jobs:
           repository: dartondox/dox
           ref: ${{ steps.dox.outputs.ref }}
           path: dox
-      # dox_orm, dox_migration, dox_socketio, dox_storage,
-      # dox_queue and dox_scheduler live in their own repos. Clone them next
-      # to dox-test (main, or the branch with the same name as this one), so
+      # The other Dox packages live in their own repos. Clone them next to
+      # dox-test (main, or the branch with the same name as this one), so
       # the pubspec_overrides.yaml lines for them work.
-      - name: Clone dox-orm, dox-socketio, dox-storage, dox-queue and dox-scheduler
+      - name: Clone the other Dox repos
         run: bash dox/ci/clone-siblings.sh
+      # Caches the Rust dependencies of the native packages.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            dox-http-native/native -> target
+            dox-postgres-native/native -> target
+            dox-mysql-native/native -> target
+      # Builds the native libraries of the clones, for this machine only
+      # (linux x64), into native/target/release. Their build hooks take the
+      # library from there.
+      - name: Build the native libraries
+        run: |
+          for repo in dox-http-native dox-postgres-native dox-mysql-native; do
+            start=$SECONDS
+            cargo build --release --manifest-path "$repo/native/Cargo.toml"
+            echo "$repo: built in $((SECONDS - start))s"
+          done
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
       - name: Install and generate models
         working-directory: dox-test
-        # the native packages come from pub.dev, with ready-built libraries.
-        # dox_inertia and dox_view come from pub.dev too.
-        # the other dox packages come from the local clones. dox_queue and
-        # dox_scheduler too: dox_queue on pub.dev needs ioredis 2, and
-        # dox_cache of dox main needs ioredis 3.
+        # all Dox packages come from the local clones, none from pub.dev
         run: |
           cp .env.example .env
-          sed -i -E '/^  (dox_[a-z]+_native|dox_inertia|dox_view):$/,+1d' pubspec_overrides.yaml
           dart pub get
           dart run build_runner build
       - name: Migrate

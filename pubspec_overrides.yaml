@@ -36,3 +36,5 @@ dependency_overrides:
     path: ../dox-validation
   dox_view:
     path: ../dox-view
+  ioredis:
+    path: ../ioredis
