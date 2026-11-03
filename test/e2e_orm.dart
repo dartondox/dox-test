@@ -47,7 +47,8 @@ void ormTests(Api api) {
         expect(body['reactions_count'], 0);
         expect(body['posts_exists'], true);
         List<dynamic> posts = body['posts'];
-        expect(posts.map(_id), <int>[data.posts[0], data.posts[1]]);
+        // a preload has no ORDER BY, so compare as a set
+        expect(posts.map(_id).toSet(), <int>{data.posts[0], data.posts[1]});
         // the pivot is not in the JSON (see todo.md), so read it in code
         for (Post post in await data.postsOf('Gold')) {
           expect(post.pivot['note'], 'first');
@@ -104,33 +105,29 @@ void ormTests(Api api) {
     });
 
     test(
-      'cursorPaginate: next and prev cursor, same score keeps the id order',
+      'cursorPaginate: the page break falls between two equal scores',
       () async {
+        // Bronze and Iron both have 50. With 3 a page, the break is
+        // between them, so the id decides who comes first.
         Map<String, dynamic> one = api.json(
-          await api.get('/api/badges?per_page=2'),
+          await api.get('/api/badges?per_page=3'),
         );
-        expect(_names(one['data']), <String>['Gold', 'Silver']);
+        expect(_names(one['data']), <String>['Gold', 'Silver', 'Bronze']);
         expect(one['prev_cursor'], isNull);
-        expect(one['per_page'], 2);
+        expect(one['per_page'], 3);
 
         String next = Uri.encodeQueryComponent(one['next_cursor']);
         Map<String, dynamic> two = api.json(
-          await api.get('/api/badges?per_page=2&cursor=$next'),
+          await api.get('/api/badges?per_page=3&cursor=$next'),
         );
-        expect(_names(two['data']), <String>['Bronze', 'Iron']);
-
-        next = Uri.encodeQueryComponent(two['next_cursor']);
-        Map<String, dynamic> three = api.json(
-          await api.get('/api/badges?per_page=2&cursor=$next'),
-        );
-        expect(_names(three['data']), <String>['Wood']);
-        expect(three['next_cursor'], isNull);
+        expect(_names(two['data']), <String>['Iron', 'Wood']);
+        expect(two['next_cursor'], isNull);
 
         String prev = Uri.encodeQueryComponent(two['prev_cursor']);
         Map<String, dynamic> back = api.json(
-          await api.get('/api/badges?per_page=2&cursor=$prev'),
+          await api.get('/api/badges?per_page=3&cursor=$prev'),
         );
-        expect(_names(back['data']), <String>['Gold', 'Silver']);
+        expect(_names(back['data']), <String>['Gold', 'Silver', 'Bronze']);
       },
     );
 
