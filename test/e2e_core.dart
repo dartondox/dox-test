@@ -638,6 +638,22 @@ void coreTests(Api api) {
   });
 
   group('3.1.0 dox_view, dox_inertia, dox_openapi', () {
+    /// Like the dox_inertia group of e2e_test.dart: the Vite dev server
+    /// url in public/hot, so the pages need no `npm run build`.
+    File hot = File('public/hot');
+    bool madeHot = false;
+
+    setUpAll(() async {
+      if (!await hot.exists()) {
+        await hot.writeAsString('http://localhost:5173');
+        madeHot = true;
+      }
+    });
+
+    tearDownAll(() async {
+      if (madeHot) await hot.delete();
+    });
+
     test('dox_view: a form with _method=DELETE and _token works', () async {
       Browser browser = Browser(api);
       http.Response page = await browser.send(
