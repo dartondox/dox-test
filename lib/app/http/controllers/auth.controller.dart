@@ -25,8 +25,18 @@ class AuthController {
   @Tags(<String>['Auth'])
   @Response(200, Map<String, dynamic>, description: '{token, user}')
   @Response(401, null, description: 'Wrong email or password')
-  Future<Map<String, dynamic>> login(LoginUser body) async {
-    return await service.login(body.email, body.password);
+  @Response(429, null, description: 'Too many failed logins')
+  Future<Map<String, dynamic>> login(DoxRequest req, LoginUser body) async {
+    return await service.login(body.email, body.password, ip: req.ip());
+  }
+
+  /// POST /api/auth/logout
+  @Summary('Log out')
+  @Description('The JWT stops working at once, before it expires.')
+  @Tags(<String>['Auth'])
+  Future<Map<String, bool>> logout(DoxRequest req) async {
+    await service.logout(req);
+    return <String, bool>{'logged_out': true};
   }
 
   /// The logged in user

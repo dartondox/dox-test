@@ -25,4 +25,12 @@ class ViewController {
     req.session.flash('message', 'Note saved');
     return redirect('/views');
   }
+
+  /// DELETE /views/notes/{id}. A plain form sends POST with
+  /// `_method=DELETE`, and MethodOverride brings it here.
+  DoxResponse destroy(DoxRequest req, int id) {
+    notes.remove(id);
+    req.session.flash('message', 'Note deleted');
+    return redirect('/views');
+  }
 }

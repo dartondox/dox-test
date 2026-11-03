@@ -3,12 +3,14 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/auth.controller.dart';
 import 'package:dox_test/app/http/controllers/badge.controller.dart';
 import 'package:dox_test/app/http/controllers/cache.controller.dart';
+import 'package:dox_test/app/http/controllers/core.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
 import 'package:dox_test/app/http/controllers/mail.controller.dart';
 import 'package:dox_test/app/http/controllers/post.controller.dart';
 import 'package:dox_test/app/http/controllers/storage.controller.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
 import 'package:dox_test/app/http/controllers/tag.controller.dart';
+import 'package:dox_test/app/http/controllers/token.controller.dart';
 import 'package:dox_test/app/http/controllers/user.controller.dart';
 import 'package:dox_test/app/http/middleware/api_key.middleware.dart';
 
@@ -29,12 +31,36 @@ class ApiRouter extends Router {
     Route.group('/cache', registerCache);
     Route.group('/storage', registerStorage);
     Route.group('/mail', registerMail);
+    Route.group('/tokens', registerTokens);
+
+    /// `{name?}` is optional: the docs show /api/greet and /api/greet/{name}.
+    Route.get('/greet/{name?}', (CoreController c) => c.greet);
+  }
+
+  /// Access tokens (the `tokens` guard).
+  void registerTokens() {
+    Route.post('/login', (TokenController c) => c.tokenLogin);
+    Route.middleware(<dynamic>[
+      AuthMiddleware(guard: 'tokens'),
+    ], registerTokenRoutes);
+  }
+
+  void registerTokenRoutes() {
+    Route.post('/', (TokenController c) => c.store);
+    Route.get('/', (TokenController c) => c.index);
+    Route.get('/can/{ability}', (TokenController c) => c.can);
+    Route.delete('/current', (TokenController c) => c.destroyCurrent);
+    Route.delete('/{id}', (TokenController c) => c.destroy);
   }
 
   void registerAuth() {
     Route.post('/register', (AuthController c) => c.register);
     Route.post('/login', (AuthController c) => c.login);
     Route.get('/me', <dynamic>[AuthMiddleware(), (AuthController c) => c.me]);
+    Route.post('/logout', <dynamic>[
+      AuthMiddleware(),
+      (AuthController c) => c.logout,
+    ]);
     Route.put('/me/profile', <dynamic>[
       AuthMiddleware(),
       (UserController c) => c.saveProfile,

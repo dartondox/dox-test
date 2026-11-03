@@ -23,6 +23,9 @@ AppConfig appConfig = AppConfig(
   globalMiddleware: <dynamic>[
     LogMiddleware(enabled: env.logRequests),
     AppHeaderMiddleware(),
+
+    /// A POST with `_method=PUT|PATCH|DELETE` goes to that route.
+    const MethodOverride(),
   ],
 
   container: registerContainer,

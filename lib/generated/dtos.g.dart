@@ -6,6 +6,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/dtos/auth/auth.dto.dart';
 import 'package:dox_test/app/dtos/badge/badge.dto.dart';
 import 'package:dox_test/app/dtos/cache/cache.dto.dart';
+import 'package:dox_test/app/dtos/core/core.dto.dart';
 import 'package:dox_test/app/dtos/file/file.dto.dart';
 import 'package:dox_test/app/dtos/mail/mail.dto.dart';
 import 'package:dox_test/app/dtos/note/note.dto.dart';
@@ -24,6 +25,7 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $CreateNoteDto,
   $CreateOrderDto,
   $CreateTagsDto,
+  $CreateTokenDto,
   $HashPasswordDto,
   $IncrementCacheDto,
   $ListBadgesDto,
@@ -37,6 +39,7 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $RegisterUserDto,
   $ReleaseLockDto,
   $RuleCheckDto,
+  $SaveContactDto,
   $SavePostDto,
   $SaveProfileDto,
   $SendWelcomeMailDto,
@@ -45,6 +48,7 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $TakeLockDto,
   $UpdateUserDto,
   $UploadAvatarDto,
+  $UploadBannerDto,
   $UploadFileDto,
   $UploadPhotoDto,
 ];

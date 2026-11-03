@@ -23,8 +23,13 @@ class AuthService {
   }
 
   /// Returns the JWT token and the user. Wrong password gives 401.
-  Future<Map<String, dynamic>> login(String email, String password) async {
-    Auth auth = Auth();
+  /// The ip is for the login throttle: 5 failed tries give 429.
+  Future<Map<String, dynamic>> login(
+    String email,
+    String password, {
+    String? ip,
+  }) async {
+    Auth auth = Auth(ip: ip);
     String? token = await auth.attempt(<String, dynamic>{
       'email': email,
       'password': password,
@@ -33,5 +38,10 @@ class AuthService {
       throw UnAuthorizedException(message: 'wrong email or password');
     }
     return <String, dynamic>{'token': token, 'user': auth.user<User>()};
+  }
+
+  /// Puts the bearer token of the request on the deny-list (JWT logout).
+  Future<void> logout(DoxRequest req) async {
+    await Auth().revokeToken(req);
   }
 }
