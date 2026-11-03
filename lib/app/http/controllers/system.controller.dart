@@ -94,6 +94,23 @@ class SystemController {
     return <String, int>{'result': n * 2};
   }
 
+  /// POST /api/system/rules: the Laravel-style DTO rules
+  Map<String, dynamic> rules(RuleCheck body) {
+    return <String, dynamic>{'ok': true, 'kind': body.kind};
+  }
+
+  /// POST /api/system/rules/fluent: a fluent schema that reads the
+  /// database (`exists`, `unique`) and checks a number range (`between`).
+  Future<Map<String, dynamic>> fluentRules(DoxRequest req) async {
+    return await req.validateSchema(
+      v.object(<String, Schema<Object?>>{
+        'badge': v.string().exists('badges', column: 'name'),
+        'email': v.string().unique('users', column: 'email'),
+        'level': v.int().between(1, 10),
+      }),
+    );
+  }
+
   /// Browser page to try Socket.IO
   @ApiIgnore()
   File playground(DoxRequest req) {

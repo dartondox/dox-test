@@ -5,6 +5,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
 import 'package:dox_test/app/http/controllers/web_auth.controller.dart';
+import 'package:dox_test/constants/app_constants.dart';
 
 /// Routes without a prefix.
 class WebRouter extends Router {
@@ -22,6 +23,12 @@ class WebRouter extends Router {
 
     /// Local signed URLs from Storage().signedUrl(): GET /files/{key*}
     Storage.route('files');
+
+    /// The public disk, no signature: url() gives /storage/<path>.
+    Storage.route('storage', disk: AppConstants.publicDisk, signed: false);
+
+    /// The public disk, signed. A URL signed for `local` must not work here.
+    Storage.route('public-files', disk: AppConstants.publicDisk);
 
     /// Session login (the `web` guard), JSON answers.
     Route.group('/web-auth', registerWebAuth);

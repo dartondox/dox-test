@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_storage/dox_storage.dart';
 import 'package:dox_test/constants/app_constants.dart';
@@ -6,7 +8,8 @@ import 'package:dox_test/constants/app_constants.dart';
 @Inject()
 class FileStorageService {
   Storage disk(String name) {
-    if (!AppConstants.storageDisks.contains(name)) {
+    if (!AppConstants.storageDisks.contains(name) &&
+        name != AppConstants.publicDisk) {
       throw NotFoundHttpException(message: 'unknown storage disk "$name"');
     }
     return Storage().disk(name);
@@ -40,6 +43,43 @@ class FileStorageService {
     String url = await disk(name)
         .signedUrl(key, expiresIn: Duration(minutes: 10));
     return <String, dynamic>{'url': url};
+  }
+
+  /// append() or prepend(). Returns the new text of the file.
+  Future<Map<String, dynamic>> addText(
+    String name,
+    String key,
+    String text, {
+    required bool atStart,
+  }) async {
+    Storage target = disk(name);
+    if (atStart) {
+      await target.prepend(key, text);
+    } else {
+      await target.append(key, text);
+    }
+    return <String, dynamic>{
+      'text': utf8.decode(await target.get(key) ?? <int>[]),
+    };
+  }
+
+  /// size(), lastModified() and url() of one file.
+  /// A missing file throws [FileNotFoundException]: it is a 404 here.
+  Future<Map<String, dynamic>> info(String name, String key) async {
+    Storage target = disk(name);
+    try {
+      return <String, dynamic>{
+        'size': await target.size(key),
+        'last_modified': (await target.lastModified(key)).toIso8601String(),
+        'url': await target.url(key),
+      };
+    } on FileNotFoundException {
+      throw NotFoundHttpException(message: 'file not found');
+    }
+  }
+
+  Future<void> makeDirectory(String name, String key) async {
+    await disk(name).makeDirectory(key);
   }
 
   Future<Map<String, dynamic>> delete(String name, String key) async {

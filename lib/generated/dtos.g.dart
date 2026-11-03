@@ -4,6 +4,7 @@
 
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/dtos/auth/auth.dto.dart';
+import 'package:dox_test/app/dtos/badge/badge.dto.dart';
 import 'package:dox_test/app/dtos/cache/cache.dto.dart';
 import 'package:dox_test/app/dtos/file/file.dto.dart';
 import 'package:dox_test/app/dtos/mail/mail.dto.dart';
@@ -16,12 +17,16 @@ import 'package:dox_test/app/dtos/user/user.dto.dart';
 /// Every DTO of the app. Use it in `AppConfig(dtos: dtos)`.
 const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $AddCommentDto,
+  $AddReactionDto,
+  $AddTextDto,
   $AddressDto,
+  $CreateBadgeDto,
   $CreateNoteDto,
   $CreateOrderDto,
   $CreateTagsDto,
   $HashPasswordDto,
   $IncrementCacheDto,
+  $ListBadgesDto,
   $ListPostsDto,
   $ListTagsDto,
   $ListUsersDto,
@@ -31,12 +36,15 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $PutCacheItemDto,
   $RegisterUserDto,
   $ReleaseLockDto,
+  $RuleCheckDto,
   $SavePostDto,
   $SaveProfileDto,
   $SendWelcomeMailDto,
   $StoreFileDto,
+  $SyncBadgePostsDto,
   $TakeLockDto,
   $UpdateUserDto,
   $UploadAvatarDto,
   $UploadFileDto,
+  $UploadPhotoDto,
 ];

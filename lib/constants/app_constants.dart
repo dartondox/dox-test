@@ -27,6 +27,10 @@ class AppConstants {
   /// Storage disks that the /api/storage routes may use.
   static const List<String> storageDisks = <String>['local', 'memory', 's3'];
 
+  /// A second local disk with no `url` option: `url()` gives
+  /// `/storage/<path>`. Not in [storageDisks], it has no signed URLs.
+  static const String publicDisk = 'public';
+
   /// Browser page to try Socket.IO.
   static const String playgroundFile = 'public/playground.html';
 

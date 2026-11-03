@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import '../db/migration/migrations.dart';
+import 'e2e_orm.dart';
 import 'jobs_e2e.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
@@ -1917,6 +1918,9 @@ void main() {
 
   // dox_mailer, dox_queue, dox_scheduler and ioredis (3.1)
   jobsE2e(api);
+
+  // The 3.1 ORM, validation, driver and storage checks (test/e2e_orm.dart).
+  ormTests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {

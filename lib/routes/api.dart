@@ -1,6 +1,7 @@
 import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/auth.controller.dart';
+import 'package:dox_test/app/http/controllers/badge.controller.dart';
 import 'package:dox_test/app/http/controllers/cache.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
 import 'package:dox_test/app/http/controllers/mail.controller.dart';
@@ -22,6 +23,7 @@ class ApiRouter extends Router {
     Route.group('/users', registerUsers);
     Route.group('/posts', registerPosts);
     Route.group('/tags', registerTags);
+    Route.group('/badges', registerBadges);
     Route.group('/files', registerFiles);
     Route.group('/system', registerSystem);
     Route.group('/cache', registerCache);
@@ -80,9 +82,24 @@ class ApiRouter extends Router {
     Route.get('/{name}/posts', (TagController c) => c.posts);
   }
 
+  void registerBadges() {
+    // Fixed paths first, so `{id}` does not catch them.
+    Route.get('/simple', (BadgeController c) => c.simple);
+    Route.get('/trashed', (BadgeController c) => c.trashed);
+    Route.get('/reactions', (BadgeController c) => c.reactions);
+    Route.get('/', (BadgeController c) => c.index);
+    Route.post('/', (BadgeController c) => c.store);
+    Route.get('/{id}', (BadgeController c) => c.show);
+    Route.delete('/{id}', (BadgeController c) => c.destroy);
+    Route.post('/{id}/restore', (BadgeController c) => c.restore);
+    Route.put('/{id}/posts', (BadgeController c) => c.syncPosts);
+    Route.post('/{id}/reactions', (BadgeController c) => c.react);
+  }
+
   void registerFiles() {
     Route.post('/', (FileController c) => c.upload);
     Route.post('/avatar', (FileController c) => c.avatar);
+    Route.post('/photo', (FileController c) => c.photo);
     Route.get('/{name}', (FileController c) => c.download);
     Route.get('/{name}/raw', (FileController c) => c.raw);
   }
@@ -108,6 +125,9 @@ class ApiRouter extends Router {
     Route.get('/{disk}/download/{key*}', (StorageController c) => c.download);
     Route.get('/{disk}/signed/{key*}', (StorageController c) => c.signed);
     Route.delete('/{disk}/files/{key*}', (StorageController c) => c.delete);
+    Route.post('/{disk}/text/{key*}', (StorageController c) => c.addText);
+    Route.get('/{disk}/info/{key*}', (StorageController c) => c.info);
+    Route.post('/{disk}/dirs/{key*}', (StorageController c) => c.makeDirectory);
   }
 
   /// Sends real email, so it needs the API key header.
@@ -138,5 +158,7 @@ class ApiRouter extends Router {
     Route.get('/container', (SystemController c) => c.container);
     Route.get('/ip', (SystemController c) => c.ip);
     Route.get('/twice/{n}', (SystemController c) => c.twice);
+    Route.post('/rules', (SystemController c) => c.rules);
+    Route.post('/rules/fluent', (SystemController c) => c.fluentRules);
   }
 }
