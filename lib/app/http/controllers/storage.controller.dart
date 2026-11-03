@@ -31,6 +31,26 @@ class StorageController {
     return await service.signedUrl(disk, key);
   }
 
+  /// Add text to the end of a file, or to the start with `at: start`
+  Future<Map<String, dynamic>> addText(
+    String disk,
+    String key,
+    AddText body,
+  ) async {
+    return await service.addText(disk, key, body.text, atStart: body.atStart);
+  }
+
+  /// Size, last modified time and public URL of a file
+  Future<Map<String, dynamic>> info(String disk, String key) async {
+    return await service.info(disk, key);
+  }
+
+  /// Make a folder (only local disks have real folders)
+  Future<Map<String, bool>> makeDirectory(String disk, String key) async {
+    await service.makeDirectory(disk, key);
+    return <String, bool>{'done': true};
+  }
+
   /// Delete a file
   Future<Map<String, dynamic>> delete(String disk, String key) async {
     return await service.delete(disk, key);

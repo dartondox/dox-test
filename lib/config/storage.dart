@@ -15,6 +15,11 @@ StorageConfig storageConfig = StorageConfig(
       // Storage.route('files') serves signed URLs here
       'url': '${env.appUrl}/files',
     },
+    // No `url` option: url() gives /storage/<path>, served below.
+    AppConstants.publicDisk: <String, dynamic>{
+      'driver': 'local',
+      'root': '${AppConstants.storageRoot}/public',
+    },
     'memory': <String, dynamic>{'driver': 'memory'},
     's3': <String, dynamic>{
       'driver': 's3',

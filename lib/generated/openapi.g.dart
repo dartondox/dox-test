@@ -386,6 +386,162 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'index',
+      argumentTypes: <String>['ListBadges'],
+      summary: 'Badges by score, a cursor page',
+      tags: <String>['Badge', 'ORM'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/ListBadges'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'simple',
+      argumentTypes: <String>['ListBadges'],
+      summary: 'Badges by id, a page without the total',
+      tags: <String>['Badge', 'ORM'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/ListBadges'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'store',
+      argumentTypes: <String>['CreateBadge'],
+      summary: 'Create a badge',
+      tags: <String>['Badge', 'ORM'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateBadge'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'show',
+      argumentTypes: <String>['int'],
+      summary: 'Get a badge with its posts and reactions',
+      tags: <String>['Badge', 'ORM'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'\$ref': '#/components/schemas/Badge'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'syncPosts',
+      argumentTypes: <String>['int', 'SyncBadgePosts'],
+      summary: 'Set the posts of a badge (sync)',
+      tags: <String>['Badge', 'ORM'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/SyncBadgePosts'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'react',
+      argumentTypes: <String>['int', 'AddReaction'],
+      summary: 'React to a badge',
+      tags: <String>['Badge', 'ORM'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/AddReaction'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'reactions',
+      argumentTypes: <String>[],
+      summary: 'Every reaction, with the badge or post it is on',
+      tags: <String>['Badge', 'ORM'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'array',
+            'items': <String, dynamic>{'type': 'object'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'destroy',
+      argumentTypes: <String>['int'],
+      summary: 'Delete a badge (soft)',
+      tags: <String>['Badge', 'ORM'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'string'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'trashed',
+      argumentTypes: <String>[],
+      summary: 'Deleted badges',
+      tags: <String>['Badge', 'ORM'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'array',
+            'items': <String, dynamic>{'\$ref': '#/components/schemas/Badge'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'BadgeController',
+      method: 'restore',
+      argumentTypes: <String>['int'],
+      summary: 'Bring back a deleted badge',
+      tags: <String>['Badge', 'ORM'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
       controller: 'FileController',
       method: 'upload',
       argumentTypes: <String>['DoxRequest', 'UploadFile'],
@@ -403,6 +559,18 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       summary: 'Upload an avatar image (form data, 64 KB at most)',
       tags: <String>['File'],
       schema: <String, dynamic>{'\$ref': '#/components/schemas/UploadAvatar'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'FileController',
+      method: 'photo',
+      argumentTypes: <String>['UploadPhoto'],
+      summary:
+          'Upload a photo: real MIME type, size and image size are checked',
+      tags: <String>['File'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/UploadPhoto'},
       responses: <int, ResponseDoc>{
         200: ResponseDoc(description: 'Successful response'),
       },
@@ -673,6 +841,62 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiOperation(
       controller: 'StorageController',
+      method: 'addText',
+      argumentTypes: <String>['String', 'String', 'AddText'],
+      summary:
+          'Add text to the end of a file, or to the start with `at: start`',
+      tags: <String>['Storage'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+        <String, dynamic>{'type': 'string'},
+      ],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/AddText'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'StorageController',
+      method: 'info',
+      argumentTypes: <String>['String', 'String'],
+      summary: 'Size, last modified time and public URL of a file',
+      tags: <String>['Storage'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'StorageController',
+      method: 'makeDirectory',
+      argumentTypes: <String>['String', 'String'],
+      summary: 'Make a folder (only local disks have real folders)',
+      tags: <String>['Storage'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'StorageController',
       method: 'delete',
       argumentTypes: <String>['String', 'String'],
       summary: 'Delete a file',
@@ -893,6 +1117,34 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiOperation(
       controller: 'SystemController',
+      method: 'rules',
+      argumentTypes: <String>['RuleCheck'],
+      summary: 'POST /api/system/rules: the Laravel-style DTO rules',
+      tags: <String>['System'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/RuleCheck'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'SystemController',
+      method: 'fluentRules',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /api/system/rules/fluent: a fluent schema that reads the',
+      description: 'database (`exists`, `unique`) and checks a number range (`between`).',
+      tags: <String>['System'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'SystemController',
       method: 'playground',
       argumentTypes: <String>['DoxRequest'],
       ignore: true,
@@ -1061,8 +1313,35 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('GET', 'api/tags/', 'TagController.index'),
     OpenApiRouteBinding('POST', 'api/tags/', 'TagController.store'),
     OpenApiRouteBinding('GET', 'api/tags/{name}/posts', 'TagController.posts'),
+    OpenApiRouteBinding('GET', 'api/badges/simple', 'BadgeController.simple'),
+    OpenApiRouteBinding('GET', 'api/badges/trashed', 'BadgeController.trashed'),
+    OpenApiRouteBinding(
+      'GET',
+      'api/badges/reactions',
+      'BadgeController.reactions',
+    ),
+    OpenApiRouteBinding('GET', 'api/badges/', 'BadgeController.index'),
+    OpenApiRouteBinding('POST', 'api/badges/', 'BadgeController.store'),
+    OpenApiRouteBinding('GET', 'api/badges/{id}', 'BadgeController.show'),
+    OpenApiRouteBinding('DELETE', 'api/badges/{id}', 'BadgeController.destroy'),
+    OpenApiRouteBinding(
+      'POST',
+      'api/badges/{id}/restore',
+      'BadgeController.restore',
+    ),
+    OpenApiRouteBinding(
+      'PUT',
+      'api/badges/{id}/posts',
+      'BadgeController.syncPosts',
+    ),
+    OpenApiRouteBinding(
+      'POST',
+      'api/badges/{id}/reactions',
+      'BadgeController.react',
+    ),
     OpenApiRouteBinding('POST', 'api/files/', 'FileController.upload'),
     OpenApiRouteBinding('POST', 'api/files/avatar', 'FileController.avatar'),
+    OpenApiRouteBinding('POST', 'api/files/photo', 'FileController.photo'),
     OpenApiRouteBinding('GET', 'api/files/{name}', 'FileController.download'),
     OpenApiRouteBinding('GET', 'api/files/{name}/raw', 'FileController.raw'),
     OpenApiRouteBinding(
@@ -1140,6 +1419,21 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'api/storage/{disk}/files/{key*}',
       'StorageController.delete',
     ),
+    OpenApiRouteBinding(
+      'POST',
+      'api/storage/{disk}/text/{key*}',
+      'StorageController.addText',
+    ),
+    OpenApiRouteBinding(
+      'GET',
+      'api/storage/{disk}/info/{key*}',
+      'StorageController.info',
+    ),
+    OpenApiRouteBinding(
+      'POST',
+      'api/storage/{disk}/dirs/{key*}',
+      'StorageController.makeDirectory',
+    ),
     OpenApiRouteBinding('POST', 'api/', 'PostController.store'),
     OpenApiRouteBinding('PUT', 'api/{id}', 'PostController.update'),
     OpenApiRouteBinding('DELETE', 'api/{id}', 'PostController.destroy'),
@@ -1170,6 +1464,12 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('GET', 'api/container', 'SystemController.container'),
     OpenApiRouteBinding('GET', 'api/ip', 'SystemController.ip'),
     OpenApiRouteBinding('GET', 'api/twice/{n}', 'SystemController.twice'),
+    OpenApiRouteBinding('POST', 'api/rules', 'SystemController.rules'),
+    OpenApiRouteBinding(
+      'POST',
+      'api/rules/fluent',
+      'SystemController.fluentRules',
+    ),
     OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
     OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
     OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
@@ -1599,6 +1899,168 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
       'required': <dynamic>['names'],
     },
+    'ListBadges': <String, dynamic>{
+      'type': 'object',
+      'title': 'ListBadges',
+      'properties': <String, dynamic>{
+        'cursor': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description':
+              'The `next_cursor` or `prev_cursor` of the page before.',
+        },
+        'page': <String, dynamic>{
+          'type': 'integer',
+          'minimum': 1,
+          'default': 1,
+        },
+        'per_page': <String, dynamic>{
+          'type': 'integer',
+          'minimum': 1,
+          'maximum': 50,
+          'default': 2,
+        },
+      },
+    },
+    'CreateBadge': <String, dynamic>{
+      'type': 'object',
+      'title': 'CreateBadge',
+      'properties': <String, dynamic>{
+        'name': <String, dynamic>{
+          'type': 'string',
+          'minLength': 2,
+          'maxLength': 50,
+          'description': 'The database decides if the name is taken.',
+        },
+        'code': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description': 'Four digits, like `0042`.',
+        },
+        'meta': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description': 'Extra data as JSON text, like `{"color":"red"}`.',
+        },
+        'score': <String, dynamic>{
+          'type': 'integer',
+          'minimum': 0,
+          'maximum': 100,
+          'default': 0,
+        },
+        'aliases': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'type': 'string'},
+          'maxItems': 5,
+          'description': 'Other names this badge wants to keep free. Each one must not be taken\n(a list with `@Unique` is one query).',
+          'default': <dynamic>[],
+        },
+        'post_ids': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'type': 'integer'},
+          'maxItems': 10,
+          'description': 'Posts that get the badge. Each one must exist.',
+          'default': <dynamic>[],
+        },
+      },
+      'required': <dynamic>['name'],
+    },
+    'Badge': <String, dynamic>{
+      'type': 'object',
+      'description':
+          'One row in the `badges` table. Delete only sets `deleted_at`.',
+      'properties': <String, dynamic>{
+        'id': <String, dynamic>{'type': 'integer'},
+        'name': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'code': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'meta': <String, dynamic>{
+          'type': <dynamic>['object', 'null'],
+        },
+        'score': <String, dynamic>{
+          'type': <dynamic>['integer', 'null'],
+        },
+        'deleted_at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+        'posts': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'\$ref': '#/components/schemas/Post'},
+        },
+        'reactions': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'\$ref': '#/components/schemas/Reaction'},
+        },
+        'created_at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+        'updated_at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+      },
+    },
+    'Reaction': <String, dynamic>{
+      'type': 'object',
+      'description': 'One row in the `reactions` table. It points to a badge or a post\nwith `reactable_type` and `reactable_id`.',
+      'properties': <String, dynamic>{
+        'id': <String, dynamic>{'type': 'integer'},
+        'emoji': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'reactable_id': <String, dynamic>{
+          'type': <dynamic>['integer', 'null'],
+        },
+        'reactable_type': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'reactable': <String, dynamic>{},
+        'created_at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+        'updated_at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+      },
+    },
+    'SyncBadgePosts': <String, dynamic>{
+      'type': 'object',
+      'title': 'SyncBadgePosts',
+      'properties': <String, dynamic>{
+        'post_ids': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'type': 'integer'},
+          'maxItems': 10,
+        },
+        'note': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'maxLength': 50,
+          'description': 'Saved in the pivot row of every given post.',
+        },
+        'detaching': <String, dynamic>{
+          'type': 'boolean',
+          'description': '`false` keeps the posts that are not in the list.',
+          'default': true,
+        },
+      },
+      'required': <dynamic>['post_ids'],
+    },
+    'AddReaction': <String, dynamic>{
+      'type': 'object',
+      'title': 'AddReaction',
+      'properties': <String, dynamic>{
+        'emoji': <String, dynamic>{
+          'type': 'string',
+          'minLength': 1,
+          'maxLength': 20,
+        },
+      },
+      'required': <dynamic>['emoji'],
+    },
     'UploadFile': <String, dynamic>{
       'type': 'object',
       'title': 'UploadFile',
@@ -1624,6 +2086,21 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
       },
       'required': <dynamic>['avatar'],
+    },
+    'UploadPhoto': <String, dynamic>{
+      'type': 'object',
+      'title': 'UploadPhoto',
+      'properties': <String, dynamic>{
+        'photo': <String, dynamic>{
+          'type': 'string',
+          'format': 'binary',
+          'contentMediaType': 'image/*',
+          'minLength': 1024,
+          'maxLength': 65536,
+          'description': 'The real bytes must be a png or a gif, whatever the client says.',
+        },
+      },
+      'required': <dynamic>['photo'],
     },
     'PutCacheItem': <String, dynamic>{
       'type': 'object',
@@ -1679,6 +2156,19 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         'file': <String, dynamic>{'type': 'string', 'format': 'binary'},
       },
       'required': <dynamic>['file'],
+    },
+    'AddText': <String, dynamic>{
+      'type': 'object',
+      'title': 'AddText',
+      'properties': <String, dynamic>{
+        'text': <String, dynamic>{'type': 'string'},
+        'at_start': <String, dynamic>{
+          'type': 'boolean',
+          'description': '`true` puts the text at the start (prepend), else at the end (append).',
+          'default': false,
+        },
+      },
+      'required': <dynamic>['text'],
     },
     'SendWelcomeMail': <String, dynamic>{
       'type': 'object',
@@ -1761,6 +2251,65 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
       },
       'required': <dynamic>['name', 'quantity'],
+    },
+    'RuleCheck': <String, dynamic>{
+      'type': 'object',
+      'title': 'RuleCheck',
+      'properties': <String, dynamic>{
+        'kind': <String, dynamic>{
+          'type': 'string',
+          'enum': <dynamic>['team', 'solo'],
+          'description': '`team` or `solo`.',
+        },
+        'team_name': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description': 'Needed only when `kind` is `team`.',
+        },
+        'email': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'email',
+        },
+        'phone': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description': 'Needed when `email` is there.',
+        },
+        'pin': <String, dynamic>{
+          'type': 'string',
+          'description': '4 to 6 digits.',
+        },
+        'starts_on': <String, dynamic>{'type': 'string'},
+        'password': <String, dynamic>{
+          'type': 'string',
+          'description': '8 or more, letters in both cases and a number. Needs\n`password_confirmation` with the same text.',
+        },
+        'password_confirmation': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'code': <String, dynamic>{'type': 'string'},
+        'code_again': <String, dynamic>{'type': 'string'},
+        'ip': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'anyOf': <dynamic>[
+            <String, dynamic>{'format': 'ipv4'},
+            <String, dynamic>{'format': 'ipv6'},
+          ],
+        },
+        'data': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'slug': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'pattern': '^[a-zA-Z0-9_-]+\$',
+        },
+      },
+      'required': <dynamic>[
+        'kind',
+        'pin',
+        'starts_on',
+        'password',
+        'code',
+        'code_again',
+      ],
     },
   },
 );

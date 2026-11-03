@@ -23,6 +23,11 @@ class FileController {
     return response(await service.store(body.avatar)).statusCode(201);
   }
 
+  /// Upload a photo: real MIME type, size and image size are checked
+  Future<DoxResponse> photo(UploadPhoto body) async {
+    return response(await service.store(body.photo)).statusCode(201);
+  }
+
   /// Download an upload (streamed)
   Future<StreamFile> download(String name) async {
     return await service.read(name);

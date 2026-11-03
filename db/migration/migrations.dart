@@ -10,6 +10,7 @@ import '2024_01_01_000005_create_tags_table.dart' as m5;
 import '2024_01_01_000006_add_names_to_users_table.dart' as m6;
 import '2024_01_01_000007_create_queue_tables.dart' as m7;
 import '2024_01_01_000008_add_views_to_posts_table.dart' as m8;
+import '2024_01_02_000001_create_badges_tables.dart' as m9;
 
 /// all Dart migrations of db/migration, sorted by name
 final List<MigrationEntry> migrations = <MigrationEntry>[
@@ -35,5 +36,9 @@ final List<MigrationEntry> migrations = <MigrationEntry>[
   MigrationEntry(
     '2024_01_01_000008_add_views_to_posts_table',
     m8.AddViewsToPostsTable(),
+  ),
+  MigrationEntry(
+    '2024_01_02_000001_create_badges_tables',
+    m9.CreateBadgesTables(),
   ),
 ];
