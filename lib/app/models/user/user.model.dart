@@ -1,3 +1,4 @@
+import 'package:dox_mailer/dox_mailer.dart' show Address, Notifiable;
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/profile/profile.model.dart';
@@ -5,8 +6,9 @@ import 'package:dox_test/app/models/profile/profile.model.dart';
 part 'user.model.g.dart';
 
 /// One row in the `users` table.
+/// Notifiable: `user.notify(AccountReady())` emails the user.
 @DoxModel(table: 'users')
-class User extends UserGenerator {
+class User extends UserGenerator with Notifiable {
   /// Never send the password hash in a response.
   @override
   List<String> get hidden => <String>['password'];
@@ -33,6 +35,12 @@ class User extends UserGenerator {
       return null;
     }
     return <String?>[firstName, lastName].whereType<String>().join(' ');
+  }
+
+  /// Notifications by email go to the user's own address.
+  @override
+  Object? routeNotificationFor(String channel) {
+    return channel == 'mail' ? Address(email!, name) : null;
   }
 
   @HasOne(Profile, foreignKey: 'user_id', localKey: 'id')

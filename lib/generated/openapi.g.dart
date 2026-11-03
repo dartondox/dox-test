@@ -689,6 +689,42 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'MailController',
+      method: 'welcome',
+      argumentTypes: <String>['int', 'SendWelcomeMail'],
+      summary: 'Send the welcome email',
+      description: 'Now, on the queue, or later. See `mode`.',
+      tags: <String>['Mail'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      schema: <String, dynamic>{
+        '\$ref': '#/components/schemas/SendWelcomeMail',
+      },
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'MailController',
+      method: 'accountReady',
+      argumentTypes: <String>['int'],
+      summary: 'Notify that the account is ready (queued email)',
+      tags: <String>['Mail'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
       controller: 'SystemController',
       method: 'ping',
       argumentTypes: <String>['DoxRequest'],
@@ -1112,6 +1148,12 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'api/{id}/comments',
       'PostController.addComment',
     ),
+    OpenApiRouteBinding('POST', 'api/welcome/{id}', 'MailController.welcome'),
+    OpenApiRouteBinding(
+      'POST',
+      'api/account-ready/{id}',
+      'MailController.accountReady',
+    ),
     OpenApiRouteBinding('GET', 'api/query', 'SystemController.query'),
     OpenApiRouteBinding('POST', 'api/echo', 'SystemController.echo'),
     OpenApiRouteBinding('GET', 'api/env', 'SystemController.env'),
@@ -1243,7 +1285,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     },
     'User': <String, dynamic>{
       'type': 'object',
-      'description': 'One row in the `users` table.',
+      'description': 'One row in the `users` table.\nNotifiable: `user.notify(AccountReady())` emails the user.',
       'properties': <String, dynamic>{
         'id': <String, dynamic>{'type': 'integer'},
         'name': <String, dynamic>{
@@ -1637,6 +1679,35 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         'file': <String, dynamic>{'type': 'string', 'format': 'binary'},
       },
       'required': <dynamic>['file'],
+    },
+    'SendWelcomeMail': <String, dynamic>{
+      'type': 'object',
+      'title': 'SendWelcomeMail',
+      'properties': <String, dynamic>{
+        'mode': <String, dynamic>{
+          'type': 'string',
+          'enum': <dynamic>['send', 'queue', 'later'],
+          'description': 'send, queue or later',
+          'default': 'send',
+        },
+        'delay': <String, dynamic>{
+          'type': 'integer',
+          'minimum': 1,
+          'description': 'For `later`: the wait in seconds.',
+          'default': 60,
+        },
+        'encrypt': <String, dynamic>{
+          'type': 'boolean',
+          'description':
+              'For `queue` and `later`: save the job data encrypted.',
+          'default': false,
+        },
+        'mailer': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'description':
+              'The mailer name of lib/config/mail.dart. Empty: the default.',
+        },
+      },
     },
     'HashPassword': <String, dynamic>{
       'type': 'object',

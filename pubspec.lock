@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  dox_mailer:
+    dependency: "direct main"
+    description:
+      name: dox_mailer
+      sha256: be6c0a1aa3e0ef1b854d215972094fb61279f1d6b799624887bbcbba44882eee
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   dox_migration:
     dependency: "direct main"
     description:
@@ -418,7 +426,7 @@ packages:
     source: hosted
     version: "1.1.0"
   ioredis:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: ioredis
       sha256: "04bedac90c58eaeefaf974143d907b010d8376e9730501449bc45e1c8b1de126"

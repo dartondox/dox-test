@@ -6,6 +6,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/dtos/auth/auth.dto.dart';
 import 'package:dox_test/app/dtos/cache/cache.dto.dart';
 import 'package:dox_test/app/dtos/file/file.dto.dart';
+import 'package:dox_test/app/dtos/mail/mail.dto.dart';
 import 'package:dox_test/app/dtos/note/note.dto.dart';
 import 'package:dox_test/app/dtos/post/post.dto.dart';
 import 'package:dox_test/app/dtos/system/system.dto.dart';
@@ -32,6 +33,7 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $ReleaseLockDto,
   $SavePostDto,
   $SaveProfileDto,
+  $SendWelcomeMailDto,
   $StoreFileDto,
   $TakeLockDto,
   $UpdateUserDto,

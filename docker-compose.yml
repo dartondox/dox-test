@@ -36,6 +36,14 @@ services:
       interval: 2s
       retries: 30
 
+  # Catches every email. SMTP on 1125, web page and API on 8125.
+  mailhog:
+    image: mailhog/mailhog
+    container_name: dox-test-mailhog
+    ports:
+      - "1125:1025"
+      - "8125:8025"
+
   # S3 for the `s3` storage disk. API on 9110, web console on 9111.
   # The folder made by mkdir is the `dox-test` bucket.
   minio:

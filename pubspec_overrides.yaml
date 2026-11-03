@@ -12,6 +12,8 @@ dependency_overrides:
     path: ../dox-http-native
   dox_inertia:
     path: ../dox-inertia
+  dox_mailer:
+    path: ../dox-mailer
   dox_migration:
     path: ../dox-orm/packages/dox-migration
   dox_mysql_native:
