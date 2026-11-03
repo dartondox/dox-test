@@ -3,6 +3,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/auth.controller.dart';
 import 'package:dox_test/app/http/controllers/cache.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
+import 'package:dox_test/app/http/controllers/mail.controller.dart';
 import 'package:dox_test/app/http/controllers/post.controller.dart';
 import 'package:dox_test/app/http/controllers/storage.controller.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
@@ -25,6 +26,7 @@ class ApiRouter extends Router {
     Route.group('/system', registerSystem);
     Route.group('/cache', registerCache);
     Route.group('/storage', registerStorage);
+    Route.group('/mail', registerMail);
   }
 
   void registerAuth() {
@@ -106,6 +108,16 @@ class ApiRouter extends Router {
     Route.get('/{disk}/download/{key*}', (StorageController c) => c.download);
     Route.get('/{disk}/signed/{key*}', (StorageController c) => c.signed);
     Route.delete('/{disk}/files/{key*}', (StorageController c) => c.delete);
+  }
+
+  /// Sends real email, so it needs the API key header.
+  void registerMail() {
+    Route.middleware(<dynamic>[ApiKeyMiddleware()], registerMailRoutes);
+  }
+
+  void registerMailRoutes() {
+    Route.post('/welcome/{id}', (MailController c) => c.welcome);
+    Route.post('/account-ready/{id}', (MailController c) => c.accountReady);
   }
 
   /// Every system route needs the API key header.

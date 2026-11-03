@@ -81,6 +81,16 @@ abstract class AppEnv {
 
   bool get socketioEnabled => true;
 
+  /// The mailer of `Mail.send()`: smtp, failover or log.
+  String get mailMailer => 'smtp';
+
+  /// The SMTP server. The default is MailHog of docker compose.
+  String get mailHost => '127.0.0.1';
+  int get mailPort => 1125;
+
+  /// the from address of every email
+  String get mailFrom => 'hello@dox-test.dev';
+
   /// The Vite dev server for the Inertia pages, like http://localhost:5173.
   /// Empty means the built files in public/build.
   String? get viteDevServer;

@@ -38,6 +38,10 @@ class _$AppEnv extends AppEnv {
     required this.awsSecretAccessKey,
     required this.awsEndpoint,
     required this.socketioEnabled,
+    required this.mailMailer,
+    required this.mailHost,
+    required this.mailPort,
+    required this.mailFrom,
     required this.viteDevServer,
   });
 
@@ -102,6 +106,14 @@ class _$AppEnv extends AppEnv {
   @override
   final bool socketioEnabled;
   @override
+  final String mailMailer;
+  @override
+  final String mailHost;
+  @override
+  final int mailPort;
+  @override
+  final String mailFrom;
+  @override
   final String? viteDevServer;
 
   /// reads and checks every key once. Throws `EnvException` with all
@@ -145,6 +157,10 @@ class _$AppEnv extends AppEnv {
         r.string('AWS_SECRET_ACCESS_KEY') ?? d.awsSecretAccessKey;
     String awsEndpoint = r.string('AWS_ENDPOINT') ?? d.awsEndpoint;
     bool socketioEnabled = r.boolean('SOCKETIO_ENABLED') ?? d.socketioEnabled;
+    String mailMailer = r.string('MAIL_MAILER') ?? d.mailMailer;
+    String mailHost = r.string('MAIL_HOST') ?? d.mailHost;
+    int mailPort = r.integer('MAIL_PORT') ?? d.mailPort;
+    String mailFrom = r.string('MAIL_FROM') ?? d.mailFrom;
     String? viteDevServer = r.string('VITE_DEV_SERVER');
 
     r.check();
@@ -179,6 +195,10 @@ class _$AppEnv extends AppEnv {
       awsSecretAccessKey: awsSecretAccessKey,
       awsEndpoint: awsEndpoint,
       socketioEnabled: socketioEnabled,
+      mailMailer: mailMailer,
+      mailHost: mailHost,
+      mailPort: mailPort,
+      mailFrom: mailFrom,
       viteDevServer: viteDevServer,
     );
   }

@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import '../db/migration/migrations.dart';
+import 'jobs_e2e.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1913,6 +1914,9 @@ void main() {
       expect(html, isNot(contains('Note saved')));
     });
   });
+
+  // dox_mailer, dox_queue, dox_scheduler and ioredis (3.1)
+  jobsE2e(api);
 }
 
 Future<Profile?> profileOf(int userId) async {

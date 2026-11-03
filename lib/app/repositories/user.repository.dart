@@ -29,6 +29,10 @@ class UserRepository {
     await user.save();
   }
 
+  Future<User?> find(int id) async {
+    return await User().find(id);
+  }
+
   /// Find a user with the profile (hasOne) and posts (hasMany).
   Future<User?> findWithRelations(int id) async {
     return await User().preload('profile').preload('posts').find(id);

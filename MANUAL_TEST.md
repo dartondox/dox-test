@@ -10,7 +10,7 @@ cp .env.example .env
 dart pub get
 dart run build_runner build                 # models, DTOs, env.g.dart, openapi.g.dart
 dart run ../dox/packages/dox-cli/bin/dox.dart env:check   # → The env is valid.
-docker compose up -d --wait                 # postgres, mysql, redis, minio
+docker compose up -d --wait                 # postgres, mysql, redis, minio, mailhog
 dart run bin/migrate.dart run               # optional: the server also migrates
 dart run bin/server.dart                    # http://127.0.0.1:3100
 ```
@@ -273,10 +273,31 @@ They use the same notes as the Inertia pages. No Node needed.
 ## 13. Automatic checks
 
 - [ ] `dart test` (postgres), `DB_CONNECTION=mysql dart test`, `DB_CONNECTION=sqlite dart test`
-  → all pass (123 checks)
+  → all pass (155 checks, 1 skipped: a known dox_scheduler bug)
 - [ ] `npm ci && npm run build` → `public/build/.vite/manifest.json` (CI runs it too)
 
+## 14. dox_mailer, queue worker, scheduler
+
+MailHog catches every email: http://127.0.0.1:8125. Register a user first (section 3), its id is `1` here.
+
+- [ ] Send now: `curl -H "$K" -H "$J" -d '{"mode":"send"}' $B/api/mail/welcome/1`
+  → `message_id`. MailHog: "Welcome to dox-test, Ann", a table, a link, the file `terms.txt`
+- [ ] Failover: `-d '{"mode":"send","mailer":"failover"}'` → the email still comes (the first server is down)
+- [ ] Queue: `-d '{"mode":"queue","encrypt":true}'` → `job_id`, nothing in MailHog yet.
+  The `jobs` table has no email address in `payload`
+- [ ] Notification: `curl -H "$K" -H "$J" -d '{}' $B/api/mail/account-ready/1` → `{"notified":true}`
+- [ ] Worker: `dart run bin/queue.dart work --stop-when-empty --timeout-grace=2`
+  → both emails are in MailHog, then `Queue: worker stopped`
+- [ ] Later: `-d '{"mode":"later","delay":60}'`, run the worker at once → nothing sent. Again after 60 s → sent
+- [ ] `dart run bin/schedule.dart list` → 4 tasks, times in `Asia/Bangkok`
+- [ ] `dart run bin/schedule.dart test daily-report`, then the worker → "Daily report" in MailHog
+- [ ] `dart run bin/schedule.dart run` → a warning about `onOneServer()` and the memory store
+- [ ] `dart run ../dox-cli/bin/dox.dart queue:table` → `A create_queue_tables migration is already in db/migration.`, exit code 1
+
 ## Known issues (framework, not this app)
+
+- **Scheduler stop**: Ctrl+C on `dart run bin/schedule.dart work` prints `stopping`,
+  but the process ends only at the next full minute.
 
 - **OpenAPI file uploads**: `POST /api/files`, `/api/files/avatar` and `/api/storage/{disk}`
   show an `application/json` body in `/docs`, not `multipart/form-data`.

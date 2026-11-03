@@ -55,6 +55,10 @@ jobs:
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 2s --health-retries 30
+      # catches the emails of the mail tests: SMTP on 1125, HTTP API on 8125
+      mailhog:
+        image: mailhog/mailhog
+        ports: ["1125:1025", "8125:8025"]
     steps:
       # MinIO needs a start command, so it can not be a service.
       # The folder made by mkdir is the dox-test bucket.
