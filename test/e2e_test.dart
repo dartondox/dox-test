@@ -21,6 +21,7 @@ import 'package:test/test.dart';
 import '../db/migration/migrations.dart';
 import 'e2e_orm.dart';
 import 'jobs_e2e.dart';
+import 'e2e_core.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1921,6 +1922,8 @@ void main() {
 
   // The 3.1 ORM, validation, driver and storage checks (test/e2e_orm.dart).
   ormTests(api);
+  /// The features of the 3.1.0 release (test/e2e_core.dart).
+  coreTests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
@@ -2168,8 +2171,7 @@ class Browser {
 /// Tiny Socket.IO client on a raw websocket (Engine.IO v4, Socket.IO v5),
 /// for the /chat namespace. The browser playground uses the real JS client.
 class SioClient {
-  static const String nsp = AppConstants.chatNamespace;
-
+  final String nsp;
   final WebSocket socket;
   final List<List<dynamic>> _events = <List<dynamic>>[];
   final Map<int, Object?> _acks = <int, Object?>{};
@@ -2177,16 +2179,22 @@ class SioClient {
   String? connectError;
   int _nextAck = 0;
 
-  SioClient(this.socket) {
+  SioClient(this.socket, [this.nsp = AppConstants.chatNamespace]) {
     socket.listen(_onData);
   }
 
+  /// [headers] go on the websocket upgrade, like `Cookie` or `Origin`.
   static Future<SioClient> connect(
     Uri uri, {
     Map<String, String>? auth,
     bool expectError = false,
+    String nsp = AppConstants.chatNamespace,
+    Map<String, String>? headers,
   }) async {
-    SioClient client = SioClient(await WebSocket.connect(uri.toString()));
+    SioClient client = SioClient(
+      await WebSocket.connect(uri.toString(), headers: headers),
+      nsp,
+    );
     client.socket.add('40$nsp,${jsonEncode(auth ?? <String, String>{})}');
     await client._ready.future.timeout(Duration(seconds: 2));
     if (!expectError && client.connectError != null) {

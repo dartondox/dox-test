@@ -8,16 +8,26 @@ import 'package:dox_test/config/env.dart';
 /// Props for every Inertia page.
 class HandleInertiaRequests extends InertiaMiddleware {
   /// `auth.user` is the user of the session login (`web` guard), or null.
+  /// It is a function inside a map: Inertia runs it when it sends the page.
   @override
   Future<Map<String, dynamic>> share(DoxRequest req) async {
     Auth auth = Auth(guard: 'web');
     await auth.verifyToken(req);
-    User? user = auth.user<User>();
     return <String, dynamic>{
       'appName': env.appName,
-      'auth': <String, dynamic>{
-        'user': user == null ? null : UserSerializer(user).toJson(),
-      },
+      'auth': <String, dynamic>{'user': SharedUser(auth).toJson},
     };
+  }
+}
+
+/// The logged in user as a lazy prop.
+class SharedUser {
+  final Auth auth;
+
+  SharedUser(this.auth);
+
+  Map<String, dynamic>? toJson() {
+    User? user = auth.user<User>();
+    return user == null ? null : UserSerializer(user).toJson();
   }
 }

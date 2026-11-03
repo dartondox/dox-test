@@ -17,5 +17,6 @@ class ViewsRouter extends Router {
   void register() {
     Route.get('/', (ViewController c) => c.index);
     Route.post('/notes', (ViewController c) => c.store);
+    Route.delete('/notes/{id}', (ViewController c) => c.destroy);
   }
 }

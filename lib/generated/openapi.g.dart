@@ -23,7 +23,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiOperation(
       controller: 'AuthController',
       method: 'login',
-      argumentTypes: <String>['LoginUser'],
+      argumentTypes: <String>['DoxRequest', 'LoginUser'],
       summary: 'Log in',
       description: 'Gives a JWT. Send it as `Authorization: Bearer <token>`.',
       tags: <String>['Auth'],
@@ -34,6 +34,24 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
           schema: <String, dynamic>{'type': 'object'},
         ),
         401: ResponseDoc(description: 'Wrong email or password'),
+        429: ResponseDoc(description: 'Too many failed logins'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'AuthController',
+      method: 'logout',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'Log out',
+      description: 'The JWT stops working at once, before it expires.',
+      tags: <String>['Auth'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
       },
     ),
     OpenApiOperation(
@@ -913,6 +931,337 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'TokenController',
+      method: 'tokenLogin',
+      argumentTypes: <String>['DoxRequest', 'LoginUser'],
+      summary: 'POST /api/tokens/login',
+      tags: <String>['Tokens'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/LoginUser'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'TokenController',
+      method: 'store',
+      argumentTypes: <String>['DoxRequest', 'CreateToken'],
+      summary: 'POST /api/tokens',
+      tags: <String>['Tokens'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/CreateToken'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'TokenController',
+      method: 'index',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /api/tokens',
+      tags: <String>['Tokens'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'array',
+            'items': <String, dynamic>{'type': 'object'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'TokenController',
+      method: 'can',
+      argumentTypes: <String>['DoxRequest', 'String'],
+      summary:
+          'GET /api/tokens/can/{ability}: does this token have the ability?',
+      tags: <String>['Tokens'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'TokenController',
+      method: 'destroyCurrent',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'DELETE /api/tokens/current: log out this token.',
+      tags: <String>['Tokens'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'TokenController',
+      method: 'destroy',
+      argumentTypes: <String>['DoxRequest', 'int'],
+      summary: 'DELETE /api/tokens/{id}',
+      tags: <String>['Tokens'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'method',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'The method the route got, for Route.match, Route.any and MethodOverride.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'string'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'newPage',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/new, the target of Route.redirect.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'itemById',
+      argumentTypes: <String>['DoxRequest', 'int'],
+      summary: 'GET /core/items/{id}: only digits, see `.where`.',
+      tags: <String>['Core'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'integer'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'itemBySlug',
+      argumentTypes: <String>['DoxRequest', 'String'],
+      summary: 'GET /core/items/{slug}: anything else.',
+      tags: <String>['Core'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'greet',
+      argumentTypes: <String>['DoxRequest', 'String?'],
+      summary: 'Say hello',
+      description: 'GET /api/greet/{name?}. With no name, it greets a guest.',
+      tags: <String>['Core'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'string'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'inspect',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/request/{id}: the new request helpers.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'headers',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/headers: `header()` replaces a header of any case.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'download',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/download: `withHeaders` keeps the Content-Disposition.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'flashSet',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/flash/set',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'flashKeep',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/flash/keep: `reflash()` is the first use of the session.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'boolean'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'flashRead',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/flash/read',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'whoami',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/whoami: a guest gets through `AuthMiddleware(optional: true)`.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'guestOnly',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/guest-only, behind `GuestMiddleware`.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'string'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'saveContact',
+      argumentTypes: <String>['SaveContact'],
+      summary: 'POST /core/contacts: `@RequiredIf` and `@RequiredWith`.',
+      tags: <String>['Core'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/SaveContact'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'banner',
+      argumentTypes: <String>['UploadBanner'],
+      summary: 'POST /core/banner: `@MimeTypes`, `@MinSize` and `@Dimensions`.',
+      tags: <String>['Core'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/UploadBanner'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'plainView',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/plain-view: a view with no session. `errors` is still there.',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreController',
+      method: 'notFound',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'Route.fallback: a GET to /core/... with no route',
+      tags: <String>['Core'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
       controller: 'MailController',
       method: 'welcome',
       argumentTypes: <String>['int', 'SendWelcomeMail'],
@@ -1156,6 +1505,61 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       ignore: true,
     ),
     OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['CoreRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'registerFlash',
+      argumentTypes: <String>[],
+      tags: <String>['CoreRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'routeText',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['CoreRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'mountOuter',
+      argumentTypes: <String>['HttpRequest'],
+      summary: 'Raw handlers: they write the answer themselves.',
+      tags: <String>['CoreRouter'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'mountInner',
+      argumentTypes: <String>['HttpRequest'],
+      tags: <String>['CoreRouter'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
       controller: 'InertiaController',
       method: 'home',
       argumentTypes: <String>['DoxRequest'],
@@ -1234,6 +1638,12 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       ignore: true,
     ),
     OpenApiOperation(
+      controller: 'ViewController',
+      method: 'destroy',
+      argumentTypes: <String>['DoxRequest', 'int'],
+      ignore: true,
+    ),
+    OpenApiOperation(
       controller: 'WebRouter',
       method: 'register',
       argumentTypes: <String>[],
@@ -1278,6 +1688,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('POST', 'api/auth/register', 'AuthController.register'),
     OpenApiRouteBinding('POST', 'api/auth/login', 'AuthController.login'),
     OpenApiRouteBinding('GET', 'api/auth/me', 'AuthController.me'),
+    OpenApiRouteBinding('POST', 'api/auth/logout', 'AuthController.logout'),
     OpenApiRouteBinding(
       'PUT',
       'api/auth/me/profile',
@@ -1434,6 +1845,21 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'api/storage/{disk}/dirs/{key*}',
       'StorageController.makeDirectory',
     ),
+    OpenApiRouteBinding(
+      'POST',
+      'api/tokens/login',
+      'TokenController.tokenLogin',
+    ),
+    OpenApiRouteBinding('GET', 'api/greet/{name?}', 'CoreController.greet'),
+    OpenApiRouteBinding('POST', 'api/', 'TokenController.store'),
+    OpenApiRouteBinding('GET', 'api/', 'TokenController.index'),
+    OpenApiRouteBinding('GET', 'api/can/{ability}', 'TokenController.can'),
+    OpenApiRouteBinding(
+      'DELETE',
+      'api/current',
+      'TokenController.destroyCurrent',
+    ),
+    OpenApiRouteBinding('DELETE', 'api/{id}', 'TokenController.destroy'),
     OpenApiRouteBinding('POST', 'api/', 'PostController.store'),
     OpenApiRouteBinding('PUT', 'api/{id}', 'PostController.update'),
     OpenApiRouteBinding('DELETE', 'api/{id}', 'PostController.destroy'),
@@ -1470,6 +1896,25 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'api/rules/fluent',
       'SystemController.fluentRules',
     ),
+    OpenApiRouteBinding('GET', 'core/new', 'CoreController.newPage'),
+    OpenApiRouteBinding('GET', 'core/items/{id}', 'CoreController.itemById'),
+    OpenApiRouteBinding(
+      'GET',
+      'core/items/{slug}',
+      'CoreController.itemBySlug',
+    ),
+    OpenApiRouteBinding('POST', 'core/request/{id}', 'CoreController.inspect'),
+    OpenApiRouteBinding('GET', 'core/headers', 'CoreController.headers'),
+    OpenApiRouteBinding('GET', 'core/download', 'CoreController.download'),
+    OpenApiRouteBinding('GET', 'core/whoami', 'CoreController.whoami'),
+    OpenApiRouteBinding('GET', 'core/guest-only', 'CoreController.guestOnly'),
+    OpenApiRouteBinding('POST', 'core/contacts', 'CoreController.saveContact'),
+    OpenApiRouteBinding('POST', 'core/banner', 'CoreController.banner'),
+    OpenApiRouteBinding('GET', 'core/plain-view', 'CoreController.plainView'),
+    OpenApiRouteBinding('GET', 'core/assets/route.txt', 'CoreRouter.routeText'),
+    OpenApiRouteBinding('GET', 'core/flash/set', 'CoreController.flashSet'),
+    OpenApiRouteBinding('GET', 'core/flash/keep', 'CoreController.flashKeep'),
+    OpenApiRouteBinding('GET', 'core/flash/read', 'CoreController.flashRead'),
     OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
     OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
     OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
@@ -1492,6 +1937,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiRouteBinding('GET', 'views/', 'ViewController.index'),
     OpenApiRouteBinding('POST', 'views/notes', 'ViewController.store'),
+    OpenApiRouteBinding('DELETE', 'views/notes/{id}', 'ViewController.destroy'),
     OpenApiRouteBinding('GET', '/ping', 'SystemController.ping'),
     OpenApiRouteBinding('GET', '/playground', 'SystemController.playground'),
     OpenApiRouteBinding(
@@ -2169,6 +2615,56 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         },
       },
       'required': <dynamic>['text'],
+    },
+    'CreateToken': <String, dynamic>{
+      'type': 'object',
+      'title': 'CreateToken',
+      'properties': <String, dynamic>{
+        'name': <String, dynamic>{
+          'type': 'string',
+          'minLength': 2,
+          'maxLength': 100,
+        },
+        'abilities': <String, dynamic>{
+          'type': 'array',
+          'items': <String, dynamic>{'type': 'string'},
+          'minItems': 1,
+        },
+      },
+      'required': <dynamic>['name', 'abilities'],
+    },
+    'SaveContact': <String, dynamic>{
+      'type': 'object',
+      'title': 'SaveContact',
+      'properties': <String, dynamic>{
+        'account_type': <String, dynamic>{
+          'type': 'string',
+          'enum': <dynamic>['person', 'company'],
+        },
+        'company_name': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'phone': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'country_code': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+      },
+      'required': <dynamic>['account_type'],
+    },
+    'UploadBanner': <String, dynamic>{
+      'type': 'object',
+      'title': 'UploadBanner',
+      'properties': <String, dynamic>{
+        'banner': <String, dynamic>{
+          'type': 'string',
+          'format': 'binary',
+          'contentMediaType': 'image/*',
+          'minLength': 100,
+        },
+      },
+      'required': <dynamic>['banner'],
     },
     'SendWelcomeMail': <String, dynamic>{
       'type': 'object',
