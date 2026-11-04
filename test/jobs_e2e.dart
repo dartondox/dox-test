@@ -695,9 +695,6 @@ void jobsE2e(Api api) {
         );
         expect(code, 0, reason: out.toString());
       },
-      skip:
-          'BUG: dox_scheduler `work` exits only at the next full minute '
-          'after Ctrl+C (the sleep timer of ScheduleClock is not cancelled)',
       timeout: Timeout(Duration(minutes: 2)),
     );
   });

@@ -775,9 +775,6 @@ void coreTests(Api api) {
         );
         expect(paths['/api/greet'].toString(), isNot(contains('{name}')));
       },
-      skip:
-          'BUG: dox_core OpenApiRouteReader drops the "?" of {name?}, '
-          'so /api/greet is not in the docs',
     );
   });
 }
