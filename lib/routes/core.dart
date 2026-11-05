@@ -75,8 +75,22 @@ class CoreRouter extends Router {
     Route.mount('/core-mount', mountOuter);
     Route.mount('/core-mount/inner', mountInner, middleware: true);
 
+    /// A param in the group prefix: the fallback still matches, and
+    /// req.param has `tenant`.
+    Route.group('/t/{tenant}', registerTenant);
+
     /// GET /core/<no route> gets this, not the plain 404.
     Route.fallback((CoreController c) => c.notFound);
+  }
+
+  void registerTenant() {
+    Route.get('/home', tenantPage);
+    Route.fallback(tenantPage);
+  }
+
+  /// GET /core/t/{tenant}/...: the tenant and the path.
+  Map<String, dynamic> tenantPage(DoxRequest req) {
+    return <String, dynamic>{'tenant': req.param['tenant'], 'path': req.path()};
   }
 
   void registerFlash() {

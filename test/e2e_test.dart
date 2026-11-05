@@ -20,6 +20,7 @@ import 'package:test/test.dart';
 
 import '../db/migration/migrations.dart';
 import 'e2e_orm.dart';
+import 'e2e_round2.dart';
 import 'jobs_e2e.dart';
 import 'e2e_core.dart';
 
@@ -1924,6 +1925,10 @@ void main() {
   ormTests(api);
   /// The features of the 3.1.0 release (test/e2e_core.dart).
   coreTests(api);
+
+  /// Round 2: 3.1 features the first round did not check
+  /// (test/e2e_round2.dart).
+  round2Tests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {

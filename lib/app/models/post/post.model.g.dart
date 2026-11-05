@@ -63,9 +63,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
   static Future<void> getAuthor(List<Model<Post>> list) async {
     var result = await getBelongsTo<Post, User>(queryAuthor(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.author = result[i.tempIdValue.toString()]!;
-      }
+      i.author = result[i.tempIdValue.toString()];
     }
   }
 
@@ -81,9 +79,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
   static Future<void> getComments(List<Model<Post>> list) async {
     var result = await getHasMany<Post, Comment>(queryComments(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.comments = result[i.tempIdValue.toString()]!;
-      }
+      i.comments = result[i.tempIdValue.toString()] ?? <Comment>[];
     }
   }
 
@@ -99,9 +95,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
   static Future<void> getTags(List<Model<Post>> list) async {
     var result = await getManyToMany<Post, Tag>(queryTags(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.tags = result[i.tempIdValue.toString()]!;
-      }
+      i.tags = result[i.tempIdValue.toString()] ?? <Tag>[];
     }
   }
 

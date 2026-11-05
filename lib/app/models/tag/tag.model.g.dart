@@ -54,9 +54,7 @@ class TagGenerator extends Model<Tag> {
   static Future<void> getPosts(List<Model<Tag>> list) async {
     var result = await getManyToMany<Tag, Post>(queryPosts(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.posts = result[i.tempIdValue.toString()]!;
-      }
+      i.posts = result[i.tempIdValue.toString()] ?? <Post>[];
     }
   }
 

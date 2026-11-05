@@ -20,6 +20,12 @@ StorageConfig storageConfig = StorageConfig(
       'driver': 'local',
       'root': '${AppConstants.storageRoot}/public',
     },
+    // put() writes a temp file, then renames it. Only the tests use it.
+    'atomic': <String, dynamic>{
+      'driver': 'local',
+      'root': '${AppConstants.storageRoot}/atomic',
+      'atomic_writes': true,
+    },
     'memory': <String, dynamic>{'driver': 'memory'},
     's3': <String, dynamic>{
       'driver': 's3',
