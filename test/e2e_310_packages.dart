@@ -1013,18 +1013,29 @@ void _openApiTests(Api api) {
       expect(ids, hasLength(3));
     });
 
-    test('an optional param in the middle stays, and is required', () {
+    test('an optional param in the middle gives a path without it', () {
       ApiDoc docs = ApiDoc();
       docs.route('GET', '/a/{x?}/b', summary: 'middle');
       docs.route('GET', '/c/{x?}/d/{y?}', summary: 'both');
       Map<String, dynamic> p = paths(docs);
-      expect(p.keys, contains('/a/{x}/b'));
-      expect(p.keys, isNot(contains('/a/b')));
-      expect(p.keys, isNot(contains('/a')));
-      expect(p.keys, containsAll(<String>['/c/{x}/d/{y}', '/c/{x}/d']));
-      expect(p.keys, isNot(contains('/c/d')));
-      for (dynamic param in p['/a/{x}/b']['get']['parameters']) {
-        if (param['in'] == 'path') expect(param['required'], true);
+      expect(
+        p.keys,
+        unorderedEquals(<String>[
+          '/a/{x}/b',
+          '/a/b',
+          '/c/{x}/d/{y}',
+          '/c/{x}/d',
+          '/c/d/{y}',
+          '/c/d',
+        ]),
+      );
+      expect(pathParams(p['/a/b']['get']), isEmpty);
+      expect(pathParams(p['/c/d/{y}']['get']), <String>['y']);
+      // OpenAPI path params are always required
+      for (dynamic path in p.values) {
+        for (dynamic param in path['get']['parameters'] ?? <dynamic>[]) {
+          if (param['in'] == 'path') expect(param['required'], true);
+        }
       }
     });
 

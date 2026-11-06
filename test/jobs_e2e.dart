@@ -511,21 +511,61 @@ void jobsE2e(Api api) {
       },
     );
 
-    test('onOneServer() on a memory lock store prints one warning', () async {
-      StringBuffer err = StringBuffer();
-      Scheduler scheduler = jobs.scheduler(err: err);
-      ArrayTransport mail = Mail.fake();
-      try {
-        await scheduler.runDue(tick: DateTime.utc(2026, 11, 5, 1));
-        await scheduler.runDue(tick: DateTime.utc(2026, 11, 5, 2));
-      } finally {
-        Mail.restore();
+    /// Sets APP_ENV for one test. The scheduler reads it with Env.get.
+    void appEnv(String value) {
+      String? before = Env().env['APP_ENV'];
+      Env().env['APP_ENV'] = value;
+      addTearDown(() {
+        if (before == null) {
+          Env().env.remove('APP_ENV');
+        } else {
+          Env().env['APP_ENV'] = before;
+        }
+      });
+    }
+
+    String? realAppEnv = Platform.environment.containsKey('APP_ENV')
+        ? 'APP_ENV is a real env variable, it wins over .env'
+        : null;
+
+    test(
+      'onOneServer() on a memory lock store prints one warning in production',
+      () async {
+        appEnv('production');
+        StringBuffer err = StringBuffer();
+        Scheduler scheduler = jobs.scheduler(err: err);
+        ArrayTransport mail = Mail.fake();
+        try {
+          await scheduler.runDue(tick: DateTime.utc(2026, 11, 5, 1));
+          await scheduler.runDue(tick: DateTime.utc(2026, 11, 5, 2));
+        } finally {
+          Mail.restore();
+        }
+        expect(RegExp('onOneServer').allMatches(err.toString()), hasLength(1));
+        expect(err.toString(), contains('the lock store is a memory store'));
+        expect(err.toString(), contains("ScheduleConfig(store: 'redis')"));
+        // the task queued its email (caught by the fake)
+        mail.assertQueued((Message m) => m.subject == 'Daily report');
+      },
+      skip: realAppEnv,
+    );
+
+    test('no onOneServer() warning in development or local', () async {
+      for (String name in <String>['development', ' Local ']) {
+        appEnv(name);
+        StringBuffer err = StringBuffer();
+        // the daily-report email goes to the fake, not the queue
+        Mail.fake();
+        try {
+          await jobs
+              .scheduler(err: err)
+              .runDue(tick: DateTime.utc(2026, 11, 6, 1));
+        } finally {
+          Mail.restore();
+        }
+        expect(err.toString(), isEmpty, reason: name);
       }
-      expect(RegExp('onOneServer').allMatches(err.toString()), hasLength(1));
-      expect(err.toString(), contains("ScheduleConfig(store: 'redis')"));
-      // the task queued its email (caught by the fake)
-      mail.assertQueued((Message m) => m.subject == 'Daily report');
-    });
+    }, skip: realAppEnv);
 
     test('new frequency helpers', () {
       Schedule s = Schedule();
