@@ -122,10 +122,17 @@ void _storageTests(Api api, JobsHelper jobs) {
         expect(await disk('local').getString(key), 'local');
         await disk('atomic').put(key, 'atomic');
         expect(await disk('atomic').getString(key), 'atomic');
+        // replace it: the rename works and no temp file is left
+        await disk('atomic').put(key, 'again');
+        expect(await disk('atomic').getString(key), 'again');
+        List<String> left =
+            Directory('${AppConstants.storageRoot}/atomic/$folder')
+                .listSync()
+                .map((FileSystemEntity e) => e.uri.pathSegments.last)
+                .where((String n) => n.endsWith('.dox-upload.tmp'))
+                .toList();
+        expect(left, isEmpty);
       },
-      skip:
-          'BUG: atomic_writes temp name adds about 44 chars, so a name over '
-          '211 chars fails with ENAMETOOLONG (local_driver.dart _tempFile)',
     );
 
     test('the unicode file is served by its signed URL', () async {
