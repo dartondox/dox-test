@@ -24,6 +24,7 @@ import 'e2e_310_packages.dart';
 import 'e2e_orm.dart';
 import 'e2e_round2.dart';
 import 'e2e_310_orm.dart';
+import 'e2e_310b_orm.dart';
 import 'jobs_e2e.dart';
 import 'e2e_core.dart';
 import 'e2e_310_core.dart';
@@ -1950,6 +1951,9 @@ void main() {
   /// inertia, openapi, cache, ioredis and the CLI
   /// (test/e2e_310_packages.dart).
   packages310Tests(api);
+
+  /// 3.1.0 round 3: ORM, validation and driver checks (test/e2e_310b_orm.dart).
+  orm310bTests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
