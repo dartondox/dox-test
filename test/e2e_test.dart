@@ -11,6 +11,7 @@ import 'package:dox_test/app/models/profile/profile.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/bootstrap.dart';
 import 'package:dox_test/config/app.dart';
+import 'package:dox_test/config/cache.dart';
 import 'package:dox_test/config/env.dart';
 import 'package:dox_test/config/schedule.dart';
 import 'package:dox_test/constants/app_constants.dart';
@@ -34,6 +35,7 @@ void main() {
   Api api = Api();
 
   setUpAll(api.boot);
+  tearDownAll(api.cleanUp);
 
   group('routing, middleware, cors', () {
     test('GET /ping works and global middleware adds a header', () async {
@@ -1926,6 +1928,7 @@ void main() {
 
   // The 3.1 ORM, validation, driver and storage checks (test/e2e_orm.dart).
   ormTests(api);
+
   /// The features of the 3.1.0 release (test/e2e_core.dart).
   coreTests(api);
 
@@ -1975,9 +1978,22 @@ class Api {
   );
 
   Future<void> boot() async {
+    // The boot flushes the redis store. On a local run, give it a prefix
+    // of its own, so two suites at the same time do not flush each
+    // other's keys. CI runs one suite per Redis, so it keeps `dox_test:`.
+    if (!Platform.environment.containsKey('CI')) {
+      cache.stores['redis']!['prefix'] = 'dox_test:$pid:';
+    }
     await Bootstrap(migrations).start(freshDatabase: true);
     for (String store in AppConstants.cacheStores) {
       await Cache().store(store).flush();
+    }
+  }
+
+  /// On a local run, remove the redis keys of this run's own prefix.
+  Future<void> cleanUp() async {
+    if (!Platform.environment.containsKey('CI')) {
+      await Cache().store('redis').flush();
     }
   }
 

@@ -287,11 +287,15 @@ void coreTests(Api api) {
           'ws://127.0.0.1:${Uri.parse(api.base).port}/core/echo',
         );
         Completer<void> done = Completer<void>();
+        Completer<void> echoed = Completer<void>();
         List<dynamic> got = <dynamic>[];
-        socket.listen(got.add, onDone: done.complete);
+        socket.listen((dynamic message) {
+          got.add(message);
+          if (!echoed.isCompleted) echoed.complete();
+        }, onDone: done.complete);
 
         socket.add('small');
-        await Future<void>.delayed(Duration(milliseconds: 200));
+        await echoed.future.timeout(Duration(seconds: 3));
         expect(got, <dynamic>['small']);
 
         socket.add('x' * 100);
@@ -764,18 +768,15 @@ void coreTests(Api api) {
       },
     );
 
-    test(
-      'dox_openapi: {name?} gives two paths',
-      () async {
-        Map<String, dynamic> doc = api.json(await api.get('/openapi.json'));
-        Map<String, dynamic> paths = doc['paths'];
-        expect(
-          paths.keys,
-          containsAll(<String>['/api/greet', '/api/greet/{name}']),
-        );
-        expect(paths['/api/greet'].toString(), isNot(contains('{name}')));
-      },
-    );
+    test('dox_openapi: {name?} gives two paths', () async {
+      Map<String, dynamic> doc = api.json(await api.get('/openapi.json'));
+      Map<String, dynamic> paths = doc['paths'];
+      expect(
+        paths.keys,
+        containsAll(<String>['/api/greet', '/api/greet/{name}']),
+      );
+      expect(paths['/api/greet'].toString(), isNot(contains('{name}')));
+    });
   });
 }
 
