@@ -1270,10 +1270,6 @@ void _redisTests(JobsHelper jobs) {
         await full.close();
         expect(uncaught, isEmpty);
       },
-      skip:
-          'BUG: a socket write after the server closed gives an uncaught '
-          'SocketException (reset by peer); socket.done has no error '
-          'handler (ioredis redis_connection.dart _flush, socket.add)',
     );
 
     test(
