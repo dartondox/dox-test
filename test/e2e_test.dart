@@ -21,6 +21,7 @@ import 'package:test/test.dart';
 import '../db/migration/migrations.dart';
 import 'e2e_orm.dart';
 import 'e2e_round2.dart';
+import 'e2e_310_orm.dart';
 import 'jobs_e2e.dart';
 import 'e2e_core.dart';
 
@@ -1929,6 +1930,10 @@ void main() {
   /// Round 2: 3.1 features the first round did not check
   /// (test/e2e_round2.dart).
   round2Tests(api);
+
+  /// 3.1.0: more ORM, migration, validation and driver checks
+  /// (test/e2e_310_orm.dart).
+  orm310Tests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
