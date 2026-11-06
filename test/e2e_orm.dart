@@ -697,14 +697,19 @@ void ormTests(Api api) {
 
     test('the same SQL with a number, then a text param', () async {
       // the first run has a number type, the second a text type
-      await QueryBuilder.table('users').where('email', 0).count();
+      int all = await QueryBuilder.table('users').count();
+      int first = await QueryBuilder.table('users').where('email', 0).count();
+      // MySQL turns each email into a number (0) to compare it with 0, so
+      // every row matches. Postgres and SQLite find no row.
+      bool mysql = databaseConfig.getConnectionConfig().driver == Driver.mysql;
+      expect(first, mysql ? all : 0);
       expect(
         await QueryBuilder.table('users').where('email', 'zzz').count(),
         0,
       );
     });
 
-    test('a database that is not there gives a clear error', () async {
+    test('a closed port gives a clear connect error', () async {
       ConnectionConfig base = databaseConfig.getConnectionConfig();
       if (base.driver == Driver.sqlite) {
         markTestSkipped('sqlite has no server');
@@ -952,6 +957,9 @@ void ormTests(Api api) {
         <String, dynamic>{},
       );
       expect(res.statusCode, 200, reason: res.body);
+      expect(api.json(res), <String, dynamic>{'done': true});
+      // s3 has no folders: no object is made for it
+      expect((await api.get('/api/storage/s3/info/made/here')).statusCode, 404);
     });
 
     test('a signed URL works only on the route of its own disk', () async {

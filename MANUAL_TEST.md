@@ -9,7 +9,7 @@ Each step: a command, then what you should see.
 cp .env.example .env
 dart pub get
 dart run build_runner build                 # models, DTOs, env.g.dart, openapi.g.dart
-dart run ../dox/packages/dox-cli/bin/dox.dart env:check   # → The env is valid.
+dart run ../dox-cli/bin/dox.dart env:check   # → The env is valid.
 docker compose up -d --wait                 # postgres, mysql, redis, minio, mailhog
 dart run bin/migrate.dart run               # optional: the server also migrates
 dart run bin/server.dart                    # http://127.0.0.1:3100
@@ -26,7 +26,7 @@ J='Content-Type: application/json'
 Other database: `DB_CONNECTION=mysql dart run bin/server.dart` (or `sqlite`).
 
 Env keys are typed in `lib/config/env.dart` (`@DoxEnv`). A bad value stops the app:
-`APP_PORT=abc dart run ../dox/packages/dox-cli/bin/dox.dart env:check`
+`APP_PORT=abc dart run ../dox-cli/bin/dox.dart env:check`
 → `APP_PORT must be an int, not "abc"`, exit code 1.
 
 Stop: `Ctrl+C`, then `docker compose down`.
@@ -160,7 +160,7 @@ Bad input gets `422` with `{"key": "message"}`. The controller does not run.
 - [ ] Tag "Cache" holds all cache routes (`@Tags` on the class)
 - [ ] `GET /api/tags` shows "List tags (lower case annotation)"
 - [ ] http://127.0.0.1:3100/openapi.json and http://127.0.0.1:3100/openapi.yaml → the document
-- [ ] Files: `dart run ../dox/packages/dox-cli/bin/dox.dart openapi:generate`
+- [ ] Files: `dart run ../dox-cli/bin/dox.dart openapi:generate`
   → `storage/openapi/openapi.json` and `openapi.yaml`
 
 ## 7. dox_cache (memory, file, redis)
@@ -266,7 +266,7 @@ They use the same notes as the Inertia pages. No Node needed.
 
 ## 12. Production build (AOT)
 
-- [ ] `dart run ../dox/packages/dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
+- [ ] `dart run ../dox-cli/bin/dox.dart build` → `build/bundle/bin/server`
 - [ ] Stop `dart run`, then `./build/bundle/bin/server` from the project folder
   → starts in well under a second. `curl $B/ping` → `pong`
 

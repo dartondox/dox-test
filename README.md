@@ -60,7 +60,7 @@ A file (not `:memory:`) lets every isolate see the same data.
 `dart run` is JIT: slow start, about 390 MB memory. Use the AOT build in production.
 
 ```bash
-dart run ../dox/packages/dox-cli/bin/dox.dart build   # or: dox build
+dart run ../dox-cli/bin/dox.dart build   # or: dox build
 ./build/bundle/bin/server        # run from the project folder, so it finds .env, public/ and storage/
 ```
 
@@ -69,7 +69,7 @@ It starts in about 0.05 s and uses about 16 MB.
 ## OpenAPI files
 
 ```bash
-dart run ../dox/packages/dox-cli/bin/dox.dart openapi:generate   # storage/openapi/openapi.json + .yaml
+dart run ../dox-cli/bin/dox.dart openapi:generate   # storage/openapi/openapi.json + .yaml
 ```
 
 ## CI
@@ -91,4 +91,4 @@ It checks out this repo into `dox-test` and `dartondox/dox` into `dox`, so the
   The same file works on Postgres, MySQL and SQLite.
   `db/migration/migrations.dart` lists them. Do not edit it: `dox make:migration`
   and `dox migration:*` make it again. Add a migration with
-  `dart run ../dox/packages/dox-cli/bin/dox.dart make:migration <name>`.
+  `dart run ../dox-cli/bin/dox.dart make:migration <name>`.

@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import 'e2e_test.dart' show Api;
+import 'jobs_e2e.dart' show startScheduleWorker;
 
 /// The second e2e round for 3.1.0: features with no check in the first
 /// round. They run last, on the same server and database.
@@ -76,8 +77,20 @@ void round2Tests(Api api) {
     });
 
     test('limit(-1) is ignored', () async {
+      // SQLite reads LIMIT -1 as no limit, so a row count alone can not
+      // tell. Check the SQL, and that an earlier limit is kept.
+      expect(
+        Badge().whereIn('name', names).limit(-1).toSql(),
+        isNot(contains('LIMIT')),
+      );
       List<Badge> all = await Badge().whereIn('name', names).limit(-1).get();
       expect(all, hasLength(3));
+      List<Badge> two = await Badge()
+          .whereIn('name', names)
+          .limit(2)
+          .limit(-1)
+          .get();
+      expect(two, hasLength(2));
     });
 
     test('a soft delete sets updated_at, the fields and the row', () async {
@@ -98,6 +111,10 @@ void round2Tests(Api api) {
     });
 
     test('restore() on a query changes only soft deleted rows', () async {
+      // soft delete the row here, so this test does not need the one above
+      await QueryBuilder.table('badges')
+          .where('id', ids['R2 gone'])
+          .update(<String, dynamic>{'deleted_at': DateTime.now().toUtc()});
       // a row that is not deleted: nothing to restore
       expect(
         await (Badge().where('id', ids['R2 code']) as Badge).restore(),
@@ -218,6 +235,15 @@ void round2Tests(Api api) {
     Disk atomic() => Storage().use('atomic');
     String root = '${AppConstants.storageRoot}/atomic';
 
+    // a left over file of an old run would break the checks below
+    void clean() {
+      Directory dir = Directory(root);
+      if (dir.existsSync()) dir.deleteSync(recursive: true);
+    }
+
+    setUpAll(clean);
+    tearDownAll(clean);
+
     test('put() replaces a file and leaves no temp file', () async {
       Disk disk = atomic();
       await disk.put('notes/a.txt', 'one');
@@ -245,7 +271,6 @@ void round2Tests(Api api) {
         list.objects.map((DriveEntry e) => e.name),
         unorderedEquals(<String>['a.txt', 'b.txt']),
       );
-      Directory(root).deleteSync(recursive: true);
     });
   });
 
@@ -397,17 +422,7 @@ void round2Tests(Api api) {
     test(
       'SIGTERM (docker stop) stops `schedule work` in a few seconds',
       () async {
-        Process p = await Process.start('dart', <String>[
-          'run',
-          'bin/schedule.dart',
-          'work',
-        ]);
-        StringBuffer out = StringBuffer();
-        p.stdout.transform(utf8.decoder).listen(out.write);
-        p.stderr.transform(utf8.decoder).listen(out.write);
-        for (int i = 0; i < 600 && !out.toString().contains('working'); i++) {
-          await Future<void>.delayed(Duration(milliseconds: 100));
-        }
+        var (Process p, StringBuffer out) = await startScheduleWorker();
         p.kill(); // SIGTERM
         int code = await p.exitCode.timeout(
           Duration(seconds: 5),

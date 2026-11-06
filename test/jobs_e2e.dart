@@ -24,7 +24,8 @@ import 'e2e_test.dart';
 /// server and the database of that file.
 ///
 /// The tests that send real email need MailHog (SMTP on MAIL_PORT, its
-/// HTTP API on MAILHOG_API). They skip when MailHog is not there.
+/// HTTP API on MAILHOG_API). They skip when MailHog is not running, but
+/// only on a local run: in CI (`CI` is set) they fail.
 void jobsE2e(Api api) {
   MailHog mailhog = MailHog();
   JobsHelper jobs = JobsHelper(api);
@@ -698,8 +699,6 @@ void jobsE2e(Api api) {
         expect(started, 1);
         release.complete();
         await Future<void>.delayed(Duration(milliseconds: 200));
-        Completer<void> again = release = Completer<void>()..complete();
-        expect(again.isCompleted, true);
         expect(
           (await scheduler.runDue(tick: t.add(Duration(minutes: 2))))[name],
           TaskOutcome.ran,
@@ -711,33 +710,55 @@ void jobsE2e(Api api) {
   });
 
   group('3.1: the real bin/schedule.dart', () {
-    test(
-      'Ctrl+C stops `schedule work` in a few seconds',
-      () async {
-        Process p = await Process.start('dart', <String>[
-          'run',
-          'bin/schedule.dart',
-          'work',
-        ]);
-        StringBuffer out = StringBuffer();
-        p.stdout.transform(utf8.decoder).listen(out.write);
-        p.stderr.transform(utf8.decoder).listen(out.write);
-        for (int i = 0; i < 600 && !out.toString().contains('working'); i++) {
-          await Future<void>.delayed(Duration(milliseconds: 100));
-        }
-        p.kill(ProcessSignal.sigint);
-        int code = await p.exitCode.timeout(
-          Duration(seconds: 5),
-          onTimeout: () {
-            p.kill(ProcessSignal.sigkill);
-            return -1;
-          },
-        );
-        expect(code, 0, reason: out.toString());
-      },
-      timeout: Timeout(Duration(minutes: 2)),
-    );
+    test('Ctrl+C stops `schedule work` in a few seconds', () async {
+      var (Process p, StringBuffer out) = await startScheduleWorker();
+      p.kill(ProcessSignal.sigint);
+      int code = await p.exitCode.timeout(
+        Duration(seconds: 5),
+        onTimeout: () {
+          p.kill(ProcessSignal.sigkill);
+          return -1;
+        },
+      );
+      expect(code, 0, reason: out.toString());
+    }, timeout: Timeout(Duration(minutes: 2)));
   });
+}
+
+/// Starts `dart run bin/schedule.dart work` and waits until it prints
+/// `working`. Fails at once when the process ends first, and after 30
+/// seconds (the first run compiles) when it never prints it.
+Future<(Process, StringBuffer)> startScheduleWorker() async {
+  Process p = await Process.start('dart', <String>[
+    'run',
+    'bin/schedule.dart',
+    'work',
+  ]);
+  StringBuffer out = StringBuffer();
+  Completer<bool> ready = Completer<bool>();
+  void read(String text) {
+    out.write(text);
+    if (!ready.isCompleted && out.toString().contains('working')) {
+      ready.complete(true);
+    }
+  }
+
+  p.stdout.transform(utf8.decoder).listen(read);
+  p.stderr.transform(utf8.decoder).listen(read);
+  unawaited(
+    p.exitCode.then((_) {
+      if (!ready.isCompleted) ready.complete(false);
+    }),
+  );
+  bool started = await ready.future.timeout(
+    Duration(seconds: 30),
+    onTimeout: () => false,
+  );
+  if (!started) {
+    p.kill(ProcessSignal.sigkill);
+    fail('`schedule work` did not print "working":\n$out');
+  }
+  return (p, out);
 }
 
 /// A job that runs longer than its timeout. It counts its runs and how
@@ -956,7 +977,7 @@ class MailHogMessage {
       String joined = body.replaceAll(RegExp(r'=\r?\n'), '');
       List<int> bytes = <int>[];
       for (int i = 0; i < joined.length; i++) {
-        if (joined[i] == '=' && i + 2 < joined.length + 0) {
+        if (joined[i] == '=' && i + 2 < joined.length) {
           bytes.add(int.parse(joined.substring(i + 1, i + 3), radix: 16));
           i += 2;
         } else {
@@ -1010,7 +1031,7 @@ class MailHog {
 
   bool _up = false;
 
-  /// Is MailHog there? Tests skip when it is not.
+  /// Is MailHog running? See [skip].
   Future<void> check() async {
     try {
       http.Response res = await http
@@ -1022,10 +1043,13 @@ class MailHog {
     }
   }
 
-  /// True (and the test is marked skipped) when MailHog is not there.
+  /// True (and the test is marked skipped) when MailHog is not running.
+  /// In CI the test fails instead, so a broken MailHog is not missed.
   bool skip(void Function(String) mark) {
     if (_up) return false;
-    mark('MailHog is not running at $base (docker compose up mailhog)');
+    String why = 'MailHog is not running at $base (docker compose up mailhog)';
+    if (Platform.environment.containsKey('CI')) fail(why);
+    mark(why);
     return true;
   }
 
