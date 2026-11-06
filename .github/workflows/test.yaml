@@ -129,6 +129,15 @@ jobs:
           cp .env.example .env
           dart pub get
           dart run build_runner build
+      # The dox CLI tests run `dart run ../dox-cli/bin/dox.dart`. The CLI
+      # must use the same local clones (dox_migration and its packages),
+      # not pub.dev. Our overrides have `../<repo>` paths, and dox-cli is
+      # next to dox-test, so the same file works there.
+      - name: Set up the dox CLI
+        working-directory: dox-test
+        run: |
+          cp pubspec_overrides.yaml ../dox-cli/pubspec_overrides.yaml
+          (cd ../dox-cli && dart pub get)
       - name: Migrate
         working-directory: dox-test
         run: dart run bin/migrate.dart run
