@@ -60,9 +60,7 @@ class UserGenerator extends Model<User> {
   static Future<void> getProfile(List<Model<User>> list) async {
     var result = await getHasOne<User, Profile>(queryProfile(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.profile = result[i.tempIdValue.toString()]!;
-      }
+      i.profile = result[i.tempIdValue.toString()];
     }
   }
 
@@ -78,9 +76,7 @@ class UserGenerator extends Model<User> {
   static Future<void> getPosts(List<Model<User>> list) async {
     var result = await getHasMany<User, Post>(queryPosts(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.posts = result[i.tempIdValue.toString()]!;
-      }
+      i.posts = result[i.tempIdValue.toString()] ?? <Post>[];
     }
   }
 

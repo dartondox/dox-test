@@ -1515,6 +1515,28 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiOperation(
       controller: 'CoreRouter',
+      method: 'registerTenant',
+      argumentTypes: <String>[],
+      tags: <String>['CoreRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
+      method: 'tenantPage',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/t/{tenant}/...: the tenant and the path.',
+      tags: <String>['CoreRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'CoreRouter',
       method: 'registerFlash',
       argumentTypes: <String>[],
       tags: <String>['CoreRouter'],
@@ -1912,6 +1934,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('POST', 'core/banner', 'CoreController.banner'),
     OpenApiRouteBinding('GET', 'core/plain-view', 'CoreController.plainView'),
     OpenApiRouteBinding('GET', 'core/assets/route.txt', 'CoreRouter.routeText'),
+    OpenApiRouteBinding('GET', 'core/t/{tenant}/home', 'CoreRouter.tenantPage'),
     OpenApiRouteBinding('GET', 'core/flash/set', 'CoreController.flashSet'),
     OpenApiRouteBinding('GET', 'core/flash/keep', 'CoreController.flashKeep'),
     OpenApiRouteBinding('GET', 'core/flash/read', 'CoreController.flashRead'),

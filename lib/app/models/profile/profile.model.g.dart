@@ -56,9 +56,7 @@ class ProfileGenerator extends Model<Profile> {
   static Future<void> getUser(List<Model<Profile>> list) async {
     var result = await getBelongsTo<Profile, User>(queryUser(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.user = result[i.tempIdValue.toString()]!;
-      }
+      i.user = result[i.tempIdValue.toString()];
     }
   }
 

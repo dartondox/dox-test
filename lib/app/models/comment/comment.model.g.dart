@@ -56,9 +56,7 @@ class CommentGenerator extends Model<Comment> {
   static Future<void> getUser(List<Model<Comment>> list) async {
     var result = await getBelongsTo<Comment, User>(queryUser(list), list);
     for (dynamic i in list) {
-      if (result[i.tempIdValue.toString()] != null) {
-        i.user = result[i.tempIdValue.toString()]!;
-      }
+      i.user = result[i.tempIdValue.toString()];
     }
   }
 
