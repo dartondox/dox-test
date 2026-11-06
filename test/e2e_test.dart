@@ -22,8 +22,10 @@ import '../db/migration/migrations.dart';
 import 'e2e_310_packages.dart';
 import 'e2e_orm.dart';
 import 'e2e_round2.dart';
+import 'e2e_310_orm.dart';
 import 'jobs_e2e.dart';
 import 'e2e_core.dart';
+import 'e2e_310_core.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1930,6 +1932,14 @@ void main() {
   /// Round 2: 3.1 features the first round did not check
   /// (test/e2e_round2.dart).
   round2Tests(api);
+
+  /// 3.1.0: more ORM, migration, validation and driver checks
+  /// (test/e2e_310_orm.dart).
+  orm310Tests(api);
+
+  /// More 3.1.0 checks for dox_core, dox_auth and dox_socketio: edge
+  /// input and 3.0.2 behavior (test/e2e_310_core.dart).
+  core310Tests(api);
 
   /// The 3.1 package checks: storage, queue, scheduler, mailer, view,
   /// inertia, openapi, cache, ioredis and the CLI
