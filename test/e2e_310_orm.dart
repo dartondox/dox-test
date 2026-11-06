@@ -75,6 +75,7 @@ void orm310Tests(Api api) {
 
     test('fromSub on a soft delete model: reads use the alias', () async {
       List<String> names = <String>['E2E310 a', 'E2E310 b', 'E2E310 c'];
+      _removeBadgesAfter(names);
       for (String name in names) {
         await Badge().create(<String, dynamic>{'name': name, 'score': 3});
       }
@@ -97,10 +98,10 @@ void orm310Tests(Api api) {
         return true;
       });
       expect(chunked, <String>['E2E310 a', 'E2E310 c']);
-      await Badge().withTrash().whereIn('name', names).forceDelete();
     });
 
     test('fromSub on a soft delete model: writes use the table', () async {
+      _removeBadgesAfter(<String>['E2E310 w']);
       Badge badge = await Badge().create(<String, dynamic>{
         'name': 'E2E310 w',
         'score': 1,
@@ -115,7 +116,6 @@ void orm310Tests(Api api) {
       expect((await Badge().withTrash().find(badge.id))?.deletedAt, isNotNull);
       expect(await q().restore(), true);
       expect((await Badge().find(badge.id))?.score, 7);
-      await Badge().where('id', badge.id).forceDelete();
     });
 
     test('a relation that is gone is cleared on the same model', () async {
@@ -129,6 +129,7 @@ void orm310Tests(Api api) {
       await shelf.$getRelation<dynamic>('books');
       expect(shelf.books, isEmpty);
 
+      _removeBadgesAfter(<String>['E2E310 morph']);
       Badge badge = await Badge().create(<String, dynamic>{
         'name': 'E2E310 morph',
         'score': 1,
@@ -138,13 +139,15 @@ void orm310Tests(Api api) {
         'reactable_id': badge.id,
         'reactable_type': Model.morphTypeOf(Badge()),
       });
+      addTearDown(() async {
+        await Reaction().where('id', reaction.id).delete();
+      });
       Reaction loaded = (await Reaction().find(reaction.id))!;
       await loaded.$getRelation<dynamic>('reactable');
       expect((loaded.reactable as Badge?)?.name, 'E2E310 morph');
       await Badge().where('id', badge.id).forceDelete();
       await loaded.$getRelation<dynamic>('reactable');
       expect(loaded.reactable, isNull);
-      await Reaction().where('id', reaction.id).delete();
     });
 
     test('update and delete with orderBy and limit', () async {
@@ -325,6 +328,19 @@ void orm310Tests(Api api) {
   });
 
   group('3.1.0 e2e: dox_migration', () {
+    /// drops the test tables and their `dox_db_migration` rows, also
+    /// when a test fails
+    Future<void> cleanMigrations() async {
+      await Schema().dropIfExists('e2e_mig_a');
+      await Schema().dropIfExists('e2e_mig_b');
+      await QueryBuilder.table('dox_db_migration')
+          .whereIn('migration', <String>[_migA.name, _migB.name])
+          .delete();
+    }
+
+    setUp(cleanMigrations);
+    tearDown(cleanMigrations);
+
     test('migrate and rollback a batch, up and down', () async {
       Migrator m = _migrator(<MigrationEntry>[_migA, _migB]);
       await m.migrate();
@@ -374,26 +390,47 @@ void orm310Tests(Api api) {
     });
 
     test('foreignId keeps constrained() after unique()', () async {
+      // SQLite checks foreign keys only with this pragma on
+      bool sqlite = driver == Driver.sqlite;
+      if (sqlite) {
+        List<Map<String, dynamic>> fk = await QueryBuilder.query(
+          'PRAGMA foreign_keys',
+        );
+        if ('${fk.first.values.first}' != '1') {
+          await QueryBuilder.query('PRAGMA foreign_keys = ON');
+          addTearDown(() async {
+            await QueryBuilder.query('PRAGMA foreign_keys = OFF');
+          });
+        }
+      }
+      addTearDown(() async {
+        await Schema().dropIfExists('e2e_fk');
+        await Schema().dropIfExists('e2e_members');
+      });
       await Schema().dropIfExists('e2e_fk');
+      await Schema().dropIfExists('e2e_members');
+      await Schema().create('e2e_members', _Tables.members);
       await Schema().create('e2e_fk', (Table t) {
         t.id();
         t.foreignId('member_id').unique().constrained('e2e_members');
       });
-      await Schema().dropIfExists('e2e_members');
-      await Schema().create('e2e_members', _Tables.members);
-      try {
-        E2eMember m = await E2eMember().create(<String, dynamic>{'name': 'fk'});
-        await QueryBuilder.table('e2e_fk')
-            .insert(<String, dynamic>{'member_id': m.id});
-        await expectLater(
-          QueryBuilder.table('e2e_fk')
-              .insert(<String, dynamic>{'member_id': m.id}),
-          throwsA(anything),
-        );
-      } finally {
-        await Schema().dropIfExists('e2e_fk');
-        await Schema().dropIfExists('e2e_members');
-      }
+
+      E2eMember m = await E2eMember().create(<String, dynamic>{'name': 'fk'});
+      await QueryBuilder.table('e2e_fk')
+          .insert(<String, dynamic>{'member_id': m.id});
+      // unique(): the same member twice is rejected
+      await expectLater(
+        QueryBuilder.table('e2e_fk')
+            .insert(<String, dynamic>{'member_id': m.id}),
+        throwsA(anything),
+      );
+      // constrained(): a member that does not exist is rejected
+      await expectLater(
+        QueryBuilder.table('e2e_fk')
+            .insert(<String, dynamic>{'member_id': 999999}),
+        throwsA(anything),
+      );
+      expect(await QueryBuilder.table('e2e_fk').count(), 1);
     });
   });
 
@@ -671,7 +708,12 @@ void orm310Tests(Api api) {
     });
 
     test('the same SQL with int, text, bool and null params', () async {
-      await roundTrip(<String, dynamic>{'tag': 'types', 's': '5', 'i': 5});
+      await roundTrip(<String, dynamic>{
+        'tag': 'types',
+        's': '5',
+        'i': 5,
+        'flag': true,
+      });
       QueryBuilder<Map<String, dynamic>> q() {
         return QueryBuilder.table('e2e_values').where('tag', 'types');
       }
@@ -684,6 +726,13 @@ void orm310Tests(Api api) {
       expect(await q().where('s', 'zzz').count(), 0);
       expect(await q().where('s', null).count(), 0);
       expect(await q().where('s', '5').count(), 1);
+
+      // a bool column: bool params, then an int on the same SQL
+      expect(await q().where('flag', true).count(), 1);
+      expect(await q().where('flag', false).count(), 0);
+      expect(await q().where('flag', 1).count(), 1);
+      expect(await q().where('flag', 0).count(), 0);
+      expect(await q().where('flag', true).count(), 1);
     });
   });
 
@@ -880,7 +929,7 @@ void orm310Tests(Api api) {
   group('3.1.0 e2e: drivers after a schema change', () {
     const String table = 'e2e_ddl';
 
-    tearDownAll(() async {
+    tearDown(() async {
       await Schema().dropIfExists(table);
     });
 
@@ -918,6 +967,14 @@ void orm310Tests(Api api) {
     });
 
     test('ALTER and RENAME in the middle of traffic', () async {
+      // its own table, so it does not need the test before it
+      await Schema().dropIfExists(table);
+      await Schema().create(table, (Table t) {
+        t.id();
+        t.string('v', 10);
+      });
+      await QueryBuilder.table(table).insert(<String, dynamic>{'v': '007'});
+
       Future<List<Map<String, dynamic>>> read() {
         return QueryBuilder.table(table).where('v', '007').limit(1).get();
       }
@@ -1069,6 +1126,10 @@ void orm310Tests(Api api) {
         'password': 'x',
       });
       List<int> posts = <int>[];
+      addTearDown(() async {
+        await Post().withTrash().where('user_id', user.id).forceDelete();
+        await User().where('id', user.id).delete();
+      });
       for (int i = 0; i < 2; i++) {
         Post post = await Post().forceCreate(<String, dynamic>{
           'user_id': user.id,
@@ -1078,26 +1139,21 @@ void orm310Tests(Api api) {
         });
         posts.add(post.id as int);
       }
-      try {
-        User? loaded = await User()
-            .preload('posts')
-            .withCount('posts')
-            .find(user.id);
-        expect(loaded?.posts.length, 2);
-        expect(loaded?.aggregate('posts_count'), 2);
-        expect(await User().whereHas('posts').where('id', user.id).count(), 1);
+      User? loaded = await User()
+          .preload('posts')
+          .withCount('posts')
+          .find(user.id);
+      expect(loaded?.posts.length, 2);
+      expect(loaded?.aggregate('posts_count'), 2);
+      expect(await User().whereHas('posts').where('id', user.id).count(), 1);
 
-        Post? post = await Post().preload('author').find(posts.first);
-        expect(post?.author?.name, 'E2E310');
+      Post? post = await Post().preload('author').find(posts.first);
+      expect(post?.author?.name, 'E2E310');
 
-        // the soft deleted post is not counted
-        await Post().where('id', posts.last).delete();
-        loaded = await User().withCount('posts').find(user.id);
-        expect(loaded?.aggregate('posts_count'), 1);
-      } finally {
-        await Post().withTrash().whereIn('id', posts).forceDelete();
-        await User().where('id', user.id).delete();
-      }
+      // the soft deleted post is not counted
+      await Post().where('id', posts.last).delete();
+      loaded = await User().withCount('posts').find(user.id);
+      expect(loaded?.aggregate('posts_count'), 1);
     });
 
     test('transactions roll back, savepoints keep the outer work', () async {
@@ -1156,6 +1212,7 @@ void orm310Tests(Api api) {
     test(
       'soft delete hides a row, withTrash and restore bring it back',
       () async {
+        _removeBadgesAfter(<String>['E2E310 soft']);
         Badge badge = await Badge().create(<String, dynamic>{
           'name': 'E2E310 soft',
           'score': 2,
@@ -1165,7 +1222,6 @@ void orm310Tests(Api api) {
         expect(await Badge().withTrash().where('id', badge.id).count(), 1);
         expect(await badge.restore(), true);
         expect((await Badge().find(badge.id))?.name, 'E2E310 soft');
-        await Badge().where('id', badge.id).forceDelete();
       },
     );
   });
@@ -1184,10 +1240,14 @@ final MigrationEntry _migB = MigrationEntry(
 /// A migrator for [list] only, on the app connection. The empty folder
 /// means no `.sql` file is read.
 Migrator _migrator(List<MigrationEntry> list) {
+  Directory dir = Directory.systemTemp.createTempSync('e2e310-mig');
+  addTearDown(() async {
+    await dir.delete(recursive: true);
+  });
   return Migrator(
     migrations: list,
     connection: SqlQueryBuilder().getDBDriver(),
-    directory: Directory.systemTemp.createTempSync('e2e310-mig'),
+    directory: dir,
   );
 }
 
@@ -1273,6 +1333,7 @@ class _Tables {
       t.bigInteger('big').nullable();
       t.integer('i').nullable();
       t.double('d').nullable();
+      t.boolean('flag').nullable();
     });
     for (String sku in <String>['A1', 'A2', 'B1']) {
       await E2eBook().create(<String, dynamic>{
@@ -1288,4 +1349,12 @@ class _Tables {
       await Schema().dropIfExists(name);
     }
   }
+}
+
+/// force deletes the badges with these names after the test, also when
+/// it fails. `badges` is an app table, shared with the other files.
+void _removeBadgesAfter(List<String> names) {
+  addTearDown(() async {
+    await Badge().withTrash().whereIn('name', names).forceDelete();
+  });
 }

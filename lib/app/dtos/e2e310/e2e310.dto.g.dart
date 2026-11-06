@@ -43,6 +43,12 @@ class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm> {
     // teamName: String?
     Object? c1;
     c1 = s.string(s.read(input, 'team_name'), p, 'team_name', _m);
+    // email: String?
+    Object? c2;
+    c2 = s.string(s.read(input, 'email'), p, 'email', _m, trim: true);
+    // phone: String?
+    Object? c3;
+    c3 = s.string(s.read(input, 'phone'), p, 'phone', _m);
     s.requiredWhen(
       const RequiredIf('kind', 'team'),
       c1,
@@ -51,12 +57,6 @@ class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm> {
       'team_name',
       _m,
     );
-    // email: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'email'), p, 'email', _m, trim: true);
-    // phone: String?
-    Object? c3;
-    c3 = s.string(s.read(input, 'phone'), p, 'phone', _m);
     s.requiredWhen(
       const RequiredWith(<String>['email']),
       c3,

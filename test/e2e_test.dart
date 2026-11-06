@@ -24,6 +24,7 @@ import 'e2e_round2.dart';
 import 'e2e_310_orm.dart';
 import 'jobs_e2e.dart';
 import 'e2e_core.dart';
+import 'e2e_310_core.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1934,6 +1935,10 @@ void main() {
   /// 3.1.0: more ORM, migration, validation and driver checks
   /// (test/e2e_310_orm.dart).
   orm310Tests(api);
+
+  /// More 3.1.0 checks for dox_core, dox_auth and dox_socketio: edge
+  /// input and 3.0.2 behavior (test/e2e_310_core.dart).
+  core310Tests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
