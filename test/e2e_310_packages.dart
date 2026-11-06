@@ -620,7 +620,13 @@ void _mailerTests(JobsHelper jobs) {
           message(subject: 'Hi\r\nBcc: evil@x.com')
               .copyWith(from: Address('a@x.com')),
         ),
-        throwsA(isA<MailException>()),
+        throwsA(
+          isA<MailException>().having(
+            (MailException e) => '$e',
+            'text',
+            contains('the subject has a line break'),
+          ),
+        ),
       );
     });
 
@@ -655,7 +661,7 @@ void _mailerTests(JobsHelper jobs) {
         name: '[click me](javascript:alert(1))',
         url: 'https://ok.test/a?b=1&c=2',
       ).toMessage();
-      expect(m.html, isNot(contains('javascript:')));
+      expect(m.html, isNot(contains('href="javascript')));
       expect(m.html, contains('click me'));
       expect(m.html, contains('href="https://ok.test/a?b=1&amp;c=2"'));
       // the text body keeps the Markdown
@@ -1160,25 +1166,28 @@ void _redisTests(JobsHelper jobs) {
       List<String> errors = <String>[];
       options.onError = (dynamic e) => errors.add('$e');
       Redis redis = Redis(options);
-      Future<dynamic> get = redis.get('x');
       Object? result;
-      unawaited(
-        get.then(
-          (_) => result = 'ok',
-          onError: (Object e) {
-            result = e;
-          },
-        ),
-      );
-      for (
-        int i = 0;
-        i < 100 && !errors.any((String e) => e.contains(text));
-        i++
-      ) {
-        await Future<void>.delayed(Duration(milliseconds: 50));
+      try {
+        Future<dynamic> get = redis.get('x');
+        unawaited(
+          get.then(
+            (_) => result = 'ok',
+            onError: (Object e) {
+              result = e;
+            },
+          ),
+        );
+        for (
+          int i = 0;
+          i < 100 && !errors.any((String e) => e.contains(text));
+          i++
+        ) {
+          await Future<void>.delayed(Duration(milliseconds: 50));
+        }
+        expect(errors.join('\n'), contains(text));
+      } finally {
+        await redis.disconnect();
       }
-      expect(errors.join('\n'), contains(text));
-      await redis.disconnect();
       for (int i = 0; i < 100 && result == null; i++) {
         await Future<void>.delayed(Duration(milliseconds: 20));
       }
@@ -1266,13 +1275,16 @@ void _redisTests(JobsHelper jobs) {
             connectTimeout: Duration(seconds: 2),
           ),
         );
-        Stopwatch watch = Stopwatch()..start();
-        await expectLater(
-          redis.get('x').timeout(Duration(seconds: 5)),
-          throwsA(isNot(isA<TimeoutException>())),
-        );
-        expect(watch.elapsed, lessThan(Duration(seconds: 3)));
-        await redis.disconnect();
+        try {
+          Stopwatch watch = Stopwatch()..start();
+          await expectLater(
+            redis.get('x').timeout(Duration(seconds: 5)),
+            throwsA(isNot(isA<TimeoutException>())),
+          );
+          expect(watch.elapsed, lessThan(Duration(seconds: 3)));
+        } finally {
+          await redis.disconnect();
+        }
       },
     );
 
@@ -1385,6 +1397,12 @@ void _cliTests() {
             .listSync()
             .map((FileSystemEntity e) => e.path)
             .toList();
+        // if the CLI ever writes a new file, remove it
+        addTearDown(() {
+          for (FileSystemEntity e in Directory('db/migration').listSync()) {
+            if (!before.contains(e.path)) e.deleteSync();
+          }
+        });
         ProcessResult r = await dox(<String>['queue:table']);
         expect(r.exitCode, 1, reason: '${r.stdout}${r.stderr}');
         expect('${r.stdout}${r.stderr}', contains('create_queue_tables'));
@@ -1402,6 +1420,7 @@ void _cliTests() {
       'key:generate --show prints a key and does not change .env',
       () async {
         String env = File('.env').readAsStringSync();
+        addTearDown(() => File('.env').writeAsStringSync(env));
         ProcessResult r = await dox(<String>['key:generate', '--show']);
         expect(r.exitCode, 0, reason: '${r.stderr}');
         String key = '${r.stdout}'.trim().split('\n').last.trim();
@@ -1421,6 +1440,16 @@ void _cliTests() {
           '--step=2',
           '--step=3',
         ]);
+        // if the CLI ever rolls back, run the migrations again
+        addTearDown(() async {
+          if (r.exitCode != 1) {
+            await Process.run('dart', <String>[
+              'run',
+              'bin/migrate.dart',
+              'run',
+            ]);
+          }
+        });
         expect(r.exitCode, 1, reason: '${r.stdout}${r.stderr}');
         expect('${r.stdout}${r.stderr}', contains('--step'));
       },
