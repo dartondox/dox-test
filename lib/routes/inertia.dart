@@ -3,6 +3,7 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/inertia.controller.dart';
 import 'package:dox_test/app/http/controllers/web_auth.controller.dart';
 import 'package:dox_test/app/http/middleware/inertia.middleware.dart';
+import 'package:dox_test/routes/e310b_pkg.dart';
 
 /// Inertia pages (React). All routes here start with /inertia
 class InertiaRouter extends Router {
@@ -32,5 +33,6 @@ class InertiaRouter extends Router {
       (WebAuthController c) => c.dashboard,
     ]);
     Route.post('/logout', (WebAuthController c) => c.logoutForm);
+    Route.group('/e310b-pkg', E310bPkgInertiaRoutes().register);
   }
 }
