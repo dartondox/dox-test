@@ -821,7 +821,12 @@ class RejectingSmtp {
         .cast<List<int>>()
         .transform(utf8.decoder)
         .transform(LineSplitter())
-        .listen((String line) => client.write(answer(line)));
+        .listen(
+          (String line) => client.write(answer(line)),
+          // the mailer may drop its pooled connection later: a reset
+          // then is not an error of any test
+          onError: (Object _) {},
+        );
   }
 
   String answer(String line) {

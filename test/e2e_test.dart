@@ -21,6 +21,7 @@ import 'package:test/test.dart';
 
 import '../db/migration/migrations.dart';
 import 'e2e_310_packages.dart';
+import 'e2e_310b_packages.dart';
 import 'e2e_orm.dart';
 import 'e2e_round2.dart';
 import 'e2e_310_orm.dart';
@@ -1954,6 +1955,10 @@ void main() {
 
   /// 3.1.0 round 3: ORM, validation and driver checks (test/e2e_310b_orm.dart).
   orm310bTests(api);
+
+  /// 3.1.0 round 3: queue, CLI, mail, storage, scheduler, Inertia and
+  /// view checks (test/e2e_310b_packages.dart).
+  packages310bTests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
