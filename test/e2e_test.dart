@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import '../db/migration/migrations.dart';
+import 'e2e_310_packages.dart';
 import 'e2e_orm.dart';
 import 'e2e_round2.dart';
 import 'jobs_e2e.dart';
@@ -1929,6 +1930,11 @@ void main() {
   /// Round 2: 3.1 features the first round did not check
   /// (test/e2e_round2.dart).
   round2Tests(api);
+
+  /// The 3.1 package checks: storage, queue, scheduler, mailer, view,
+  /// inertia, openapi, cache, ioredis and the CLI
+  /// (test/e2e_310_packages.dart).
+  packages310Tests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
