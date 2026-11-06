@@ -4,6 +4,7 @@ import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/http/controllers/core.controller.dart';
 import 'package:dox_test/app/ws/echo.socket.dart';
+import 'package:dox_test/routes/e2e_core.dart';
 
 /// The dox_core features of 3.1.0. All routes here start with /core.
 /// No session here: only the /core/flash routes have one.
@@ -78,6 +79,8 @@ class CoreRouter extends Router {
     /// A param in the group prefix: the fallback still matches, and
     /// req.param has `tenant`.
     Route.group('/t/{tenant}', registerTenant);
+
+    Route.group('/e2e', E2eCoreRoutes().register);
 
     /// GET /core/<no route> gets this, not the plain 404.
     Route.fallback((CoreController c) => c.notFound);
