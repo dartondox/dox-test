@@ -104,7 +104,7 @@ void main() {
         await make(
           <String>['make:serializer', 'Gadget'],
           <String, String>{
-            'lib/app/http/serializers/gadget.serializer.dart': 'Gadget',
+            'lib/app/serializers/gadget.serializer.dart': 'Gadget',
           },
         );
       });
