@@ -186,137 +186,156 @@ packages:
     source: hosted
     version: "3.1.14"
   dox_annotation:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox/packages/dox-annotation"
-      relative: true
-    source: path
+      name: dox_annotation
+      sha256: "0ee1b464308269af38bb9823833d045d77eb286d99e3b50ad04314d56c7d2e7c"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_auth:
     dependency: "direct main"
     description:
-      path: "../dox-auth"
-      relative: true
-    source: path
+      name: dox_auth
+      sha256: b851ce55549d41676bec7e103fbdbc46f0f903579da0cd1c0cc974dc943ac8e6
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_builder:
     dependency: "direct dev"
     description:
-      path: "../dox/packages/dox-builder"
-      relative: true
-    source: path
+      name: dox_builder
+      sha256: a90e130094cc4a84dfaaeaeb2d030473bdc614570d3478f586a98d7577ba3634
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_cache:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox/packages/dox-cache"
-      relative: true
-    source: path
+      name: dox_cache
+      sha256: "534b659d13e994abba897ae86225cb908712b9a3227baeafb118740ecd6f6294"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_core:
     dependency: "direct main"
     description:
-      path: "../dox/packages/dox-core"
-      relative: true
-    source: path
+      name: dox_core
+      sha256: "1d78d9ae6138889eebc4220fc9a4c2324578130df304155a422bac17a28e83de"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_http_native:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox-http-native"
-      relative: true
-    source: path
+      name: dox_http_native
+      sha256: d11d9d967a3f1cba999a2bc8f94327f794eeebd5b187ea51c0b02f791a1a33b1
+      url: "https://pub.dev"
+    source: hosted
     version: "3.0.3"
   dox_inertia:
     dependency: "direct main"
     description:
-      path: "../dox-inertia"
-      relative: true
-    source: path
+      name: dox_inertia
+      sha256: dc73cd2cab4f8ec308bf2da2ba8a92b1d4417cd2b7d5e28395bc0b096e74560b
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_mailer:
     dependency: "direct main"
     description:
-      path: "../dox-mailer"
-      relative: true
-    source: path
+      name: dox_mailer
+      sha256: db47db833241b1da2bd0cc7180e62770c7c717b072a1aa5db6b2b585a0d8293c
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_migration:
     dependency: "direct main"
     description:
-      path: "../dox-orm/packages/dox-migration"
-      relative: true
-    source: path
+      name: dox_migration
+      sha256: "162bdcf75a4dcfe875d66ac1b7b935d9c71df2f9d15ffcdb9958650837c6861e"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_mysql_native:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox-mysql-native"
-      relative: true
-    source: path
+      name: dox_mysql_native
+      sha256: "216fb88058f4f2487cb820f36e59e9c3ec489110aa83c28cb0948b1930c5b99e"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.0.2"
   dox_openapi:
     dependency: "direct dev"
     description:
-      path: "../dox-openapi"
-      relative: true
-    source: path
+      name: dox_openapi
+      sha256: "44b928047dfe99525ee9dac219ef50a28c7560f44b0bada27589499240359c31"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_orm:
     dependency: "direct main"
     description:
-      path: "../dox-orm/packages/dox-orm"
-      relative: true
-    source: path
+      name: dox_orm
+      sha256: d8562a13cd5a0865d92412e268e39b185ac2dbb738bc8ffedb3d6d8ac95d25c1
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_postgres_native:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox-postgres-native"
-      relative: true
-    source: path
+      name: dox_postgres_native
+      sha256: bf4f011cf2efaf9694f7f51056a0b25980f25a8e1d71e31d88da431ef63ac3dc
+      url: "https://pub.dev"
+    source: hosted
     version: "3.0.3"
   dox_queue:
     dependency: "direct main"
     description:
-      path: "../dox-queue"
-      relative: true
-    source: path
+      name: dox_queue
+      sha256: "2549437f49d4f5fccb7551c2cfc116763e522efc09a4e740b7880b85187a5c30"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_scheduler:
     dependency: "direct main"
     description:
-      path: "../dox-scheduler"
-      relative: true
-    source: path
+      name: dox_scheduler
+      sha256: dd7c0bee0cb61b10b3ea88ef131143eb160a40a98cd75d7df300cb1428c3039f
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_socketio:
     dependency: "direct main"
     description:
-      path: "../dox-socketio"
-      relative: true
-    source: path
+      name: dox_socketio
+      sha256: "555e06b19ae91d60ee7a09ea7ed6c4f15be1eacd0dad8cf115f3f270ac743a9e"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_storage:
     dependency: "direct main"
     description:
-      path: "../dox-storage"
-      relative: true
-    source: path
+      name: dox_storage
+      sha256: c0f3054e1fd8484e18c15e6d5fb97129a28d8264230a26c0f91380e6d5ac1345
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_validation:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../dox-validation"
-      relative: true
-    source: path
+      name: dox_validation
+      sha256: "195048a1dddbf1f5fbd3b158ff3121e72eefcde302097fa13b8b2d171ee1695e"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   dox_view:
     dependency: "direct main"
     description:
-      path: "../dox-view"
-      relative: true
-    source: path
+      name: dox_view
+      sha256: "9aef2932cf05fe303f30d6a77cf945ee7d0895ff9c945405d839c5cac2fbf1d2"
+      url: "https://pub.dev"
+    source: hosted
     version: "3.1.0"
   ffi:
     dependency: transitive
@@ -409,9 +428,10 @@ packages:
   ioredis:
     dependency: "direct dev"
     description:
-      path: "../ioredis"
-      relative: true
-    source: path
+      name: ioredis
+      sha256: b1360155ec2e73c2c15da947205c31b4d6fd922b129ef39f59f88305a968a562
+      url: "https://pub.dev"
+    source: hosted
     version: "3.0.2"
   json_annotation:
     dependency: transitive
