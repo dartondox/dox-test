@@ -189,10 +189,10 @@ packages:
     dependency: transitive
     description:
       name: dox_annotation
-      sha256: "8cac3c74069f43bed22e468b7793207dfd89c74f0618576dec4be5b54bcdefb0"
+      sha256: "2ffcc2f4a8adb6220c1dea4cbee4136a14a69fd5564cf12b915700741db324c0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   dox_auth:
     dependency: "direct main"
     description:
@@ -205,26 +205,26 @@ packages:
     dependency: "direct dev"
     description:
       name: dox_builder
-      sha256: c07d91eab097da9dd8270a791b34bcaacf8a875f954a31b55d268b57fff541c2
+      sha256: f519976380c220ed1049a30e4e6d6a3bd6dfbefc30d80b9dbabe590d94e23161
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   dox_cache:
     dependency: transitive
     description:
       name: dox_cache
-      sha256: "855b7ced04f19a2c8171574088d1c61da9c9ddef905aeee3947829ab289e84fe"
+      sha256: "265785e8df6a6b21325d249dab4b72b59ba08cd47eab7547fc30307726d722d2"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   dox_core:
     dependency: "direct main"
     description:
       name: dox_core
-      sha256: "9bbf9ddfb40c782365f81bcaec821d6352df4dafe00c3591898d245da6e25209"
+      sha256: "8ea84883cf7fb5fda5563e01e5a7c788affd0c9a4ab21edb68d30dab57f6cc90"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   dox_http_native:
     dependency: transitive
     description:
@@ -325,10 +325,10 @@ packages:
     dependency: transitive
     description:
       name: dox_validation
-      sha256: aea6d8f59fa0016ffcf6c42fbbd2f4284dee10c464ea2bad603868b803d2294e
+      sha256: "2bc67273cce46cd33d4f01e71e7f6c687f6917479cc92570b8e8f5ebcdc23aab"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   dox_view:
     dependency: "direct main"
     description:
@@ -645,10 +645,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: b1ec21d306ddbec59a88ae3682ad81728561f7105db78fea0fdd67f06911a519
+      sha256: "8765980411f9b6733534efe9d014fad0750fa649590598772c04692deb34886b"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.9.1"
   stack_trace:
     dependency: transitive
     description:
