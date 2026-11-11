@@ -1825,7 +1825,7 @@ void _viewTests(Api api) {
         render(
           '@!peek()',
           data: <String, Object?>{'secret': 's3'},
-          more: <String, String>{'components/peek': '[{{ secret }}]'},
+          more: <String, String>{'components/peek': "[{{ secret ?? '' }}]"},
         ),
         '[]',
       );
@@ -1845,7 +1845,7 @@ void _viewTests(Api api) {
         'email': 'e310b_pkg global email',
       });
       expect(
-        View.render('core/plain'),
+        View.render('core/plain', <String, dynamic>{'who': 'Dox'}),
         contains('<p class="error">e310b_pkg global email</p>'),
       );
       http.Response res = await browser.send(
