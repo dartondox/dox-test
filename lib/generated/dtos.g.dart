@@ -9,6 +9,7 @@ import 'package:dox_test/app/dtos/cache/cache.dto.dart';
 import 'package:dox_test/app/dtos/core/core.dto.dart';
 import 'package:dox_test/app/dtos/e2e310/e2e310.dto.dart';
 import 'package:dox_test/app/dtos/e2e310b/e2e310b.dto.dart';
+import 'package:dox_test/app/dtos/e2e310b_orm/e2e310b_orm.dto.dart';
 import 'package:dox_test/app/dtos/file/file.dto.dart';
 import 'package:dox_test/app/dtos/mail/mail.dto.dart';
 import 'package:dox_test/app/dtos/note/note.dto.dart';
@@ -30,6 +31,8 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $CreateTokenDto,
   $E2ePlanFormDto,
   $E2eTeamFormDto,
+  $E310bAddressDto,
+  $E310bProfileFormDto,
   $HashPasswordDto,
   $IncrementCacheDto,
   $ListBadgesDto,

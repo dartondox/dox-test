@@ -422,13 +422,13 @@ void orm310Tests(Api api) {
       await expectLater(
         QueryBuilder.table('e2e_fk')
             .insert(<String, dynamic>{'member_id': m.id}),
-        throwsA(anything),
+        throwsA(driverError),
       );
       // constrained(): a member that does not exist is rejected
       await expectLater(
         QueryBuilder.table('e2e_fk')
             .insert(<String, dynamic>{'member_id': 999999}),
-        throwsA(anything),
+        throwsA(driverError),
       );
       expect(await QueryBuilder.table('e2e_fk').count(), 1);
     });
@@ -989,7 +989,11 @@ void orm310Tests(Api api) {
             .then((_) => 'altered'),
         for (int i = 0; i < 10; i++) read(),
       ]);
-      expect(results.length, 21);
+      // the ALTER worked, and every read found the row
+      expect(results[10], 'altered');
+      for (Object rows in <Object>[...results.take(10), ...results.skip(11)]) {
+        expect((rows as List<Map<String, dynamic>>).single['v'], '007');
+      }
 
       // after it, every connection sees the new column
       for (List<Map<String, dynamic>> rows in await Future.wait(
@@ -1156,37 +1160,34 @@ void orm310Tests(Api api) {
       expect(loaded?.aggregate('posts_count'), 1);
     });
 
-    test('transactions roll back, savepoints keep the outer work', () async {
-      Future<void> add(String s) async {
-        await QueryBuilder.table('e2e_values')
-            .insert(<String, dynamic>{'tag': s});
-      }
-
-      await expectLater(
-        QueryBuilder.transaction(() async {
-          await add('rb gone');
-          throw StateError('undo');
-        }),
-        throwsStateError,
-      );
-      await QueryBuilder.transaction(() async {
-        await add('rb outer');
-        try {
-          await QueryBuilder.transaction(() async {
-            await add('rb inner');
-            throw StateError('undo inner');
-          });
-        } on StateError {
-          // only the inner work is gone
+    // 'a failed nested transaction does not stop the outer one' checks
+    // the other way: an inner rollback keeps the outer work.
+    test(
+      'an outer rollback also undoes a nested transaction that worked',
+      () async {
+        Future<void> add(String s) async {
+          await QueryBuilder.table('e2e_values')
+              .insert(<String, dynamic>{'tag': s});
         }
-      });
-      List<Map<String, dynamic>> rows = await QueryBuilder.table('e2e_values')
-          .where('tag', 'like', 'rb %')
-          .get();
-      expect(rows.map((Map<String, dynamic> r) => r['tag']), <String>[
-        'rb outer',
-      ]);
-    });
+
+        await expectLater(
+          QueryBuilder.transaction(() async {
+            await add('rb outer');
+            await QueryBuilder.transaction(() async {
+              await add('rb inner');
+            });
+            throw StateError('undo');
+          }),
+          throwsStateError,
+        );
+        expect(
+          await QueryBuilder.table('e2e_values')
+              .where('tag', 'like', 'rb %')
+              .count(),
+          0,
+        );
+      },
+    );
 
     test('paginate gives total, last page and the rows', () async {
       Pagination<E2eBook> page = await E2eBook()
@@ -1358,3 +1359,14 @@ void _removeBadgesAfter(List<String> names) {
     await Badge().withTrash().whereIn('name', names).forceDelete();
   });
 }
+
+/// The error of the database driver for a write the database refuses, eg.
+/// a unique or a foreign key violation. dox_orm does not export
+/// SqliteException, so it is checked by its name.
+final Matcher driverError = predicate<Object>(
+  (Object e) =>
+      e is PgServerException ||
+      e is MysqlException ||
+      e.runtimeType.toString() == 'SqliteException',
+  'a PgServerException, MysqlException or SqliteException',
+);

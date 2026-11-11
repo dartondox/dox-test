@@ -23,6 +23,9 @@ class _$HashPasswordDto extends DtoSchema<HashPassword> {
   String get name => 'HashPassword';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   HashPassword? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -76,6 +79,9 @@ class _$AddressDto extends DtoSchema<Address> {
 
   @override
   String get name => 'Address';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   Address? convert(Object? input, DtoState s, List<Object> p) {
@@ -155,6 +161,9 @@ class _$OrderItemDto extends DtoSchema<OrderItem> {
 
   @override
   String get name => 'OrderItem';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   OrderItem? convert(Object? input, DtoState s, List<Object> p) {
@@ -264,6 +273,9 @@ class _$CreateOrderDto extends DtoSchema<CreateOrder> {
 
   @override
   String get name => 'CreateOrder';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   CreateOrder? convert(Object? input, DtoState s, List<Object> p) {
@@ -441,28 +453,12 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
     // teamName: String?
     Object? c1;
     c1 = s.string(s.read(input, 'team_name'), p, 'team_name', _m);
-    s.requiredWhen(
-      const RequiredIf('kind', 'team'),
-      c1,
-      input,
-      p,
-      'team_name',
-      _m,
-    );
     // email: String?
     Object? c2;
     c2 = s.string(s.read(input, 'email'), p, 'email', _m);
     // phone: String?
     Object? c3;
     c3 = s.string(s.read(input, 'phone'), p, 'phone', _m);
-    s.requiredWhen(
-      const RequiredWith(<String>['email']),
-      c3,
-      input,
-      p,
-      'phone',
-      _m,
-    );
     // pin: String
     Object? c4;
     c4 = s.string(s.read(input, 'pin'), p, 'pin', _m);
@@ -500,6 +496,22 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
     // slug: String?
     Object? c12;
     c12 = s.string(s.read(input, 'slug'), p, 'slug', _m);
+    s.requiredWhen(
+      const RequiredIf('kind', 'team'),
+      c1,
+      input,
+      p,
+      'team_name',
+      _m,
+    );
+    s.requiredWhen(
+      const RequiredWith(<String>['email']),
+      c3,
+      input,
+      p,
+      'phone',
+      _m,
+    );
     if (s.issues.length != e) return null;
     if (c0 is String) {
       if (!(const <String>{'team', 'solo'}.contains(c0))) {

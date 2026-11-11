@@ -1,7 +1,7 @@
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/dtos/auth/auth.dto.dart';
-import 'package:dox_test/app/serializers/user.serializer.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
+import 'package:dox_test/app/serializers/user.serializer.dart';
 import 'package:dox_test/app/services/auth.service.dart';
 
 @Inject()

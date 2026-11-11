@@ -28,6 +28,9 @@ class _$RegisterUserDto extends DtoSchema<RegisterUser> {
   bool get hasChecks => true;
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   bool get isAsync => true;
 
   @override
@@ -251,6 +254,9 @@ class _$LoginUserDto extends DtoSchema<LoginUser> {
 
   @override
   String get name => 'LoginUser';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   LoginUser? convert(Object? input, DtoState s, List<Object> p) {

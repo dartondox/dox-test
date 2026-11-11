@@ -11,6 +11,7 @@ import 'package:dox_test/config/env.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import 'e2e_310_orm.dart' show driverError;
 import 'e2e_test.dart' show Api;
 
 /// 3.1.0 round 3: the dox_orm, dox_validation and native driver changes
@@ -554,7 +555,7 @@ void orm310bTests(Api api) {
       await expectLater(
         QueryBuilder.table('e310b_orm_kids')
             .insert(<String, dynamic>{'code': 'x', 'target_type': 'post'}),
-        throwsA(anything),
+        throwsA(driverError),
       );
 
       // restrictOnUpdate: the parent code can not change
@@ -562,7 +563,7 @@ void orm310bTests(Api api) {
         QueryBuilder.table('e310b_orm_parents')
             .where('code', ulid)
             .update(<String, dynamic>{'code': 'NEW'}),
-        throwsA(anything),
+        throwsA(driverError),
       );
       // the stored rules: RESTRICT, not the default NO ACTION
       expect(await _updateRules('e310b_orm_kids'), <String, String>{
@@ -586,7 +587,7 @@ void orm310bTests(Api api) {
         await expectLater(
           QueryBuilder.table('e310b_orm_codes')
               .insert(<String, dynamic>{'code': 'same'}),
-          throwsA(anything),
+          throwsA(driverError),
         );
       }
 
@@ -655,7 +656,7 @@ void orm310bTests(Api api) {
       await expectLater(
         QueryBuilder.table('e310b_orm_codes')
             .insert(<String, dynamic>{'code': 'one'}),
-        throwsA(anything),
+        throwsA(driverError),
       );
     }, skip: sqlite ? false : 'SQLite only');
   });

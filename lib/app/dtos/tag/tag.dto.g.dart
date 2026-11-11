@@ -23,6 +23,9 @@ class _$ListTagsDto extends DtoSchema<ListTags> {
   String get name => 'ListTags';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   ListTags? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -106,6 +109,9 @@ class _$CreateTagsDto extends DtoSchema<CreateTags> {
 
   @override
   String get name => 'CreateTags';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   CreateTags? convert(Object? input, DtoState s, List<Object> p) {

@@ -23,6 +23,9 @@ class _$UploadFileDto extends DtoSchema<UploadFile> {
   String get name => 'UploadFile';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   UploadFile? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -101,6 +104,9 @@ class _$UploadAvatarDto extends DtoSchema<UploadAvatar> {
 
   @override
   String get name => 'UploadAvatar';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   UploadAvatar? convert(Object? input, DtoState s, List<Object> p) {
@@ -184,6 +190,9 @@ class _$StoreFileDto extends DtoSchema<StoreFile> {
   String get name => 'StoreFile';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   StoreFile? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -235,6 +244,9 @@ class _$UploadPhotoDto extends DtoSchema<UploadPhoto> {
 
   @override
   String get name => 'UploadPhoto';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   UploadPhoto? convert(Object? input, DtoState s, List<Object> p) {
@@ -346,6 +358,9 @@ class _$AddTextDto extends DtoSchema<AddText> {
 
   @override
   String get name => 'AddText';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   AddText? convert(Object? input, DtoState s, List<Object> p) {

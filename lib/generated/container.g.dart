@@ -52,11 +52,12 @@ import 'package:dox_test/routes/web.dart' as i46;
 import 'package:dox_test/app/models/badge/badge.model.dart' as i47;
 import 'package:dox_test/app/models/comment/comment.model.dart' as i48;
 import 'package:dox_test/app/models/e2e310/e2e310.model.dart' as i49;
-import 'package:dox_test/app/models/post/post.model.dart' as i50;
-import 'package:dox_test/app/models/profile/profile.model.dart' as i51;
-import 'package:dox_test/app/models/reaction/reaction.model.dart' as i52;
-import 'package:dox_test/app/models/tag/tag.model.dart' as i53;
-import 'package:dox_test/app/models/user/user.model.dart' as i54;
+import 'package:dox_test/app/models/e2e310b/e2e310b.model.dart' as i50;
+import 'package:dox_test/app/models/post/post.model.dart' as i51;
+import 'package:dox_test/app/models/profile/profile.model.dart' as i52;
+import 'package:dox_test/app/models/reaction/reaction.model.dart' as i53;
+import 'package:dox_test/app/models/tag/tag.model.dart' as i54;
+import 'package:dox_test/app/models/user/user.model.dart' as i55;
 
 /// Puts every class of the app into the container: the
 /// `@Inject()` classes, routers, providers and model binders.
@@ -192,29 +193,44 @@ void registerContainer(IocContainer c) {
     if (key == null) return null;
     return i49.E2eBook().find(key);
   });
-  c.bindModel<i50.Post>((String id) {
+  c.bindModel<i50.E310bItem>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i50.Post().find(key);
+    return i50.E310bItem().find(key);
   });
-  c.bindModel<i51.Profile>((String id) {
+  c.bindModel<i50.E310bTag>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i51.Profile().find(key);
+    return i50.E310bTag().find(key);
   });
-  c.bindModel<i52.Reaction>((String id) {
+  c.bindModel<i50.E310bNote>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i52.Reaction().find(key);
+    return i50.E310bNote().find(key);
   });
-  c.bindModel<i53.Tag>((String id) {
+  c.bindModel<i51.Post>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i53.Tag().find(key);
+    return i51.Post().find(key);
   });
-  c.bindModel<i54.User>((String id) {
+  c.bindModel<i52.Profile>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i54.User().find(key);
+    return i52.Profile().find(key);
+  });
+  c.bindModel<i53.Reaction>((String id) {
+    int? key = int.tryParse(id);
+    if (key == null) return null;
+    return i53.Reaction().find(key);
+  });
+  c.bindModel<i54.Tag>((String id) {
+    int? key = int.tryParse(id);
+    if (key == null) return null;
+    return i54.Tag().find(key);
+  });
+  c.bindModel<i55.User>((String id) {
+    int? key = int.tryParse(id);
+    if (key == null) return null;
+    return i55.User().find(key);
   });
 }

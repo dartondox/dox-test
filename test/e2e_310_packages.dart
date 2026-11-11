@@ -137,6 +137,7 @@ void _storageTests(Api api, JobsHelper jobs) {
 
     test('the unicode file is served by its signed URL', () async {
       String key = '$folder/ユニコード/файл ü 😀.txt';
+      await disk('local').put(key, 'ünï');
       String url = await disk('local').getSignedUrl(key);
       expect(url, contains(Uri.encodeComponent('файл ü 😀.txt')));
       http.Response res = await http.get(Uri.parse(url));
@@ -146,6 +147,7 @@ void _storageTests(Api api, JobsHelper jobs) {
 
     test('an expired signed URL gets 403', () async {
       String key = '$folder/empty.txt';
+      await disk('local').put(key, '');
       String url = await disk('local').getSignedUrl(
         key,
         options: SignedUrlOptions(expiresIn: Duration(seconds: -5)),
@@ -157,6 +159,8 @@ void _storageTests(Api api, JobsHelper jobs) {
     });
 
     test('a signed URL for one file does not open another file', () async {
+      await disk('local').put('$folder/empty.txt', '');
+      await disk('local').put('$folder/missing-append.txt', 'one');
       String url = await disk('local').getSignedUrl('$folder/empty.txt');
       String other = url.replaceFirst('empty.txt', 'missing-append.txt');
       expect((await http.get(Uri.parse(other))).statusCode, 403);
@@ -219,9 +223,12 @@ void _queueTests(JobsHelper jobs) {
 
     tearDown(() async {
       HangingJob.release();
-      await Queue.driver.flush();
-      Queue.restore();
-      Queue.configure(queueConfig);
+      try {
+        await Queue.driver.flush();
+      } finally {
+        Queue.restore();
+        Queue.configure(queueConfig);
+      }
     });
 
     Future<void> work() async {
@@ -656,13 +663,18 @@ void _mailerTests(JobsHelper jobs) {
       }
     });
 
-    test('Markdown: an unsafe link in a value loses its URL', () {
+    test('Markdown: an unsafe link in a value is no link', () {
       Message m = LinkMail(
         name: '[click me](javascript:alert(1))',
         url: 'https://ok.test/a?b=1&c=2',
       ).toMessage();
+      // the value stays plain text: no <a> is made from it
+      expect(
+        m.html,
+        contains('<h1>Hello [click me](javascript:alert(1))</h1>'),
+      );
       expect(m.html, isNot(contains('href="javascript')));
-      expect(m.html, contains('click me'));
+      expect(RegExp('<a ').allMatches(m.html!), hasLength(1));
       expect(m.html, contains('href="https://ok.test/a?b=1&amp;c=2"'));
       // the text body keeps the Markdown
       expect(m.text, contains('# Hello'));
@@ -1263,9 +1275,12 @@ void _redisTests(JobsHelper jobs) {
               onError: (dynamic _) {},
             ),
           );
-          unawaited(redis.get('x').then((_) {}, onError: (Object _) {}));
-          await Future<void>.delayed(Duration(seconds: 1));
-          await redis.disconnect();
+          try {
+            unawaited(redis.get('x').then((_) {}, onError: (Object _) {}));
+            await Future<void>.delayed(Duration(seconds: 1));
+          } finally {
+            await redis.disconnect();
+          }
         }, (Object e, StackTrace s) => uncaught.add(e));
         await full.close();
         expect(uncaught, isEmpty);

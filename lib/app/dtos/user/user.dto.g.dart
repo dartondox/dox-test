@@ -23,6 +23,9 @@ class _$ListUsersDto extends DtoSchema<ListUsers> {
   String get name => 'ListUsers';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   ListUsers? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -143,6 +146,9 @@ class _$UpdateUserDto extends DtoSchema<UpdateUser> {
 
   @override
   String get name => 'UpdateUser';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   bool get isAsync => true;
@@ -268,6 +274,9 @@ class _$SaveProfileDto extends DtoSchema<SaveProfile> {
   String get name => 'SaveProfile';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   SaveProfile? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -360,6 +369,9 @@ class _$PatchProfileDto extends DtoSchema<PatchProfile> {
 
   @override
   String get name => 'PatchProfile';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   PatchProfile? convert(Object? input, DtoState s, List<Object> p) {

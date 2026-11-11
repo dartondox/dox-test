@@ -23,6 +23,9 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
   String get name => 'CreateBadge';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   bool get isAsync => true;
 
   @override
@@ -307,6 +310,9 @@ class _$ListBadgesDto extends DtoSchema<ListBadges> {
   String get name => 'ListBadges';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   ListBadges? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -416,6 +422,9 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
 
   @override
   String get name => 'SyncBadgePosts';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   bool get isAsync => true;
@@ -560,6 +569,9 @@ class _$AddReactionDto extends DtoSchema<AddReaction> {
 
   @override
   String get name => 'AddReaction';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   AddReaction? convert(Object? input, DtoState s, List<Object> p) {

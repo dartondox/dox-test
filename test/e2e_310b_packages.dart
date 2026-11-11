@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dox_inertia/dox_inertia.dart';
 import 'package:dox_mailer/dox_mailer.dart';
 import 'package:dox_orm/dox_orm.dart' show QueryBuilder;
 import 'package:dox_queue/dox_queue.dart';
@@ -1304,7 +1303,8 @@ void _schedulerTests() {
         expect(out, contains('the lock store is a memory store'));
       },
       skip: realAppEnv,
-      timeout: Timeout(Duration(minutes: 3)),
+      // it may wait up to 3 minutes near 17:00 UTC, see _scheduleWorkOutput
+      timeout: Timeout(Duration(minutes: 6)),
     );
   });
 }
@@ -1313,10 +1313,22 @@ void _schedulerTests() {
 /// prints `working`, gives it a moment for the warning, then stops it
 /// with Ctrl+C. Gives all it printed. It starts in the first seconds of
 /// a minute, so it stops before the first tick runs a task.
+///
+/// In production the `prune-failed-jobs` task runs daily at 00:00 in
+/// Bangkok, which is 17:00 UTC. The process can live for about 70
+/// seconds. So a production run does not start from 16:58 to 17:00 UTC:
+/// it waits until 17:01 UTC, after that tick.
 Future<String> _scheduleWorkOutput(String appEnv) async {
   int second = DateTime.now().second;
   if (second > 30) {
     await Future<void>.delayed(Duration(seconds: 61 - second));
+  }
+  DateTime now = DateTime.now().toUtc();
+  DateTime prune = DateTime.utc(now.year, now.month, now.day, 17);
+  if (appEnv == 'production' &&
+      !now.isBefore(prune.subtract(Duration(minutes: 2))) &&
+      now.isBefore(prune.add(Duration(minutes: 1)))) {
+    await Future<void>.delayed(prune.add(Duration(minutes: 1)).difference(now));
   }
   Process p = await Process.start(
     'dart',
@@ -1365,9 +1377,7 @@ void _inertiaTests(Api api) {
         await hot.writeAsString('http://localhost:5173');
         madeHot = true;
       }
-      // the same for every page, so set once
-      Inertia.shareGlobal('e310b_pkg_global', 'global value');
-      Inertia.shareGlobal('e310b_pkg_who', 'global');
+      // the global props are set at boot by AppInertiaProvider
       http.Response html = await browser.send(
         'GET',
         '$base/render',

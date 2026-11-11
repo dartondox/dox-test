@@ -25,6 +25,9 @@ class _$E310bAddressDto extends DtoSchema<E310bAddress> {
   String get name => 'E310bAddress';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   E310bAddress? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -102,6 +105,9 @@ class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm> {
 
   @override
   String get name => 'E310bProfileForm';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   E310bProfileForm? convert(Object? input, DtoState s, List<Object> p) {
