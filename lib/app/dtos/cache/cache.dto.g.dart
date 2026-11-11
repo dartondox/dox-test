@@ -23,6 +23,9 @@ class _$PutCacheItemDto extends DtoSchema<PutCacheItem> {
   String get name => 'PutCacheItem';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   PutCacheItem? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -108,6 +111,9 @@ class _$IncrementCacheDto extends DtoSchema<IncrementCache> {
   String get name => 'IncrementCache';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   IncrementCache? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -160,6 +166,9 @@ class _$TakeLockDto extends DtoSchema<TakeLock> {
 
   @override
   String get name => 'TakeLock';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   TakeLock? convert(Object? input, DtoState s, List<Object> p) {
@@ -231,6 +240,9 @@ class _$ReleaseLockDto extends DtoSchema<ReleaseLock> {
 
   @override
   String get name => 'ReleaseLock';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   ReleaseLock? convert(Object? input, DtoState s, List<Object> p) {

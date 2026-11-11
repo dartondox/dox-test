@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dox_inertia/dox_inertia.dart';
 import 'package:dox_mailer/dox_mailer.dart';
 import 'package:dox_orm/dox_orm.dart' show QueryBuilder;
 import 'package:dox_queue/dox_queue.dart';
@@ -799,14 +798,19 @@ void _mailerTests(JobsHelper jobs) {
       mail.assertNothingSent();
     });
 
-    test('a throwing onSent: send throws, the email is sent', () async {
+    test('a throwing onSent: the error is logged, send still works', () async {
       ArrayTransport mail = Mail.fake();
-      Mail.onSent((SentMessage s) async => throw StateError('log is down'));
-      await expectLater(
-        Mail.send(message(subject: 'already out')),
-        throwsA(isA<StateError>()),
-      );
-      expect(mail.messages.single.subject, 'already out');
+      List<String?> sent = <String?>[];
+      try {
+        Mail.onSent((SentMessage s) async => throw StateError('log is down'));
+        Mail.onSent((SentMessage s) async => sent.add(s.message.subject));
+        await Mail.send(message(subject: 'already out'));
+        expect(mail.messages.single.subject, 'already out');
+        // the hook after the throwing one still runs
+        expect(sent, <String>['already out']);
+      } finally {
+        Mail.clearHooks();
+      }
     });
 
     test('alwaysTo: every email goes to one address, no cc or bcc', () async {
@@ -1304,20 +1308,42 @@ void _schedulerTests() {
         expect(out, contains('the lock store is a memory store'));
       },
       skip: realAppEnv,
-      timeout: Timeout(Duration(minutes: 3)),
+      // it may wait up to 3 minutes near 17:00 or 01:00 UTC, see _scheduleWorkOutput
+      timeout: Timeout(Duration(minutes: 6)),
     );
   });
+}
+
+/// Waits while now is close to a tick at one of [hoursUtc] (UTC hours).
+Future<void> _waitOutsideTicks(List<int> hoursUtc) async {
+  for (int hour in hoursUtc) {
+    DateTime now = DateTime.now().toUtc();
+    DateTime tick = DateTime.utc(now.year, now.month, now.day, hour);
+    if (!now.isBefore(tick.subtract(Duration(minutes: 2))) &&
+        now.isBefore(tick.add(Duration(minutes: 1)))) {
+      await Future<void>.delayed(
+        tick.add(Duration(minutes: 1)).difference(now),
+      );
+    }
+  }
 }
 
 /// Starts `dart run bin/schedule.dart work` with [appEnv], waits until it
 /// prints `working`, gives it a moment for the warning, then stops it
 /// with Ctrl+C. Gives all it printed. It starts in the first seconds of
 /// a minute, so it stops before the first tick runs a task.
+///
+/// In production two tasks can run in the first minute of 17:00 UTC and
+/// 01:00 UTC: `prune-failed-jobs` (00:00 Bangkok) and `daily-report`
+/// (08:00 Bangkok, it puts a job in the shared queue). The process can
+/// live for about 70 seconds. So a production run does not start from
+/// 2 minutes before to 1 minute after these times: it waits until after.
 Future<String> _scheduleWorkOutput(String appEnv) async {
   int second = DateTime.now().second;
   if (second > 30) {
     await Future<void>.delayed(Duration(seconds: 61 - second));
   }
+  if (appEnv == 'production') await _waitOutsideTicks(<int>[17, 1]);
   Process p = await Process.start(
     'dart',
     <String>['run', 'bin/schedule.dart', 'work'],
@@ -1365,9 +1391,7 @@ void _inertiaTests(Api api) {
         await hot.writeAsString('http://localhost:5173');
         madeHot = true;
       }
-      // the same for every page, so set once
-      Inertia.shareGlobal('e310b_pkg_global', 'global value');
-      Inertia.shareGlobal('e310b_pkg_who', 'global');
+      // the global props are set at boot by AppInertiaProvider
       http.Response html = await browser.send(
         'GET',
         '$base/render',

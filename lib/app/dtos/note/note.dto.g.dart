@@ -23,6 +23,9 @@ class _$CreateNoteDto extends DtoSchema<CreateNote> {
   String get name => 'CreateNote';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   CreateNote? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);

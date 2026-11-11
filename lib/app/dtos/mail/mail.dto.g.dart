@@ -23,6 +23,9 @@ class _$SendWelcomeMailDto extends DtoSchema<SendWelcomeMail> {
   String get name => 'SendWelcomeMail';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   SendWelcomeMail? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);

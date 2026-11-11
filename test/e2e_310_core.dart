@@ -498,7 +498,6 @@ void core310Tests(Api api) {
 
   group('3.1.0 core e2e: cookies, sessions, CSRF, signed urls', () {
     String themeValue = '';
-    Browser? web;
 
     setUpAll(() async {
       http.Response res = await api.get('/api/system/cookie');
@@ -572,11 +571,11 @@ void core310Tests(Api api) {
         },
       );
       expect(twice.statusCode, 200);
+      expect(api.json(twice)['theme'], 'dark');
     });
 
     test('SessionMiddleware().fromCookie loads the web login', () async {
       Browser browser = await webLogin();
-      web = browser;
       String raw = browser.cookies['dox_session']!;
       Session session = await const SessionMiddleware().fromCookie(raw);
       User? user = await Auth(guard: 'web').userFromSession<User>(session);
@@ -584,7 +583,7 @@ void core310Tests(Api api) {
     });
 
     test('fromCookie: null, changed or another cookie is no login', () async {
-      String raw = web!.cookies['dox_session']!;
+      String raw = (await webLogin()).cookies['dox_session']!;
       for (String? value in <String?>[
         null,
         '',
@@ -599,13 +598,14 @@ void core310Tests(Api api) {
     });
 
     test('a changed session cookie on a guarded page is 401', () async {
-      String raw = web!.cookies['dox_session']!;
+      Browser web = await webLogin();
+      String raw = web.cookies['dox_session']!;
       http.Response res = await api.get(
         '/web-auth/me',
         headers: <String, String>{'Cookie': 'dox_session=${raw}x'},
       );
       expect(res.statusCode, 401);
-      http.Response ok = await web!.send(
+      http.Response ok = await web.send(
         'GET',
         '/web-auth/me',
         <String, String>{},
@@ -635,8 +635,9 @@ void core310Tests(Api api) {
     });
 
     test('after logout, fromCookie of the old cookie is no login', () async {
-      String raw = web!.cookies['dox_session']!;
-      http.Response out = await web!.send(
+      Browser web = await webLogin();
+      String raw = web.cookies['dox_session']!;
+      http.Response out = await web.send(
         'POST',
         '/web-auth/logout',
         <String, String>{'Content-Type': 'application/json'},
@@ -1036,9 +1037,17 @@ void core310Tests(Api api) {
     });
 
     test('--uuid and --string-ids reach the migration', () async {
-      await TokensTableCommand(migrations: MigrationFile(folder: dir))
-          .run(<String>['--uuid']);
-      expect(files().single.readAsStringSync(), contains('uuidIds: true'));
+      for ((String, String) flag in <(String, String)>[
+        ('--uuid', 'uuidIds: true'),
+        ('--string-ids', 'stringIds: true'),
+      ]) {
+        await TokensTableCommand(migrations: MigrationFile(folder: dir))
+            .run(<String>[flag.$1]);
+        File made = files().single;
+        expect(made.readAsStringSync(), contains(flag.$2), reason: flag.$1);
+        // a second run would see the first file and write none
+        made.deleteSync();
+      }
     });
 
     test('MigrationFile: names sort after the newest, no twin', () {
@@ -1145,10 +1154,13 @@ void core310Tests(Api api) {
 
   group('3.1.0 core e2e: dox_socketio edges', () {
     String jwt = '';
+    // its own user, so the group does not need the dox_auth group
+    String email = 'core310sio@mail.com';
 
     setUpAll(() async {
+      await registerUser(api, 'Core Socket', email);
       http.Response res = await api.post('/api/auth/login', <String, dynamic>{
-        'email': 'core310@mail.com',
+        'email': email,
         'password': 'secret123',
       });
       expect(res.statusCode, 200, reason: res.body);
@@ -1201,12 +1213,11 @@ void core310Tests(Api api) {
             secret: SecretKey(env.appKey),
             expiresIn: Duration(hours: -2),
           ).createToken(
-            (await User().where('email', 'core310@mail.com').getFirst())!
-                .toJson(),
+            (await User().where('email', email).getFirst())!.toJson(),
             'api',
           )!;
       AccessToken oat = await Auth(guard: 'tokens').createAccessToken(
-        (await User().where('email', 'core310@mail.com').getFirst())!,
+        (await User().where('email', email).getFirst())!,
         name: 'socket edge',
       );
       for (String token in <String>[
@@ -1226,7 +1237,7 @@ void core310Tests(Api api) {
       // still serves a good login
       expect(await connectError(auth: <String, String>{'token': jwt}), isNull);
       await Auth(guard: 'tokens').revokeAccessToken(
-        (await User().where('email', 'core310@mail.com').getFirst())!,
+        (await User().where('email', email).getFirst())!,
         oat.id,
       );
     });
@@ -1234,15 +1245,13 @@ void core310Tests(Api api) {
     test('a session cookie after logout is Unauthorized', () async {
       Browser browser = Browser(api);
       await browser.send('GET', '/ping', <String, String>{});
-      await browser.send(
+      http.Response login = await browser.send(
         'POST',
         '/web-auth/login',
         <String, String>{'Content-Type': 'application/json'},
-        jsonEncode(<String, String>{
-          'email': 'core310@mail.com',
-          'password': 'secret123',
-        }),
+        jsonEncode(<String, String>{'email': email, 'password': 'secret123'}),
       );
+      expect(login.statusCode, 200, reason: login.body);
       String cookie = cookieHeader(browser);
       Map<String, String> headers = <String, String>{
         'Cookie': cookie,
@@ -1250,9 +1259,13 @@ void core310Tests(Api api) {
       };
       expect(await connectError(headers: headers), isNull);
 
-      await browser.send('POST', '/web-auth/logout', <String, String>{
-        'Content-Type': 'application/json',
-      }, '{}');
+      http.Response out = await browser.send(
+        'POST',
+        '/web-auth/logout',
+        <String, String>{'Content-Type': 'application/json'},
+        '{}',
+      );
+      expect(out.statusCode, 200, reason: out.body);
       expect(await connectError(headers: headers), 'Unauthorized');
     });
 
@@ -1267,21 +1280,12 @@ void core310Tests(Api api) {
     Process? server;
     StringBuffer log = StringBuffer();
     late Api child;
+    // its own user, so the group does not need the dox_auth group
+    String email = 'core310iso@mail.com';
 
-    tearDownAll(() async {
-      Process? p = server;
-      if (p == null) return;
-      p.kill();
-      await p.exitCode.timeout(
-        Duration(seconds: 10),
-        onTimeout: () {
-          p.kill(ProcessSignal.sigkill);
-          return -1;
-        },
-      );
-    });
-
-    test('bin/e2e_isolates.dart starts with 3 isolates', () async {
+    // the timeout of the group is for the slow `dart run` in setUpAll
+    setUpAll(() async {
+      await registerUser(api, 'Core Isolate', email);
       ServerSocket free = await ServerSocket.bind('127.0.0.1', 0);
       int port = free.port;
       await free.close();
@@ -1307,8 +1311,24 @@ void core310Tests(Api api) {
         }
       }
       expect(up, true, reason: log.toString());
+    });
+
+    tearDownAll(() async {
+      Process? p = server;
+      if (p == null) return;
+      p.kill();
+      await p.exitCode.timeout(
+        Duration(seconds: 10),
+        onTimeout: () {
+          p.kill(ProcessSignal.sigkill);
+          return -1;
+        },
+      );
+    });
+
+    test('bin/e2e_isolates.dart starts with 3 isolates', () {
       expect(log.toString(), contains('3 isolate'));
-    }, timeout: Timeout(Duration(minutes: 4)));
+    });
 
     test('Route.staticFiles outside a Router works in every isolate', () async {
       // a new connection each time, so the isolates take turns
@@ -1322,7 +1342,7 @@ void core310Tests(Api api) {
     test('40 requests at once: static files, routes and a JWT', () async {
       http.Response login = await child.post(
         '/api/auth/login',
-        <String, dynamic>{'email': 'core310@mail.com', 'password': 'secret123'},
+        <String, dynamic>{'email': email, 'password': 'secret123'},
       );
       expect(login.statusCode, 200, reason: login.body);
       String jwt = child.json(login)['token'];
@@ -1342,17 +1362,14 @@ void core310Tests(Api api) {
         expect(all[i].statusCode, 200, reason: 'call $i: ${all[i].body}');
       }
       expect(all[2].body, '{"name":"f0"}');
-      expect(child.json(all[3])['email'], 'core310@mail.com');
+      expect(child.json(all[3])['email'], email);
     });
 
     test('a JWT logout stops the token in every isolate', () async {
       Future<String> login() async {
         http.Response res = await child.post(
           '/api/auth/login',
-          <String, dynamic>{
-            'email': 'core310@mail.com',
-            'password': 'secret123',
-          },
+          <String, dynamic>{'email': email, 'password': 'secret123'},
         );
         return child.json(res)['token'];
       }
@@ -1385,10 +1402,7 @@ void core310Tests(Api api) {
         'POST',
         '/web-auth/login',
         <String, String>{'Content-Type': 'application/json'},
-        jsonEncode(<String, String>{
-          'email': 'core310@mail.com',
-          'password': 'secret123',
-        }),
+        jsonEncode(<String, String>{'email': email, 'password': 'secret123'}),
       );
       expect(res.statusCode, 200, reason: res.body);
       for (int i = 0; i < 15; i++) {
@@ -1415,7 +1429,7 @@ void core310Tests(Api api) {
     test('a revoked access token stops in every isolate', () async {
       http.Response login = await child.post(
         '/api/tokens/login',
-        <String, dynamic>{'email': 'core310@mail.com', 'password': 'secret123'},
+        <String, dynamic>{'email': email, 'password': 'secret123'},
       );
       String token = child.json(login)['token'];
       Map<String, String> bearer = <String, String>{
@@ -1440,7 +1454,7 @@ void core310Tests(Api api) {
         );
       }
     });
-  });
+  }, timeout: Timeout(Duration(minutes: 4)));
 }
 
 /// [Api] on another port, for the second server.
@@ -1475,4 +1489,15 @@ Map<String, dynamic> jwtPart(String token, int n) {
 /// base64url with no `=`, like a JWT part.
 String b64(String text) {
   return base64Url.encode(utf8.encode(text)).replaceAll('=', '');
+}
+
+/// Registers a user with the password `secret123`.
+Future<void> registerUser(Api api, String name, String email) async {
+  http.Response res = await api.post('/api/auth/register', <String, dynamic>{
+    'name': name,
+    'email': email,
+    'password': 'secret123',
+    'password_confirmation': 'secret123',
+  });
+  expect(res.statusCode, 201, reason: res.body);
 }

@@ -23,6 +23,9 @@ class _$CreateTokenDto extends DtoSchema<CreateToken> {
   String get name => 'CreateToken';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   CreateToken? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -149,6 +152,12 @@ class _$SaveContactDto extends DtoSchema<SaveContact> {
     // companyName: String?
     Object? c1;
     c1 = s.string(s.read(input, 'company_name'), p, 'company_name', _m);
+    // phone: String?
+    Object? c2;
+    c2 = s.string(s.read(input, 'phone'), p, 'phone', _m);
+    // countryCode: String?
+    Object? c3;
+    c3 = s.string(s.read(input, 'country_code'), p, 'country_code', _m);
     s.requiredWhen(
       const RequiredIf('account_type', 'company'),
       c1,
@@ -157,12 +166,6 @@ class _$SaveContactDto extends DtoSchema<SaveContact> {
       'company_name',
       _m,
     );
-    // phone: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'phone'), p, 'phone', _m);
-    // countryCode: String?
-    Object? c3;
-    c3 = s.string(s.read(input, 'country_code'), p, 'country_code', _m);
     s.requiredWhen(
       const RequiredWith(<String>['phone']),
       c3,
@@ -260,6 +263,9 @@ class _$UploadBannerDto extends DtoSchema<UploadBanner> {
 
   @override
   String get name => 'UploadBanner';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   UploadBanner? convert(Object? input, DtoState s, List<Object> p) {

@@ -1490,6 +1490,12 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
           description: 'Successful response',
           schema: <String, dynamic>{'type': 'object'},
         ),
+        422: ResponseDoc(
+          description: 'Validation failed',
+          schema: <String, dynamic>{
+            '\$ref': '#/components/schemas/ValidationError',
+          },
+        ),
       },
     ),
     OpenApiOperation(
@@ -1579,6 +1585,593 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       ],
       responses: <int, ResponseDoc>{
         200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bOrmRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E310bOrmRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bOrmRoutes',
+      method: 'findItem',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e310b/items/{id}: `findOrFail`, 404 when there is no row.',
+      tags: <String>['E310bOrmRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bOrmRoutes',
+      method: 'firstItem',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e310b/items-by-name/{name}: `firstOrFail` on a where.',
+      tags: <String>['E310bOrmRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bOrmRoutes',
+      method: 'profile',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e310b/profile: the DTO with full path messages.',
+      tags: <String>['E310bOrmRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+        422: ResponseDoc(
+          description: 'Validation failed',
+          schema: <String, dynamic>{
+            '\$ref': '#/components/schemas/ValidationError',
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'registerGuarded',
+      argumentTypes: <String>[],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'registerOrder',
+      argumentTypes: <String>[],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'fileName',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'word',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'adminPage',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'orderPage',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'inputHelpers',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e2e/input: the request helpers on fixed keys.',
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'bearer',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'noteUrl',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e2e/note-url/{id}: the url of a named resource route.',
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'sign',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e2e/sign/{id}?ttl=seconds: a signed path for /signed/{id}.',
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'signedPage',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'conflict',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'retryLater',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'guestPage',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'object',
+            'additionalProperties': <String, dynamic>{'type': 'string'},
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreRoutes',
+      method: 'tokenWhoami',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'index',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'create',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'store',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'show',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'edit',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'update',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eNotes',
+      method: 'destroy',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eNotes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'registerSession',
+      argumentTypes: <String>[],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'page',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'pathIs',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'decrypt',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'plan',
+      argumentTypes: <String>['E2ePlanForm'],
+      tags: <String>['E2eCoreBRoutes'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/E2ePlanForm'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'optional',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'hello',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'search',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'logout',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'the error text of `logout` on a guard with no session driver',
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'whoami',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E2eCoreBRoutes',
+      method: 'once',
+      argumentTypes: <String>['DoxRequest'],
+      summary: '`Auth.once` on the web guard: no session login is kept.',
+      tags: <String>['E2eCoreBRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E310bPkgRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgRoutes',
+      method: 'store',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e310b-pkg/store?disk=memory: `file.store(folder, disk:)`',
+      tags: <String>['E310bPkgRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgRoutes',
+      method: 'storeAs',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e310b-pkg/store-as?disk=s3&name=a.txt: `file.storeAs`',
+      tags: <String>['E310bPkgRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgRoutes',
+      method: 'putAs',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e310b-pkg/put-as?name=a.txt: `putRequestFileAs` on the',
+      description: 'default disk',
+      tags: <String>['E310bPkgRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'render',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET: `Inertia.render` with lazy, deferred and merged props',
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'requestShare',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET: a prop shared for the request has the name of a global one',
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'empty',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'any method: an empty 200 answer',
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'lazyValue',
+      argumentTypes: <String>[],
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E310bPkgInertiaRoutes',
+      method: 'feed',
+      argumentTypes: <String>[],
+      tags: <String>['E310bPkgInertiaRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{
+            'type': 'array',
+            'items': <String, dynamic>{'type': 'integer'},
+          },
+        ),
       },
     ),
     OpenApiOperation(
@@ -1938,6 +2531,55 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('GET', 'core/flash/set', 'CoreController.flashSet'),
     OpenApiRouteBinding('GET', 'core/flash/keep', 'CoreController.flashKeep'),
     OpenApiRouteBinding('GET', 'core/flash/read', 'CoreController.flashRead'),
+    OpenApiRouteBinding('GET', '/items/{id}', 'E310bOrmRoutes.findItem'),
+    OpenApiRouteBinding(
+      'GET',
+      '/items-by-name/{name}',
+      'E310bOrmRoutes.firstItem',
+    ),
+    OpenApiRouteBinding('POST', '/profile', 'E310bOrmRoutes.profile'),
+    OpenApiRouteBinding('GET', '/files/{name}', 'E2eCoreRoutes.fileName'),
+    OpenApiRouteBinding('GET', '/letters/{word}', 'E2eCoreRoutes.word'),
+    OpenApiRouteBinding('POST', '/input', 'E2eCoreRoutes.inputHelpers'),
+    OpenApiRouteBinding('GET', '/bearer', 'E2eCoreRoutes.bearer'),
+    OpenApiRouteBinding('GET', '/notes', 'E2eNotes.index'),
+    OpenApiRouteBinding('GET', '/notes/create', 'E2eNotes.create'),
+    OpenApiRouteBinding('POST', '/notes', 'E2eNotes.store'),
+    OpenApiRouteBinding('GET', '/notes/{id}', 'E2eNotes.show'),
+    OpenApiRouteBinding('GET', '/notes/{id}/edit', 'E2eNotes.edit'),
+    OpenApiRouteBinding('PUT', '/notes/{id}', 'E2eNotes.update'),
+    OpenApiRouteBinding('PATCH', '/notes/{id}', 'E2eNotes.update'),
+    OpenApiRouteBinding('DELETE', '/notes/{id}', 'E2eNotes.destroy'),
+    OpenApiRouteBinding('GET', '/note-url/{id}', 'E2eCoreRoutes.noteUrl'),
+    OpenApiRouteBinding('GET', '/signed/{id}', 'E2eCoreRoutes.signedPage'),
+    OpenApiRouteBinding('GET', '/sign/{id}', 'E2eCoreRoutes.sign'),
+    OpenApiRouteBinding('GET', '/conflict', 'E2eCoreRoutes.conflict'),
+    OpenApiRouteBinding('GET', '/retry', 'E2eCoreRoutes.retryLater'),
+    OpenApiRouteBinding('GET', '/guest-redirect', 'E2eCoreRoutes.guestPage'),
+    OpenApiRouteBinding('GET', '/token-whoami', 'E2eCoreRoutes.tokenWhoami'),
+    OpenApiRouteBinding('GET', '/admin', 'E2eCoreRoutes.adminPage'),
+    OpenApiRouteBinding('GET', '/open', 'E2eCoreRoutes.adminPage'),
+    OpenApiRouteBinding('GET', '/order', 'E2eCoreRoutes.orderPage'),
+    OpenApiRouteBinding('GET', '/docs/{page}', 'E2eCoreBRoutes.page'),
+    OpenApiRouteBinding('GET', '/path-is/{rest*}', 'E2eCoreBRoutes.pathIs'),
+    OpenApiRouteBinding('POST', '/decrypt', 'E2eCoreBRoutes.decrypt'),
+    OpenApiRouteBinding('POST', '/plan', 'E2eCoreBRoutes.plan'),
+    OpenApiRouteBinding('GET', '/opt/{x?}/b', 'E2eCoreBRoutes.optional'),
+    OpenApiRouteBinding('GET', '/hi/{name?}', 'E2eCoreBRoutes.hello'),
+    OpenApiRouteBinding('GET', '/search', 'E2eCoreBRoutes.search'),
+    OpenApiRouteBinding('DELETE', '/search', 'E2eCoreBRoutes.search'),
+    OpenApiRouteBinding('POST', '/logout/{guard}', 'E2eCoreBRoutes.logout'),
+    OpenApiRouteBinding('GET', '/multi', 'E2eCoreBRoutes.whoami'),
+    OpenApiRouteBinding('POST', '/once', 'E2eCoreBRoutes.once'),
+    OpenApiRouteBinding('POST', '/store', 'E310bPkgRoutes.store'),
+    OpenApiRouteBinding('POST', '/store-as', 'E310bPkgRoutes.storeAs'),
+    OpenApiRouteBinding('POST', '/put-as', 'E310bPkgRoutes.putAs'),
+    OpenApiRouteBinding('GET', '/render', 'E310bPkgInertiaRoutes.render'),
+    OpenApiRouteBinding(
+      'GET',
+      '/request-share',
+      'E310bPkgInertiaRoutes.requestShare',
+    ),
     OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
     OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
     OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
@@ -2829,6 +3471,17 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         'code',
         'code_again',
       ],
+    },
+    'E2ePlanForm': <String, dynamic>{
+      'type': 'object',
+      'title': 'E2ePlanForm',
+      'properties': <String, dynamic>{
+        'card': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+        },
+        'plan': <String, dynamic>{'type': 'string'},
+      },
+      'required': <dynamic>['plan'],
     },
   },
 );

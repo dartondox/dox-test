@@ -23,6 +23,9 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
   String get name => 'ListPosts';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   bool get isAsync => true;
 
   @override
@@ -227,6 +230,9 @@ class _$SavePostDto extends DtoSchema<SavePost> {
   String get name => 'SavePost';
 
   @override
+  bool get usesRequiredWhen => false;
+
+  @override
   SavePost? convert(Object? input, DtoState s, List<Object> p) {
     if (input is! Map) {
       s.notObject(input, p, _m);
@@ -391,6 +397,9 @@ class _$AddCommentDto extends DtoSchema<AddComment> {
 
   @override
   String get name => 'AddComment';
+
+  @override
+  bool get usesRequiredWhen => false;
 
   @override
   AddComment? convert(Object? input, DtoState s, List<Object> p) {

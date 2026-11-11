@@ -2,8 +2,8 @@ import 'package:dox_auth/dox_auth.dart';
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_inertia/dox_inertia.dart';
 import 'package:dox_test/app/dtos/auth/auth.dto.dart';
-import 'package:dox_test/app/serializers/user.serializer.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
+import 'package:dox_test/app/serializers/user.serializer.dart';
 
 /// Session login (the `web` guard) for browser pages.
 /// `/web-auth/*` answers JSON. `/inertia/*` shows the React pages.
