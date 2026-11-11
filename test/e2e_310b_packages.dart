@@ -798,14 +798,19 @@ void _mailerTests(JobsHelper jobs) {
       mail.assertNothingSent();
     });
 
-    test('a throwing onSent: send throws, the email is sent', () async {
+    test('a throwing onSent: the error is logged, send still works', () async {
       ArrayTransport mail = Mail.fake();
-      Mail.onSent((SentMessage s) async => throw StateError('log is down'));
-      await expectLater(
-        Mail.send(message(subject: 'already out')),
-        throwsA(isA<StateError>()),
-      );
-      expect(mail.messages.single.subject, 'already out');
+      List<String?> sent = <String?>[];
+      try {
+        Mail.onSent((SentMessage s) async => throw StateError('log is down'));
+        Mail.onSent((SentMessage s) async => sent.add(s.message.subject));
+        await Mail.send(message(subject: 'already out'));
+        expect(mail.messages.single.subject, 'already out');
+        // the hook after the throwing one still runs
+        expect(sent, <String>['already out']);
+      } finally {
+        Mail.clearHooks();
+      }
     });
 
     test('alwaysTo: every email goes to one address, no cc or bcc', () async {
@@ -1303,10 +1308,24 @@ void _schedulerTests() {
         expect(out, contains('the lock store is a memory store'));
       },
       skip: realAppEnv,
-      // it may wait up to 3 minutes near 17:00 UTC, see _scheduleWorkOutput
+      // it may wait up to 3 minutes near 17:00 or 01:00 UTC, see _scheduleWorkOutput
       timeout: Timeout(Duration(minutes: 6)),
     );
   });
+}
+
+/// Waits while now is close to a tick at one of [hoursUtc] (UTC hours).
+Future<void> _waitOutsideTicks(List<int> hoursUtc) async {
+  for (int hour in hoursUtc) {
+    DateTime now = DateTime.now().toUtc();
+    DateTime tick = DateTime.utc(now.year, now.month, now.day, hour);
+    if (!now.isBefore(tick.subtract(Duration(minutes: 2))) &&
+        now.isBefore(tick.add(Duration(minutes: 1)))) {
+      await Future<void>.delayed(
+        tick.add(Duration(minutes: 1)).difference(now),
+      );
+    }
+  }
 }
 
 /// Starts `dart run bin/schedule.dart work` with [appEnv], waits until it
@@ -1314,22 +1333,17 @@ void _schedulerTests() {
 /// with Ctrl+C. Gives all it printed. It starts in the first seconds of
 /// a minute, so it stops before the first tick runs a task.
 ///
-/// In production the `prune-failed-jobs` task runs daily at 00:00 in
-/// Bangkok, which is 17:00 UTC. The process can live for about 70
-/// seconds. So a production run does not start from 16:58 to 17:00 UTC:
-/// it waits until 17:01 UTC, after that tick.
+/// In production two tasks can run in the first minute of 17:00 UTC and
+/// 01:00 UTC: `prune-failed-jobs` (00:00 Bangkok) and `daily-report`
+/// (08:00 Bangkok, it puts a job in the shared queue). The process can
+/// live for about 70 seconds. So a production run does not start from
+/// 2 minutes before to 1 minute after these times: it waits until after.
 Future<String> _scheduleWorkOutput(String appEnv) async {
   int second = DateTime.now().second;
   if (second > 30) {
     await Future<void>.delayed(Duration(seconds: 61 - second));
   }
-  DateTime now = DateTime.now().toUtc();
-  DateTime prune = DateTime.utc(now.year, now.month, now.day, 17);
-  if (appEnv == 'production' &&
-      !now.isBefore(prune.subtract(Duration(minutes: 2))) &&
-      now.isBefore(prune.add(Duration(minutes: 1)))) {
-    await Future<void>.delayed(prune.add(Duration(minutes: 1)).difference(now));
-  }
+  if (appEnv == 'production') await _waitOutsideTicks(<int>[17, 1]);
   Process p = await Process.start(
     'dart',
     <String>['run', 'bin/schedule.dart', 'work'],
