@@ -893,7 +893,10 @@ void _viewTests() {
         ),
         '<p></p>&lt;b&gt;x&lt;/b&gt;',
       );
-      expect(View.render('core/plain'), contains('<p class="error"></p>'));
+      expect(
+        View.render('core/plain', <String, dynamic>{'who': 'Dox'}),
+        contains('<p class="error"></p>'),
+      );
     });
   });
 }
