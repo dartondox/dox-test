@@ -64,7 +64,7 @@ void main() {
 
         ProcessResult option = await dox(<String>['make:model', 'Odd', '--x']);
         expect(option.exitCode, 1);
-        expect(option.stdout, contains('Invalid option --x'));
+        expect(option.stdout, contains('Unknown option --x'));
         expect(Directory('$app/lib/app/models/odd').existsSync(), false);
       });
     });
