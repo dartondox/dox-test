@@ -94,7 +94,7 @@ class SystemController {
     return <String, int>{'result': n * 2};
   }
 
-  /// POST /api/system/rules: the Laravel-style DTO rules
+  /// POST /api/system/rules: the DTO rules
   Map<String, dynamic> rules(RuleCheck body) {
     return <String, dynamic>{'ok': true, 'kind': body.kind};
   }

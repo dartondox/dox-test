@@ -922,7 +922,7 @@ void ormTests(Api api) {
         if (disk == 'local') {
           expect(url, '${env.appUrl}/files/$key');
         } else if (disk == 'public') {
-          // no `url` option: like Laravel, `/storage/<path>`
+          // no `url` option: `/storage/<path>`
           expect(url, '/storage/$key');
           http.Response file = await api.get(url);
           expect(file.statusCode, 200);

@@ -23,7 +23,7 @@ class E310bAddress {
   static const DtoSchema<E310bAddress> schema = $E310bAddressDto;
 }
 
-/// Messages with the full dotted path, like Laravel. `zip.required` is
+/// Messages with the full dotted path. `zip.required` is
 /// a last key message of the outer DTO: it does not reach the nested one.
 @Dto(
   messages: <String, String>{
