@@ -57,7 +57,7 @@ class CreateOrder {
   static const DtoSchema<CreateOrder> schema = $CreateOrderDto;
 }
 
-/// Body of POST /api/system/rules: the Laravel-style rules of
+/// Body of POST /api/system/rules: the rules of
 /// dox_validation in one DTO.
 @Dto()
 class RuleCheck {

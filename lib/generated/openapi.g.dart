@@ -1468,7 +1468,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       controller: 'SystemController',
       method: 'rules',
       argumentTypes: <String>['RuleCheck'],
-      summary: 'POST /api/system/rules: the Laravel-style DTO rules',
+      summary: 'POST /api/system/rules: the DTO rules',
       tags: <String>['System'],
       schema: <String, dynamic>{'\$ref': '#/components/schemas/RuleCheck'},
       responses: <int, ResponseDoc>{
