@@ -523,9 +523,8 @@ void _queueTests() {
       expect(Mail.mailQueue, same(mine));
     });
 
-    test('Queue.fake() alone: restore puts the old queue back', () async {
-      RecordQueue mine = RecordQueue();
-      Mail.useQueue(mine);
+    test('Queue.fake() catches Mail.queue() on the default queue', () async {
+      Mail.useQueue(null);
       QueueFake fake = Queue.fake();
       await Mail.queue(
         Message(
@@ -535,7 +534,23 @@ void _queueTests() {
         ),
       );
       expect(fake.pushed, hasLength(1));
-      expect(mine.pushed, isEmpty);
+      Queue.restore();
+      expect(Mail.mailQueue, isA<QueueMailQueue>());
+    });
+
+    test('Queue.fake() does not swap a Mail.useQueue() queue', () async {
+      RecordQueue mine = RecordQueue();
+      Mail.useQueue(mine);
+      QueueFake fake = Queue.fake();
+      await Mail.queue(
+        Message(
+          to: <Address>[Address('ann@x.com')],
+          subject: 'Not faked',
+          text: 'x',
+        ),
+      );
+      expect(mine.pushed, hasLength(1));
+      expect(fake.pushed, isEmpty);
       Queue.restore();
       expect(Mail.mailQueue, same(mine));
     });
