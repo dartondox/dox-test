@@ -1,4 +1,3 @@
-import 'package:dox_core/dox_core.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/badge/badge.model.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
