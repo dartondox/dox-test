@@ -27,6 +27,12 @@ jobs:
       fail-fast: false
       matrix:
         db: [postgres, mysql, sqlite]
+        sdk: [stable]
+        # Dox supports Dart 3.13 and newer: one extra job checks the
+        # lowest SDK, on SQLite only.
+        include:
+          - db: sqlite
+            sdk: '3.13.0'
     env:
       DB_CONNECTION: ${{ matrix.db }}
     services:
@@ -121,7 +127,7 @@ jobs:
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: ${{ matrix.sdk }}
       - name: Install and generate models
         working-directory: dox-test
         # all Dox packages come from the local clones, none from pub.dev
