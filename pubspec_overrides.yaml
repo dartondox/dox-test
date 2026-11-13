@@ -23,7 +23,9 @@ dependency_overrides:
   dox_postgres_native:
     path: ../dox-postgres-native
   dox_queue:
-    path: ../dox-queue
+    path: ../dox-queue/packages/dox-queue
+  dox_queue_database:
+    path: ../dox-queue/packages/dox-queue-database
   dox_scheduler:
     path: ../dox-scheduler
   dox_cache:

@@ -12,6 +12,7 @@ dependencies:
   dox_socketio: ^3.0.0
   dox_storage: ^3.0.0
   dox_queue: ^3.0.0
+  dox_queue_database: ^3.0.0
   dox_scheduler: ^3.0.0
   dox_inertia: ^3.0.0
   dox_view: ^3.0.0

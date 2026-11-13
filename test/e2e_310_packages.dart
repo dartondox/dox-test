@@ -1404,11 +1404,11 @@ void _cliTests() {
     );
 
     test(
-      'help lists queue:table of dox_queue',
+      'help lists queue:table of dox_queue_database',
       () async {
         ProcessResult r = await dox(<String>['help']);
         expect(r.exitCode, 0, reason: '${r.stderr}');
-        expect('${r.stdout}', contains('dox_queue'));
+        expect('${r.stdout}', contains('dox_queue_database'));
         expect('${r.stdout}', contains('queue:table'));
       },
       skip: skip,
