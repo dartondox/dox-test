@@ -36,12 +36,14 @@ void packages32Tests(Api api) {
   group('3.2 dox_queue: chains', () {
     test('a chain runs its jobs one after the other', () async {
       String run = 'chain${jobs.stamp()}';
+      int before = await jobs.jobCount();
       await Queue.chain(<DoxJob>[
         RecordStep(step: '$run-1'),
         RecordStep(step: '$run-2'),
         RecordStep(step: '$run-3'),
       ]).dispatch();
       // only the first job is on the queue, the rest is in its payload
+      expect(await jobs.jobCount(), before + 1);
       expect(await steps(run), isEmpty);
 
       await jobs.work();
@@ -228,6 +230,7 @@ void packages32Tests(Api api) {
 
       // with no token, a private channel is refused
       SioClient outsider = await SioClient.connect(api.sioUri, nsp: '/');
+      addTearDown(outsider.close);
       Object? refused = await outsider.emitWithAck(
         'subscribe',
         <String, dynamic>{'channel': channel},
@@ -242,7 +245,6 @@ void packages32Tests(Api api) {
         <String, dynamic>{'id': userId, 'text': 'hi'},
       ]);
       expect(await outsider.nothing('user.pinged'), true);
-      await outsider.close();
     });
   });
 

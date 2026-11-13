@@ -3,7 +3,7 @@ import 'package:dox_test/app/models/tag/tag.model.dart';
 
 /// Saves a tag named [step], so a test can see which jobs ran and in
 /// which order. With [fail] it throws, and it has one try only.
-/// Used by the batch and chain checks (test/e2e_32_queue.dart).
+/// Used by the batch and chain checks (test/e2e_32_packages.dart).
 /// As the catch job of a chain or a batch, the tag name ends with
 /// `:caught`.
 @Job()

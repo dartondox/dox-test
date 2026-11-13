@@ -14,7 +14,7 @@ SocketIoConfig socketIoConfig = SocketIoConfig(
   /// A client with no `Origin` header (not a browser) is still allowed.
   ///
   /// SOCKETIO_OPEN_ORIGIN=true turns the check off (null). Only the
-  /// `Dox().isWebServer` check of test/e2e_32_core.dart uses it.
+  /// `Dox().isWebServer` check of test/e2e_32_packages.dart uses it.
   options: ServerOptions(
     allowedOrigins: env.socketioOpenOrigin ? null : const <String>[],
   ),
