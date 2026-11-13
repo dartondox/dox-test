@@ -1,7 +1,7 @@
 import 'package:dox_test/config/env.dart';
 import 'package:dox_core/dox_core.dart';
 
-/// Three cache stores. Pick one per call with `Cache().store('redis')`.
+/// Four cache stores. Pick one per call with `Cache().store('redis')`.
 CacheConfig cache = CacheConfig(
   /// default cache store
   defaultStore: env.cacheStore,
@@ -16,5 +16,8 @@ CacheConfig cache = CacheConfig(
       'port': env.redisPort,
       'prefix': 'dox_test:',
     },
+
+    /// the `cache` table, see lib/providers/cache_provider.dart
+    'database': <String, dynamic>{'driver': 'database'},
   },
 );

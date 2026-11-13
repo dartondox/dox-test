@@ -22,7 +22,12 @@ class AppConstants {
   static const int defaultPerPage = 10;
 
   /// Cache stores that the /api/cache routes may use.
-  static const List<String> cacheStores = <String>['memory', 'file', 'redis'];
+  static const List<String> cacheStores = <String>[
+    'memory',
+    'file',
+    'redis',
+    'database',
+  ];
 
   /// Storage disks that the /api/storage routes may use.
   static const List<String> storageDisks = <String>['local', 'memory', 's3'];

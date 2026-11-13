@@ -30,6 +30,8 @@ dependency_overrides:
     path: ../dox-scheduler
   dox_cache:
     path: ../dox/packages/dox-cache
+  dox_cache_database:
+    path: ../dox-orm/packages/dox-cache-database
   dox_openapi:
     path: ../dox-openapi
   dox_socketio:

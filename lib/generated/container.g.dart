@@ -36,28 +36,31 @@ import 'package:dox_test/app/services/tag.service.dart' as i30;
 import 'package:dox_test/app/services/token.service.dart' as i31;
 import 'package:dox_test/app/services/user.service.dart' as i32;
 import 'package:dox_test/providers/auth_provider.dart' as i33;
-import 'package:dox_test/providers/inertia_provider.dart' as i34;
-import 'package:dox_test/providers/mail_provider.dart' as i35;
-import 'package:dox_test/providers/orm_provider.dart' as i36;
-import 'package:dox_test/providers/queue_provider.dart' as i37;
-import 'package:dox_test/providers/schedule_provider.dart' as i38;
-import 'package:dox_test/providers/socketio_provider.dart' as i39;
-import 'package:dox_test/providers/storage_provider.dart' as i40;
-import 'package:dox_test/providers/view_provider.dart' as i41;
-import 'package:dox_test/routes/api.dart' as i42;
-import 'package:dox_test/routes/core.dart' as i43;
-import 'package:dox_test/routes/inertia.dart' as i44;
-import 'package:dox_test/routes/views.dart' as i45;
-import 'package:dox_test/routes/web.dart' as i46;
-import 'package:dox_test/app/models/badge/badge.model.dart' as i47;
-import 'package:dox_test/app/models/comment/comment.model.dart' as i48;
-import 'package:dox_test/app/models/e2e310/e2e310.model.dart' as i49;
-import 'package:dox_test/app/models/e2e310b/e2e310b.model.dart' as i50;
-import 'package:dox_test/app/models/post/post.model.dart' as i51;
-import 'package:dox_test/app/models/profile/profile.model.dart' as i52;
-import 'package:dox_test/app/models/reaction/reaction.model.dart' as i53;
-import 'package:dox_test/app/models/tag/tag.model.dart' as i54;
-import 'package:dox_test/app/models/user/user.model.dart' as i55;
+import 'package:dox_test/providers/broadcast_provider.dart' as i34;
+import 'package:dox_test/providers/cache_provider.dart' as i35;
+import 'package:dox_test/providers/inertia_provider.dart' as i36;
+import 'package:dox_test/providers/mail_provider.dart' as i37;
+import 'package:dox_test/providers/orm_provider.dart' as i38;
+import 'package:dox_test/providers/queue_provider.dart' as i39;
+import 'package:dox_test/providers/schedule_provider.dart' as i40;
+import 'package:dox_test/providers/socketio_provider.dart' as i41;
+import 'package:dox_test/providers/storage_provider.dart' as i42;
+import 'package:dox_test/providers/view_provider.dart' as i43;
+import 'package:dox_test/routes/api.dart' as i44;
+import 'package:dox_test/routes/broadcast.dart' as i45;
+import 'package:dox_test/routes/core.dart' as i46;
+import 'package:dox_test/routes/inertia.dart' as i47;
+import 'package:dox_test/routes/views.dart' as i48;
+import 'package:dox_test/routes/web.dart' as i49;
+import 'package:dox_test/app/models/badge/badge.model.dart' as i50;
+import 'package:dox_test/app/models/comment/comment.model.dart' as i51;
+import 'package:dox_test/app/models/e2e310/e2e310.model.dart' as i52;
+import 'package:dox_test/app/models/e2e310b/e2e310b.model.dart' as i53;
+import 'package:dox_test/app/models/post/post.model.dart' as i54;
+import 'package:dox_test/app/models/profile/profile.model.dart' as i55;
+import 'package:dox_test/app/models/reaction/reaction.model.dart' as i56;
+import 'package:dox_test/app/models/tag/tag.model.dart' as i57;
+import 'package:dox_test/app/models/user/user.model.dart' as i58;
 
 /// Puts every class of the app into the container: the
 /// `@Inject()` classes, routers, providers and model binders.
@@ -144,93 +147,98 @@ void registerContainer(IocContainer c) {
     (IocContainer c) => i32.UserService(c.get<i20.UserRepository>()),
   );
   c.provider<i33.AppAuthProvider>((IocContainer c) => i33.AppAuthProvider());
-  c.provider<i34.AppInertiaProvider>(
-    (IocContainer c) => i34.AppInertiaProvider(),
+  c.provider<i34.BroadcastProvider>(
+    (IocContainer c) => i34.BroadcastProvider(),
   );
-  c.provider<i35.AppMailProvider>((IocContainer c) => i35.AppMailProvider());
-  c.provider<i36.ORMProvider>((IocContainer c) => i36.ORMProvider());
-  c.provider<i37.AppQueueProvider>((IocContainer c) => i37.AppQueueProvider());
-  c.provider<i38.ScheduleProvider>((IocContainer c) => i38.ScheduleProvider());
-  c.provider<i39.AppSocketIoProvider>(
-    (IocContainer c) => i39.AppSocketIoProvider(),
+  c.provider<i35.AppCacheProvider>((IocContainer c) => i35.AppCacheProvider());
+  c.provider<i36.AppInertiaProvider>(
+    (IocContainer c) => i36.AppInertiaProvider(),
   );
-  c.provider<i40.AppStorageProvider>(
-    (IocContainer c) => i40.AppStorageProvider(),
+  c.provider<i37.AppMailProvider>((IocContainer c) => i37.AppMailProvider());
+  c.provider<i38.ORMProvider>((IocContainer c) => i38.ORMProvider());
+  c.provider<i39.AppQueueProvider>((IocContainer c) => i39.AppQueueProvider());
+  c.provider<i40.ScheduleProvider>((IocContainer c) => i40.ScheduleProvider());
+  c.provider<i41.AppSocketIoProvider>(
+    (IocContainer c) => i41.AppSocketIoProvider(),
   );
-  c.provider<i41.AppViewProvider>((IocContainer c) => i41.AppViewProvider());
-  c.router<i42.ApiRouter>((IocContainer c) => i42.ApiRouter());
-  c.router<i43.CoreRouter>((IocContainer c) => i43.CoreRouter());
-  c.router<i44.InertiaRouter>((IocContainer c) => i44.InertiaRouter());
-  c.router<i45.ViewsRouter>((IocContainer c) => i45.ViewsRouter());
-  c.router<i46.WebRouter>((IocContainer c) => i46.WebRouter());
-  c.bindModel<i47.Badge>((String id) {
+  c.provider<i42.AppStorageProvider>(
+    (IocContainer c) => i42.AppStorageProvider(),
+  );
+  c.provider<i43.AppViewProvider>((IocContainer c) => i43.AppViewProvider());
+  c.router<i44.ApiRouter>((IocContainer c) => i44.ApiRouter());
+  c.router<i45.BroadcastRouter>((IocContainer c) => i45.BroadcastRouter());
+  c.router<i46.CoreRouter>((IocContainer c) => i46.CoreRouter());
+  c.router<i47.InertiaRouter>((IocContainer c) => i47.InertiaRouter());
+  c.router<i48.ViewsRouter>((IocContainer c) => i48.ViewsRouter());
+  c.router<i49.WebRouter>((IocContainer c) => i49.WebRouter());
+  c.bindModel<i50.Badge>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i47.Badge().find(key);
+    return i50.Badge().find(key);
   });
-  c.bindModel<i48.Comment>((String id) {
+  c.bindModel<i51.Comment>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i48.Comment().find(key);
+    return i51.Comment().find(key);
   });
-  c.bindModel<i49.Oauth2Client>((String id) {
+  c.bindModel<i52.Oauth2Client>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i49.Oauth2Client().find(key);
+    return i52.Oauth2Client().find(key);
   });
-  c.bindModel<i49.E2eMember>((String id) {
+  c.bindModel<i52.E2eMember>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i49.E2eMember().find(key);
+    return i52.E2eMember().find(key);
   });
-  c.bindModel<i49.E2eShelf>((String id) {
+  c.bindModel<i52.E2eShelf>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i49.E2eShelf().find(key);
+    return i52.E2eShelf().find(key);
   });
-  c.bindModel<i49.E2eBook>((String id) {
+  c.bindModel<i52.E2eBook>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i49.E2eBook().find(key);
+    return i52.E2eBook().find(key);
   });
-  c.bindModel<i50.E310bItem>((String id) {
+  c.bindModel<i53.E310bItem>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i50.E310bItem().find(key);
+    return i53.E310bItem().find(key);
   });
-  c.bindModel<i50.E310bTag>((String id) {
+  c.bindModel<i53.E310bTag>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i50.E310bTag().find(key);
+    return i53.E310bTag().find(key);
   });
-  c.bindModel<i50.E310bNote>((String id) {
+  c.bindModel<i53.E310bNote>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i50.E310bNote().find(key);
+    return i53.E310bNote().find(key);
   });
-  c.bindModel<i51.Post>((String id) {
+  c.bindModel<i54.Post>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i51.Post().find(key);
+    return i54.Post().find(key);
   });
-  c.bindModel<i52.Profile>((String id) {
+  c.bindModel<i55.Profile>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i52.Profile().find(key);
+    return i55.Profile().find(key);
   });
-  c.bindModel<i53.Reaction>((String id) {
+  c.bindModel<i56.Reaction>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i53.Reaction().find(key);
+    return i56.Reaction().find(key);
   });
-  c.bindModel<i54.Tag>((String id) {
+  c.bindModel<i57.Tag>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i54.Tag().find(key);
+    return i57.Tag().find(key);
   });
-  c.bindModel<i55.User>((String id) {
+  c.bindModel<i58.User>((String id) {
     int? key = int.tryParse(id);
     if (key == null) return null;
-    return i55.User().find(key);
+    return i58.User().find(key);
   });
 }

@@ -21,6 +21,38 @@ jobs:
           cache: npm
       - run: npm ci && npm run build
 
+  # `dox add` of all 11 packages on a new app made from the dox-sample
+  # template (branch v3.x), on the newest code of every Dox repo. Then
+  # build_runner, analyze, migrate and a call to /ping. Then `dox add`
+  # of all 11 again: it must change no file. See ci/dox-add.sh.
+  # It runs next to the e2e jobs, so it adds little time.
+  dox-add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dox-test
+      # dox and the other Dox repos: the branch with the same name as
+      # this one when there is one, else main (like the e2e job)
+      - name: Clone the Dox repos
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          for repo in dox dox-mcp; do
+            ref=main
+            if git ls-remote --exit-code "https://github.com/dartondox/$repo.git" "refs/heads/$BRANCH" >/dev/null; then
+              ref=$BRANCH
+            fi
+            echo "$repo: $ref"
+            git clone -q --depth 1 --branch "$ref" "https://github.com/dartondox/$repo.git" "$repo"
+          done
+          bash dox/ci/clone-siblings.sh
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: dox add, twice
+        run: bash dox-test/ci/dox-add.sh
+
   e2e:
     runs-on: ubuntu-latest
     strategy:

@@ -30,6 +30,8 @@ import 'jobs_e2e.dart';
 import 'e2e_core.dart';
 import 'e2e_310_core.dart';
 import 'e2e_310b_core.dart';
+import 'e2e_32_orm.dart';
+import 'e2e_32_packages.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1214,7 +1216,7 @@ void main() {
       });
     }
 
-    for (String store in <String>['memory', 'file', 'redis']) {
+    for (String store in <String>['memory', 'file', 'redis', 'database']) {
       test('$store: lock is held until its owner releases it', () async {
         String path = '/api/cache/$store/locks/report';
         Map<String, dynamic> first = api.json(
@@ -1959,6 +1961,13 @@ void main() {
   /// 3.1.0 round 3: queue, CLI, mail, storage, scheduler, Inertia and
   /// view checks (test/e2e_310b_packages.dart).
   packages310bTests(api);
+
+  /// 3.2: dirty tracking of models (test/e2e_32_orm.dart).
+  orm32Tests(api);
+
+  /// 3.2: batches and chains, the database cache store, Socket.IO
+  /// broadcasting and `Dox().isWebServer` (test/e2e_32_packages.dart).
+  packages32Tests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {
@@ -2225,6 +2234,9 @@ class SioClient {
   final Map<int, Object?> _acks = <int, Object?>{};
   final Completer<void> _ready = Completer<void>();
   String? connectError;
+
+  /// the socket id the server gave on connect
+  String? sid;
   int _nextAck = 0;
 
   SioClient(this.socket, [this.nsp = AppConstants.chatNamespace]) {
@@ -2267,6 +2279,7 @@ class SioClient {
       rest = rest.substring(nsp.length + 1);
     }
     if (type == '0') {
+      sid = rest.isEmpty ? null : jsonDecode(rest)['sid'];
       _ready.complete();
     } else if (type == '4') {
       connectError = jsonDecode(rest)['message'];
@@ -2300,11 +2313,17 @@ class SioClient {
 
   /// Wait up to 2 seconds for an event, return its first argument.
   Future<dynamic> next(String event) async {
+    List<dynamic> args = await nextArgs(event);
+    return args.isEmpty ? null : args.first;
+  }
+
+  /// Wait up to 2 seconds for an event, return all its arguments.
+  Future<List<dynamic>> nextArgs(String event) async {
     for (int i = 0; i < 40; i++) {
       for (List<dynamic> e in _events) {
         if (e.first == event) {
           _events.remove(e);
-          return e.length > 1 ? e[1] : null;
+          return e.sublist(1);
         }
       }
       await Future<void>.delayed(Duration(milliseconds: 50));
