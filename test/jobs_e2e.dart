@@ -816,6 +816,8 @@ class RejectingSmtp {
   }
 
   void talk(Socket client) {
+    // a reset can also come on the write side (macOS): ignore it too
+    client.done.then((_) {}, onError: (Object _) {});
     client.write('220 reject.test ESMTP\r\n');
     client
         .cast<List<int>>()
