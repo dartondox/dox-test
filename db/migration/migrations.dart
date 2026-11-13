@@ -12,29 +12,21 @@ import '2024_01_01_000007_create_queue_tables.dart' as m7;
 import '2024_01_01_000008_add_views_to_posts_table.dart' as m8;
 import '2024_01_02_000001_create_badges_tables.dart' as m9;
 import '2026_11_03_112722_create_access_tokens_table.dart' as m10;
+import '2026_11_13_000001_create_batches_and_cache_tables.dart' as m11;
 
 /// all Dart migrations of db/migration, sorted by name
 final List<MigrationEntry> migrations = <MigrationEntry>[
-  MigrationEntry(
-    '2024_01_01_000001_create_users_table',
-    m1.CreateUsersTable(),
-  ),
+  MigrationEntry('2024_01_01_000001_create_users_table', m1.CreateUsersTable()),
   MigrationEntry(
     '2024_01_01_000002_create_profiles_table',
     m2.CreateProfilesTable(),
   ),
-  MigrationEntry(
-    '2024_01_01_000003_create_posts_table',
-    m3.CreatePostsTable(),
-  ),
+  MigrationEntry('2024_01_01_000003_create_posts_table', m3.CreatePostsTable()),
   MigrationEntry(
     '2024_01_01_000004_create_comments_table',
     m4.CreateCommentsTable(),
   ),
-  MigrationEntry(
-    '2024_01_01_000005_create_tags_table',
-    m5.CreateTagsTable(),
-  ),
+  MigrationEntry('2024_01_01_000005_create_tags_table', m5.CreateTagsTable()),
   MigrationEntry(
     '2024_01_01_000006_add_names_to_users_table',
     m6.AddNamesToUsersTable(),
@@ -54,5 +46,9 @@ final List<MigrationEntry> migrations = <MigrationEntry>[
   MigrationEntry(
     '2026_11_03_112722_create_access_tokens_table',
     m10.CreateAccessTokensTable(),
+  ),
+  MigrationEntry(
+    '2026_11_13_000001_create_batches_and_cache_tables',
+    m11.CreateBatchesAndCacheTables(),
   ),
 ];

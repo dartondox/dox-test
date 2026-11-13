@@ -38,6 +38,7 @@ class _$AppEnv extends AppEnv {
     required this.awsSecretAccessKey,
     required this.awsEndpoint,
     required this.socketioEnabled,
+    required this.socketioOpenOrigin,
     required this.mailMailer,
     required this.mailHost,
     required this.mailPort,
@@ -106,6 +107,8 @@ class _$AppEnv extends AppEnv {
   @override
   final bool socketioEnabled;
   @override
+  final bool socketioOpenOrigin;
+  @override
   final String mailMailer;
   @override
   final String mailHost;
@@ -157,6 +160,8 @@ class _$AppEnv extends AppEnv {
         r.string('AWS_SECRET_ACCESS_KEY') ?? d.awsSecretAccessKey;
     String awsEndpoint = r.string('AWS_ENDPOINT') ?? d.awsEndpoint;
     bool socketioEnabled = r.boolean('SOCKETIO_ENABLED') ?? d.socketioEnabled;
+    bool socketioOpenOrigin =
+        r.boolean('SOCKETIO_OPEN_ORIGIN') ?? d.socketioOpenOrigin;
     String mailMailer = r.string('MAIL_MAILER') ?? d.mailMailer;
     String mailHost = r.string('MAIL_HOST') ?? d.mailHost;
     int mailPort = r.integer('MAIL_PORT') ?? d.mailPort;
@@ -195,6 +200,7 @@ class _$AppEnv extends AppEnv {
       awsSecretAccessKey: awsSecretAccessKey,
       awsEndpoint: awsEndpoint,
       socketioEnabled: socketioEnabled,
+      socketioOpenOrigin: socketioOpenOrigin,
       mailMailer: mailMailer,
       mailHost: mailHost,
       mailPort: mailPort,

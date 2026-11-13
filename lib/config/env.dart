@@ -81,6 +81,9 @@ abstract class AppEnv {
 
   bool get socketioEnabled => true;
 
+  /// true: Socket.IO does not check the Origin header (a warning prints).
+  bool get socketioOpenOrigin => false;
+
   /// The mailer of `Mail.send()`: smtp, failover or log.
   String get mailMailer => 'smtp';
 

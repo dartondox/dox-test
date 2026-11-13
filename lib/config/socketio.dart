@@ -12,6 +12,15 @@ SocketIoConfig socketIoConfig = SocketIoConfig(
   /// Only pages of this host may open a socket. /secure logs in with the
   /// session cookie, so another site must not open one for the user.
   /// A client with no `Origin` header (not a browser) is still allowed.
-  options: const ServerOptions(allowedOrigins: <String>[]),
+  ///
+  /// SOCKETIO_OPEN_ORIGIN=true turns the check off (null). Only the
+  /// `Dox().isWebServer` check of test/e2e_32_core.dart uses it.
+  options: ServerOptions(
+    allowedOrigins: env.socketioOpenOrigin ? null : const <String>[],
+  ),
   namespaces: <NamespaceHandler>[ChatNamespace(), SecureNamespace()],
+
+  /// Broadcast.channel rules, `subscribe` on `/` and `broadcast(event)`.
+  /// The rules: lib/providers/broadcast_provider.dart.
+  broadcasting: true,
 );
