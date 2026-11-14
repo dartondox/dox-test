@@ -319,8 +319,11 @@ DB_CONNECTION=sqlite dart run bin/server.dart
 Stop that Redis when done: `redis-cli -p 6459 shutdown nosave`.
 
 - [ ] Open http://127.0.0.1:3100/inertia/pdfme → the pdfme designer with an A4 page:
-  a text, a QR code, an image, a date and a line. `pdfme` is in the nav
-- [ ] The Inputs box has one record: `title`, `link`, `logo`, `day`, `myanmar` (not `rule`: it is read-only)
+  a text, a QR code, an image, a date, a line, a table, a multiVariableText, a signature and a
+  circle mark. `pdfme` is in the nav. The left panel also offers Table, MultiVariableText,
+  Signature and CircleMark
+- [ ] The Inputs box has one record: `title`, `link`, `logo`, `day`, `myanmar`, `people`, `greeting`,
+  `sign`, `mark` (not `rule`: it is read-only)
 - [ ] Fonts: the `myanmar` field uses `fontName` `NotoSansMyanmar` (Noto Sans Myanmar Regular, in
   `public/fonts`, list in `lib/config/pdfme.dart`). It shows Myanmar text, wrapped in a narrow box.
   Generate and Compare → both PDFs show the Myanmar text (widths may differ a little).
