@@ -1024,6 +1024,17 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'PdfmeController',
+      method: 'generate',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'Make a PDF from a pdfme template with dox_pdf_me',
+      description: 'Body: `{"template": {...}, "inputs": [{...}]}`. The answer is the PDF.\nThe `X-Generate-Ms` header has the time it took on the server.',
+      tags: <String>['pdfme'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
       controller: 'CoreController',
       method: 'method',
       argumentTypes: <String>['DoxRequest'],
@@ -2188,6 +2199,12 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     ),
     OpenApiOperation(
       controller: 'InertiaController',
+      method: 'pdfme',
+      argumentTypes: <String>['DoxRequest'],
+      ignore: true,
+    ),
+    OpenApiOperation(
+      controller: 'InertiaController',
       method: 'store',
       argumentTypes: <String>['DoxRequest'],
       ignore: true,
@@ -2465,6 +2482,11 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'api/tokens/login',
       'TokenController.tokenLogin',
     ),
+    OpenApiRouteBinding(
+      'POST',
+      'api/pdfme/generate',
+      'PdfmeController.generate',
+    ),
     OpenApiRouteBinding('GET', 'api/greet/{name?}', 'CoreController.greet'),
     OpenApiRouteBinding('POST', 'api/', 'TokenController.store'),
     OpenApiRouteBinding('GET', 'api/', 'TokenController.index'),
@@ -2588,6 +2610,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'inertia/notes/{id}',
       'InertiaController.destroy',
     ),
+    OpenApiRouteBinding('GET', 'inertia/pdfme', 'InertiaController.pdfme'),
     OpenApiRouteBinding('GET', 'inertia/login', 'WebAuthController.loginPage'),
     OpenApiRouteBinding('POST', 'inertia/login', 'WebAuthController.loginForm'),
     OpenApiRouteBinding(

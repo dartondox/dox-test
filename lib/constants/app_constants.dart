@@ -18,6 +18,9 @@ class AppConstants {
   /// Cache key for post stats.
   static const String postStatsCacheKey = 'post_stats';
 
+  /// Biggest body of POST /api/pdfme/generate (a base PDF and images).
+  static const int pdfmeMaxBodySize = 20 * 1024 * 1024;
+
   /// Default page size for lists.
   static const int defaultPerPage = 10;
 

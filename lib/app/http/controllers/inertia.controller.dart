@@ -31,6 +31,12 @@ class InertiaController {
     return inertia(req, 'Notes', <String, dynamic>{'notes': notes.all()});
   }
 
+  /// GET /inertia/pdfme: design a pdfme template, make the PDF with
+  /// dox_pdf_me (POST /api/pdfme/generate) and with pdfme in the browser.
+  Future<DoxResponse> pdfme(DoxRequest req) {
+    return inertia(req, 'PdfmePlayground', <String, dynamic>{});
+  }
+
   /// POST /inertia/notes
   /// A bad form redirects back with the errors in the session.
   Future<DoxResponse> store(DoxRequest req) async {

@@ -6,6 +6,7 @@ export default function Nav() {
     <nav>
       <strong>{appName}</strong> | <Link href="/inertia">Home</Link> |{' '}
       <Link href="/inertia/notes">Notes</Link> |{' '}
+      <Link href="/inertia/pdfme">pdfme</Link> |{' '}
       {auth?.user ? (
         <>
           <Link href="/inertia/dashboard">Dashboard</Link> | {auth.user.name}{' '}

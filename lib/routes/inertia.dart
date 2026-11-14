@@ -24,6 +24,7 @@ class InertiaRouter extends Router {
     Route.get('/notes', (InertiaController c) => c.index);
     Route.post('/notes', (InertiaController c) => c.store);
     Route.delete('/notes/{id}', (InertiaController c) => c.destroy);
+    Route.get('/pdfme', (InertiaController c) => c.pdfme);
 
     /// Session login (the `web` guard)
     Route.get('/login', (WebAuthController c) => c.loginPage);
