@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -9,17 +10,14 @@ import 'package:dox_test/config/pdfme.dart';
 @Inject()
 class PdfmeService {
   /// The font option, read from disk on the first request.
-  Map<String, dynamic>? _fonts;
+  Map<String, FontSource>? _fonts;
 
   /// Roboto (the fallback) and the fonts of `pdfmeFonts`, like pdfme's `options.font`.
-  Map<String, dynamic> get fonts {
-    return _fonts ??= <String, dynamic>{
-      'Roboto': <String, dynamic>{
-        'data': FontStore.defaultFont.data,
-        'fallback': true,
-      },
+  Map<String, FontSource> get fonts {
+    return _fonts ??= <String, FontSource>{
+      'Roboto': FontSource(FontStore.defaultFont.data, fallback: true),
       for (MapEntry<String, String> e in pdfmeFonts.entries)
-        e.key: <String, dynamic>{'data': File(e.value).readAsBytesSync()},
+        e.key: FontSource(File(e.value).readAsBytesSync()),
     };
   }
 
@@ -30,19 +28,19 @@ class PdfmeService {
       throw _invalid('template must be an object');
     }
     if (inputs is! List) throw _invalid('inputs must be a list of objects');
-    List<Map<String, dynamic>> records = <Map<String, dynamic>>[];
+    List<Map<String, String>> records = <Map<String, String>>[];
     for (Object? input in inputs) {
       if (input is! Map<String, dynamic>) {
         throw _invalid('inputs must be a list of objects');
       }
-      records.add(input);
+      records.add(_stringValues(input));
     }
     try {
       return await generate(
-        template: template,
+        template: Template.fromJson(template),
         inputs: records,
         plugins: builtInPlugins,
-        options: <String, dynamic>{'font': fonts},
+        options: GenerateOptions(font: fonts),
       );
     } on ArgumentError catch (e) {
       /// "Invalid argument (basePdf): must be ..." names the field
@@ -55,6 +53,16 @@ class PdfmeService {
       /// a field with the wrong JSON type, eg. a string for `width`
       throw _invalid('bad template: $e');
     }
+  }
+
+  /// dox_pdf_me takes strings only. A table or a list is a JSON string.
+  /// A null is left out.
+  Map<String, String> _stringValues(Map<String, dynamic> input) {
+    return <String, String>{
+      for (MapEntry<String, dynamic> e in input.entries)
+        if (e.value != null)
+          e.key: e.value is String ? e.value as String : jsonEncode(e.value),
+    };
   }
 
   HttpStatusException _invalid(String message) {

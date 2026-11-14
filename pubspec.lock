@@ -309,18 +309,18 @@ packages:
     dependency: transitive
     description:
       name: dox_pdf_lib
-      sha256: "3ef22577f29a2195dc79d7995bfe487477292763b6980d8127b01175ef7d7861"
+      sha256: "295bb4165b41bdd69429ab7312a2beaa7ef5bcdc783911f2d6be1db64ddcacb8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   dox_pdf_me:
     dependency: "direct main"
     description:
       name: dox_pdf_me
-      sha256: "702935933f6852dfa750568a2c9532d253fdb65d350f261e62aae834eb2bfcea"
+      sha256: cb29911fc1612f2333a28b1f5661025ce007137f07e3f6e23a5f0974e579fc58
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   dox_postgres_native:
     dependency: transitive
     description:
