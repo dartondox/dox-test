@@ -320,7 +320,12 @@ Stop that Redis when done: `redis-cli -p 6459 shutdown nosave`.
 
 - [ ] Open http://127.0.0.1:3100/inertia/pdfme → the pdfme designer with an A4 page:
   a text, a QR code, an image, a date and a line. `pdfme` is in the nav
-- [ ] The Inputs box has one record: `title`, `link`, `logo`, `day` (not `rule`: it is read-only)
+- [ ] The Inputs box has one record: `title`, `link`, `logo`, `day`, `myanmar` (not `rule`: it is read-only)
+- [ ] Fonts: the `myanmar` field uses `fontName` `NotoSansMyanmar` (Noto Sans Myanmar Regular, in
+  `public/fonts`, list in `lib/config/pdfme.dart`). It shows Myanmar text, wrapped in a narrow box.
+  Generate and Compare → both PDFs show the Myanmar text (widths may differ a little).
+  `pdftotext` on the dox_pdf_me PDF gives the Myanmar text back. Fields without `fontName` use Roboto.
+  The page sends no font bytes: the server loads the fonts by name
 - [ ] "Generate with dox_pdf_me" → the PDF under the button, and `... ms on the server, ... ms in all`
 - [ ] "Compare with pdfme" → two PDFs side by side. They look the same
 - [ ] Add a field in the designer (for example an image) → the new key shows in the inputs at once,

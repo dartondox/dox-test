@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Designer } from '@pdfme/ui'
 import { generate } from '@pdfme/generator'
+import { getDefaultFont } from '@pdfme/common'
 import {
   barcodes,
   checkbox,
@@ -34,6 +35,18 @@ const plugins = {
   Checkbox: checkbox,
   RadioGroup: radioGroup,
   Select: select,
+}
+
+/// Fonts: Roboto (the pdfme default, the fallback) and Noto Sans Myanmar.
+/// The server loads its fonts by name from public/fonts (lib/config/pdfme.dart).
+let fontOptions = null
+async function loadFonts() {
+  if (!fontOptions) {
+    const res = await fetch('/fonts/NotoSansMyanmar-Regular.ttf')
+    const data = new Uint8Array(await res.arrayBuffer())
+    fontOptions = { font: { ...getDefaultFont(), NotoSansMyanmar: { data } } }
+  }
+  return fontOptions
 }
 
 const blankA4 = { width: 210, height: 297, padding: [0, 0, 0, 0] }
@@ -78,6 +91,16 @@ const sampleTemplate = {
         position: { x: 120, y: 55 },
         width: 50,
         height: 10,
+        fontSize: 14,
+      },
+      {
+        name: 'myanmar',
+        type: 'text',
+        content: 'မင်္ဂလာပါ။ ဒီစာသားက မြန်မာစာ စမ်းသပ်ချက် ဖြစ်ပါတယ်။',
+        fontName: 'NotoSansMyanmar',
+        position: { x: 20, y: 95 },
+        width: 60,
+        height: 30,
         fontSize: 14,
       },
       {
@@ -147,14 +170,20 @@ export default function PdfmePlayground() {
   }
 
   useEffect(function () {
-    designer.current = new Designer({
-      domContainer: container.current,
-      template: sampleTemplate,
-      plugins,
+    let gone = false
+    loadFonts().then(function (options) {
+      if (gone) return
+      designer.current = new Designer({
+        domContainer: container.current,
+        template: sampleTemplate,
+        plugins,
+        options,
+      })
+      designer.current.onChangeTemplate(syncWith)
     })
-    designer.current.onChangeTemplate(syncWith)
     return function () {
-      designer.current.destroy()
+      gone = true
+      designer.current?.destroy()
     }
   }, [])
 
@@ -206,7 +235,7 @@ export default function PdfmePlayground() {
   async function runJs(body) {
     const start = performance.now()
     try {
-      const bytes = await generate({ ...body, plugins })
+      const bytes = await generate({ ...body, plugins, options: await loadFonts() })
       return { url: pdfUrl(bytes), time: `${Math.round(performance.now() - start)} ms in the browser` }
     } catch (err) {
       return { error: String(err) }

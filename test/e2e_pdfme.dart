@@ -49,6 +49,38 @@ void pdfmeTests(Api api) {
       expect(ascii.decode(res.bodyBytes.sublist(0, 5)), '%PDF-');
     });
 
+    test('a font of the server is used by its name (Myanmar)', () async {
+      http.Response res = await api.post(
+        '/api/pdfme/generate',
+        <String, dynamic>{
+          'template': <String, dynamic>{
+            'basePdf': <String, dynamic>{
+              'width': 210,
+              'height': 297,
+              'padding': <int>[0, 0, 0, 0],
+            },
+            'schemas': <dynamic>[
+              <dynamic>[
+                <String, dynamic>{
+                  'name': 'my',
+                  'type': 'text',
+                  'fontName': 'NotoSansMyanmar',
+                  'position': <String, num>{'x': 20, 'y': 20},
+                  'width': 60,
+                  'height': 30,
+                },
+              ],
+            ],
+          },
+          'inputs': <dynamic>[
+            <String, dynamic>{'my': 'မင်္ဂလာပါ။ ဒီစာသားက မြန်မာစာ'},
+          ],
+        },
+      );
+      expect(res.statusCode, 200);
+      expect(latin1.decode(res.bodyBytes), contains('NotoSansMyanmar'));
+    });
+
     test('a bad template gives 422 with a message', () async {
       http.Response res = await api.post(
         '/api/pdfme/generate',

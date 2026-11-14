@@ -1,11 +1,28 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dox_core/dox_core.dart';
 import 'package:dox_pdf_me/dox_pdf_me.dart';
+import 'package:dox_test/config/pdfme.dart';
 
 /// Makes a PDF from a pdfme template with dox_pdf_me.
 @Inject()
 class PdfmeService {
+  /// The font option, read from disk on the first request.
+  Map<String, dynamic>? _fonts;
+
+  /// Roboto (the fallback) and the fonts of `pdfmeFonts`, like pdfme's `options.font`.
+  Map<String, dynamic> get fonts {
+    return _fonts ??= <String, dynamic>{
+      'Roboto': <String, dynamic>{
+        'data': FontStore.defaultFont.data,
+        'fallback': true,
+      },
+      for (MapEntry<String, String> e in pdfmeFonts.entries)
+        e.key: <String, dynamic>{'data': File(e.value).readAsBytesSync()},
+    };
+  }
+
   /// [template] and [inputs] are the pdfme JSON from the designer.
   /// A bad template gives 422 with the message of dox_pdf_me.
   Future<Uint8List> generatePdf(Object? template, Object? inputs) async {
@@ -25,6 +42,7 @@ class PdfmeService {
         template: template,
         inputs: records,
         plugins: builtInPlugins,
+        options: <String, dynamic>{'font': fonts},
       );
     } on ArgumentError catch (e) {
       /// "Invalid argument (basePdf): must be ..." names the field

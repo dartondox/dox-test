@@ -35,6 +35,9 @@ class WebRouter extends Router {
 
     /// The Vite build of the Inertia pages (`npm run build`).
     Route.get('/build/{path*}', buildFile);
+
+    /// Fonts of the pdfme playground (public/fonts).
+    Route.get('/fonts/{path*}', fontFile);
     Route.disabledCors(registerNoCors);
   }
 
@@ -42,6 +45,11 @@ class WebRouter extends Router {
   DoxResponse buildFile(String path) {
     if (path.contains('..')) throw NotFoundHttpException();
     return response(File('public/build/$path')).cache(Duration(days: 365));
+  }
+
+  DoxResponse fontFile(String path) {
+    if (path.contains('..')) throw NotFoundHttpException();
+    return response(File('public/fonts/$path')).cache(Duration(days: 365));
   }
 
   void registerWebAuth() {
