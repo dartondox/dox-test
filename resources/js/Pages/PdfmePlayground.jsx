@@ -5,24 +5,30 @@ import { getDefaultFont } from '@pdfme/common'
 import {
   barcodes,
   checkbox,
+  circleMark,
   date,
   dateTime,
   ellipse,
   image,
   line,
+  multiVariableText,
   radioGroup,
   rectangle,
   select,
+  signature,
   svg,
+  table,
   text,
   time,
 } from '@pdfme/schemas'
 import Nav from '../Nav'
 import { syncInputs } from '../pdfme/syncInputs'
 
-/// The schema types dox_pdf_me supports (not table, multiVariableText, ...).
+/// The schema types dox_pdf_me supports (not list).
 const plugins = {
   Text: text,
+  MultiVariableText: multiVariableText,
+  Table: table,
   Image: image,
   SVG: svg,
   Line: line,
@@ -35,6 +41,8 @@ const plugins = {
   Checkbox: checkbox,
   RadioGroup: radioGroup,
   Select: select,
+  Signature: signature,
+  CircleMark: circleMark,
 }
 
 /// Fonts: Roboto (the pdfme default, the fallback) and Noto Sans Myanmar.
@@ -111,6 +119,38 @@ const sampleTemplate = {
         height: 1,
         color: '#333333',
         readOnly: true,
+      },
+      {
+        ...table.propPanel.defaultSchema,
+        name: 'people',
+        position: { x: 20, y: 135 },
+        width: 170,
+      },
+      {
+        ...multiVariableText.propPanel.defaultSchema,
+        name: 'greeting',
+        text: 'Hello {name}, your total is {amount}.',
+        variables: ['name', 'amount'],
+        content: JSON.stringify({ name: 'Aung', amount: '12,000 MMK' }),
+        position: { x: 20, y: 200 },
+        width: 120,
+        height: 10,
+      },
+      {
+        ...signature.propPanel.defaultSchema,
+        name: 'sign',
+        content: sampleImage,
+        position: { x: 20, y: 220 },
+        width: 50,
+        height: 30,
+      },
+      {
+        ...circleMark.propPanel.defaultSchema,
+        name: 'mark',
+        content: 'true',
+        position: { x: 90, y: 225 },
+        width: 15,
+        height: 15,
       },
     ],
   ],
