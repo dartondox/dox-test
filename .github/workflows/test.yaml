@@ -165,6 +165,8 @@ jobs:
         # all Dox packages come from the local clones, none from pub.dev
         run: |
           cp .env.example .env
+          # a random key made now, never a fixed one
+          sed -i.bak "s/^APP_KEY=.*/APP_KEY=$(openssl rand -hex 16)/" .env && rm .env.bak
           dart pub get
           dart run build_runner build
       # The dox CLI tests run `dart run ../dox-cli/bin/dox.dart`. The CLI

@@ -12,6 +12,7 @@ An end-to-end test calls every endpoint over HTTP and Socket.IO.
 
 ```bash
 cp .env.example .env
+dart run ../dox-cli/bin/dox.dart key:generate   # a new APP_KEY in .env
 dart pub get
 dart run build_runner build      # models + lib/openapi.g.dart
 ```
