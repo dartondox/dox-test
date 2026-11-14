@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Designer } from '@pdfme/ui'
 import { generate } from '@pdfme/generator'
+import { getDefaultFont } from '@pdfme/common'
 import {
   barcodes,
   checkbox,
@@ -17,6 +18,7 @@ import {
   time,
 } from '@pdfme/schemas'
 import Nav from '../Nav'
+import { syncInputs } from '../pdfme/syncInputs'
 
 /// The schema types dox_pdf_me supports (not table, multiVariableText, ...).
 const plugins = {
@@ -33,6 +35,18 @@ const plugins = {
   Checkbox: checkbox,
   RadioGroup: radioGroup,
   Select: select,
+}
+
+/// Fonts: Roboto (the pdfme default, the fallback) and Noto Sans Myanmar.
+/// The server loads its fonts by name from public/fonts (lib/config/pdfme.dart).
+let fontOptions = null
+async function loadFonts() {
+  if (!fontOptions) {
+    const res = await fetch('/fonts/NotoSansMyanmar-Regular.ttf')
+    const data = new Uint8Array(await res.arrayBuffer())
+    fontOptions = { font: { ...getDefaultFont(), NotoSansMyanmar: { data } } }
+  }
+  return fontOptions
 }
 
 const blankA4 = { width: 210, height: 297, padding: [0, 0, 0, 0] }
@@ -77,6 +91,16 @@ const sampleTemplate = {
         position: { x: 120, y: 55 },
         width: 50,
         height: 10,
+        fontSize: 14,
+      },
+      {
+        name: 'myanmar',
+        type: 'text',
+        content: 'မင်္ဂလာပါ။ ဒီစာသားက မြန်မာစာ စမ်းသပ်ချက် ဖြစ်ပါတယ်။',
+        fontName: 'NotoSansMyanmar',
+        position: { x: 20, y: 95 },
+        width: 60,
+        height: 30,
         fontSize: 14,
       },
       {
@@ -128,15 +152,38 @@ export default function PdfmePlayground() {
   const [dox, setDox] = useState(null)
   const [js, setJs] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [syncNote, setSyncNote] = useState(false)
+  // The newest inputs text and template, for the designer callback (made once).
+  const inputsRef = useRef(inputs)
+  inputsRef.current = inputs
+  const lastTemplate = useRef(sampleTemplate)
+
+  /// Keeps the inputs in step with the template. Bad JSON is left as it is.
+  function syncWith(template) {
+    const next = syncInputs(inputsRef.current, lastTemplate.current, template)
+    lastTemplate.current = template
+    setSyncNote(next === null)
+    if (next !== null && next !== inputsRef.current) {
+      inputsRef.current = next
+      setInputs(next)
+    }
+  }
 
   useEffect(function () {
-    designer.current = new Designer({
-      domContainer: container.current,
-      template: sampleTemplate,
-      plugins,
+    let gone = false
+    loadFonts().then(function (options) {
+      if (gone) return
+      designer.current = new Designer({
+        domContainer: container.current,
+        template: sampleTemplate,
+        plugins,
+        options,
+      })
+      designer.current.onChangeTemplate(syncWith)
     })
     return function () {
-      designer.current.destroy()
+      gone = true
+      designer.current?.destroy()
     }
   }, [])
 
@@ -146,7 +193,9 @@ export default function PdfmePlayground() {
   }
 
   function setBasePdf(basePdf) {
-    designer.current.updateTemplate({ ...designer.current.getTemplate(), basePdf })
+    const template = { ...designer.current.getTemplate(), basePdf }
+    designer.current.updateTemplate(template)
+    syncWith(template)
   }
 
   async function upload(e) {
@@ -156,7 +205,10 @@ export default function PdfmePlayground() {
   }
 
   function resetInputs() {
-    setInputs(inputsOf(designer.current.getTemplate()))
+    const template = designer.current.getTemplate()
+    lastTemplate.current = template
+    setSyncNote(false)
+    setInputs(inputsOf(template))
   }
 
   /// POST /api/pdfme/generate: the PDF of dox_pdf_me.
@@ -183,7 +235,7 @@ export default function PdfmePlayground() {
   async function runJs(body) {
     const start = performance.now()
     try {
-      const bytes = await generate({ ...body, plugins })
+      const bytes = await generate({ ...body, plugins, options: await loadFonts() })
       return { url: pdfUrl(bytes), time: `${Math.round(performance.now() - start)} ms in the browser` }
     } catch (err) {
       return { error: String(err) }
@@ -233,6 +285,12 @@ export default function PdfmePlayground() {
         rows={10}
         style={{ width: '100%', fontFamily: 'monospace' }}
       />
+      {syncNote && (
+        <p style={{ color: '#b45309' }}>
+          The inputs are not valid JSON, so they do not follow the template now. Fix them, or use
+          "Reset inputs from template".
+        </p>
+      )}
       <p>
         <button onClick={resetInputs}>Reset inputs from template</button>{' '}
         <button disabled={busy} onClick={() => run(false)}>
