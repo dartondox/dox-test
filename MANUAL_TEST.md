@@ -323,7 +323,13 @@ Stop that Redis when done: `redis-cli -p 6459 shutdown nosave`.
 - [ ] The Inputs box has one record: `title`, `link`, `logo`, `day` (not `rule`: it is read-only)
 - [ ] "Generate with dox_pdf_me" → the PDF under the button, and `... ms on the server, ... ms in all`
 - [ ] "Compare with pdfme" → two PDFs side by side. They look the same
-- [ ] Add a field in the designer, then "Reset inputs from template" → the new field is in the inputs
+- [ ] Add a field in the designer (for example an image) → the new key shows in the inputs at once,
+  with the field's content. Generate → the field is drawn in both PDFs
+- [ ] Edit an input value, then move or resize a field → the edited value stays.
+  Rename a field → the old key is gone, the new key is there. Delete a field → its key is gone
+- [ ] Pick a new image for a field in the property panel (input not edited) → the input gets the new image
+- [ ] Type `[` in the inputs, then add a field → the text stays as is and a note says the inputs
+  do not follow the template. "Reset inputs from template" → fixed
 - [ ] "Upload base PDF" with any PDF → the designer shows its pages. Generate → the fields are on top.
   "Blank A4" → back to the empty page
 - [ ] Type `[` in the inputs, Generate → red `Inputs are not valid JSON`
