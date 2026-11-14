@@ -308,6 +308,16 @@ npm run build                # or: npm run dev + VITE_DEV_SERVER=http://localhos
 dart run bin/server.dart     # restart after each build
 ```
 
+Without Docker: the server needs Redis on port 6459 (sessions) and a database.
+Start a Redis of your own and use SQLite:
+
+```bash
+redis-server --port 6459 --daemonize yes --save "" --appendonly no
+DB_CONNECTION=sqlite dart run bin/server.dart
+```
+
+Stop that Redis when done: `redis-cli -p 6459 shutdown nosave`.
+
 - [ ] Open http://127.0.0.1:3100/inertia/pdfme → the pdfme designer with an A4 page:
   a text, a QR code, an image, a date and a line. `pdfme` is in the nav
 - [ ] The Inputs box has one record: `title`, `link`, `logo`, `day` (not `rule`: it is read-only)
