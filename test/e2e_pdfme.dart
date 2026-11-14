@@ -132,6 +132,37 @@ void pdfmeTests(Api api) {
       expect(api.json(res)['message'], isNotEmpty);
     });
 
+    test('a barcode value that bwip-js refuses gives 422', () async {
+      http.Response res = await api.post(
+        '/api/pdfme/generate',
+        <String, dynamic>{
+          'template': <String, dynamic>{
+            'basePdf': <String, dynamic>{
+              'width': 210,
+              'height': 297,
+              'padding': <int>[0, 0, 0, 0],
+            },
+            'schemas': <dynamic>[
+              <dynamic>[
+                <String, dynamic>{
+                  'name': 'code',
+                  'type': 'code128',
+                  'position': <String, num>{'x': 20, 'y': 20},
+                  'width': 100,
+                  'height': 20,
+                },
+              ],
+            ],
+          },
+          'inputs': <dynamic>[
+            <String, dynamic>{'code': 'A' * 501},
+          ],
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res)['message'], isNotEmpty);
+    });
+
     test('inputs that are not a list give 422', () async {
       http.Response res = await api.post(
         '/api/pdfme/generate',

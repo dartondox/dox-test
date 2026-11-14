@@ -47,6 +47,8 @@ class PdfmeService {
       throw _invalid(e.toString());
     } on FormatException catch (e) {
       throw _invalid(e.message);
+    } on BarcodeInputException catch (e) {
+      throw _invalid(e.message);
     } on PDFLibError catch (e) {
       throw _invalid(e.toString());
     } on TypeError catch (e) {
