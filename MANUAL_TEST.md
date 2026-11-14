@@ -295,6 +295,36 @@ MailHog catches every email: http://127.0.0.1:8125. Register a user first (secti
 - [ ] `dart run bin/schedule.dart run` → a warning about `onOneServer()` and the memory store
 - [ ] `dart run ../dox-cli/bin/dox.dart queue:table` → `A create_queue_tables migration is already in db/migration.`, exit code 1
 
+## 15. pdfme playground (dox_pdf_me, browser)
+
+Design a [pdfme](https://pdfme.com) template in the browser. Make the PDF with
+dox_pdf_me (Dart, on the server) and with pdfme (in the browser).
+The page is `resources/js/Pages/PdfmePlayground.jsx`, the route `POST /api/pdfme/generate`.
+dox_pdf_me comes from `../dox-pdf-lib` (see `pubspec_overrides.yaml`). The first start
+builds its Rust library with cargo, so it takes a few minutes once.
+
+```bash
+npm install
+npm run build                # or: npm run dev + VITE_DEV_SERVER=http://localhost:5173 (section 10)
+dart run bin/server.dart     # restart after each build
+```
+
+- [ ] Open http://127.0.0.1:3100/inertia/pdfme → the pdfme designer with an A4 page:
+  a text, a QR code, an image, a date and a line. `pdfme` is in the nav
+- [ ] The Inputs box has one record: `title`, `link`, `logo`, `day` (not `rule`: it is read-only)
+- [ ] "Generate with dox_pdf_me" → the PDF under the button, and `... ms on the server, ... ms in all`
+- [ ] "Compare with pdfme" → two PDFs side by side. They look the same
+- [ ] Add a field in the designer, then "Reset inputs from template" → the new field is in the inputs
+- [ ] "Upload base PDF" with any PDF → the designer shows its pages. Generate → the fields are on top.
+  "Blank A4" → back to the empty page
+- [ ] Type `[` in the inputs, Generate → red `Inputs are not valid JSON`
+- [ ] Bad template:
+  `curl -H "$J" -d '{"template":{"schemas":[]},"inputs":[{}]}' $B/api/pdfme/generate`
+  → `422`, `{"code":"unprocessable_entity","message":"Invalid argument (basePdf): ..."}`
+- [ ] A base PDF over 1 MB gets `413`: the app limit is `MAX_BODY_SIZE` (1 MB).
+  Start with `MAX_BODY_SIZE=20971520 dart run bin/server.dart` for big files.
+  The route itself takes at most 20 MB
+
 ## Known issues (framework, not this app)
 
 - **Scheduler stop**: Ctrl+C on `dart run bin/schedule.dart work` prints `stopping`,

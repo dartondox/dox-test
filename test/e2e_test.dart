@@ -32,6 +32,7 @@ import 'e2e_310_core.dart';
 import 'e2e_310b_core.dart';
 import 'e2e_32_orm.dart';
 import 'e2e_32_packages.dart';
+import 'e2e_pdfme.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
 /// then calls every endpoint over HTTP and Socket.IO.
@@ -1968,6 +1969,9 @@ void main() {
   /// 3.2: batches and chains, the database cache store, Socket.IO
   /// broadcasting and `Dox().isWebServer` (test/e2e_32_packages.dart).
   packages32Tests(api);
+
+  /// The pdfme playground route: dox_pdf_me (test/e2e_pdfme.dart).
+  pdfmeTests(api);
 }
 
 Future<Profile?> profileOf(int userId) async {

@@ -18,6 +18,7 @@ dependencies:
   dox_inertia: ^3.0.0
   dox_view: ^3.0.0
   dox_mailer: ^3.0.0
+  dox_pdf_me: ^0.0.1
 
 dev_dependencies:
   dox_builder: ^3.0.0

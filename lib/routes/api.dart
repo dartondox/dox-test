@@ -6,6 +6,7 @@ import 'package:dox_test/app/http/controllers/cache.controller.dart';
 import 'package:dox_test/app/http/controllers/core.controller.dart';
 import 'package:dox_test/app/http/controllers/file.controller.dart';
 import 'package:dox_test/app/http/controllers/mail.controller.dart';
+import 'package:dox_test/app/http/controllers/pdfme.controller.dart';
 import 'package:dox_test/app/http/controllers/post.controller.dart';
 import 'package:dox_test/app/http/controllers/storage.controller.dart';
 import 'package:dox_test/app/http/controllers/system.controller.dart';
@@ -32,6 +33,10 @@ class ApiRouter extends Router {
     Route.group('/storage', registerStorage);
     Route.group('/mail', registerMail);
     Route.group('/tokens', registerTokens);
+
+    /// The pdfme playground page (/inertia/pdfme) posts here. It is under
+    /// /api because it needs no session or CSRF token: it reads no cookie.
+    Route.post('/pdfme/generate', (PdfmeController c) => c.generate);
 
     /// `{name?}` is optional: the docs show /api/greet and /api/greet/{name}.
     Route.get('/greet/{name?}', (CoreController c) => c.greet);
