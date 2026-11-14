@@ -20,10 +20,6 @@ dependency_overrides:
     path: ../dox-mysql-native
   dox_orm:
     path: ../dox-orm/packages/dox-orm
-  dox_pdf_lib:
-    path: ../dox-pdf-lib/packages/dox-pdf-lib
-  dox_pdf_me:
-    path: ../dox-pdf-lib/packages/dox-pdf-me
   dox_postgres_native:
     path: ../dox-postgres-native
   dox_queue:

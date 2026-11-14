@@ -300,8 +300,7 @@ MailHog catches every email: http://127.0.0.1:8125. Register a user first (secti
 Design a [pdfme](https://pdfme.com) template in the browser. Make the PDF with
 dox_pdf_me (Dart, on the server) and with pdfme (in the browser).
 The page is `resources/js/Pages/PdfmePlayground.jsx`, the route `POST /api/pdfme/generate`.
-dox_pdf_me comes from `../dox-pdf-lib` (see `pubspec_overrides.yaml`). The first start
-builds its Rust library with cargo, so it takes a few minutes once.
+dox_pdf_me comes from pub.dev. Its native library is downloaded on the first start (no cargo needed).
 
 ```bash
 npm install
