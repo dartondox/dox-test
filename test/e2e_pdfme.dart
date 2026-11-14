@@ -81,12 +81,82 @@ void pdfmeTests(Api api) {
       expect(latin1.decode(res.bodyBytes), contains('NotoSansMyanmar'));
     });
 
+    test('a table input as a JSON array still gives a PDF', () async {
+      http.Response res = await api.post(
+        '/api/pdfme/generate',
+        <String, dynamic>{
+          'template': <String, dynamic>{
+            'basePdf': <String, dynamic>{
+              'width': 210,
+              'height': 297,
+              'padding': <int>[0, 0, 0, 0],
+            },
+            'schemas': <dynamic>[
+              <dynamic>[
+                <String, dynamic>{
+                  'name': 'rows',
+                  'type': 'table',
+                  'position': <String, num>{'x': 20, 'y': 20},
+                  'width': 170,
+                  'height': 30,
+                  'head': <String>['Name', 'City'],
+                  'headWidthPercentages': <num>[50, 50],
+                },
+              ],
+            ],
+          },
+          'inputs': <dynamic>[
+            <String, dynamic>{
+              'rows': <dynamic>[
+                <String>['Alice', 'Paris'],
+                <String>['Bob', 'Rome'],
+              ],
+              'skipped': null,
+            },
+          ],
+        },
+      );
+      expect(res.statusCode, 200);
+      expect(ascii.decode(res.bodyBytes.sublist(0, 5)), '%PDF-');
+    });
+
     test('a bad template gives 422 with a message', () async {
       http.Response res = await api.post(
         '/api/pdfme/generate',
         <String, dynamic>{
           'template': <String, dynamic>{'schemas': <dynamic>[]},
           'inputs': <dynamic>[<String, dynamic>{}],
+        },
+      );
+      expect(res.statusCode, 422);
+      expect(api.json(res)['message'], isNotEmpty);
+    });
+
+    test('a barcode value that bwip-js refuses gives 422', () async {
+      http.Response res = await api.post(
+        '/api/pdfme/generate',
+        <String, dynamic>{
+          'template': <String, dynamic>{
+            'basePdf': <String, dynamic>{
+              'width': 210,
+              'height': 297,
+              'padding': <int>[0, 0, 0, 0],
+            },
+            'schemas': <dynamic>[
+              <dynamic>[
+                <String, dynamic>{
+                  'name': 'code',
+                  'type': 'code128',
+                  'position': <String, num>{'x': 20, 'y': 20},
+                  'width': 100,
+                  'height': 20,
+                },
+              ],
+            ],
+          },
+          'inputs': <dynamic>[
+            <String, dynamic>{'code': 'A' * 501},
+          ],
         },
       );
       expect(res.statusCode, 422);
