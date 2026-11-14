@@ -7,6 +7,7 @@ Each step: a command, then what you should see.
 
 ```bash
 cp .env.example .env
+dart run ../dox-cli/bin/dox.dart key:generate   # a new APP_KEY in .env
 dart pub get
 dart run build_runner build                 # models, DTOs, env.g.dart, openapi.g.dart
 dart run ../dox-cli/bin/dox.dart env:check   # → The env is valid.
