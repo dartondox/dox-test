@@ -8,70 +8,114 @@ part of 'env.dart';
 
 class _$AppEnv extends AppEnv {
   _$AppEnv._({
-    required this.appName,
-    required this.appEnv,
+    required String? appName,
+    required String? appEnv,
     required this.appKey,
-    required this.appPort,
-    required this.appTotalIsolate,
-    required this.appUrl,
+    required int? appPort,
+    required int? appTotalIsolate,
+    required String? appUrl,
     required this.apiKey,
-    required this.logRequests,
-    required this.logLevel,
-    required this.maxBodySize,
-    required this.maxMultipartSize,
-    required this.trustedProxies,
-    required this.dbConnection,
+    required bool? logRequests,
+    required String? logLevel,
+    required int? maxBodySize,
+    required int? maxMultipartSize,
+    required List<String>? trustedProxies,
+    required DbConnection? dbConnection,
     required this.dbHost,
     required this.dbPort,
     required this.dbUsername,
     required this.dbPassword,
-    required this.dbName,
+    required String? dbName,
     required this.dbDatabase,
-    required this.dbDebug,
-    required this.cacheStore,
-    required this.redisHost,
-    required this.redisPort,
-    required this.storageDisk,
-    required this.awsBucket,
-    required this.awsDefaultRegion,
-    required this.awsAccessKeyId,
-    required this.awsSecretAccessKey,
-    required this.awsEndpoint,
-    required this.socketioEnabled,
-    required this.socketioOpenOrigin,
-    required this.mailMailer,
-    required this.mailHost,
-    required this.mailPort,
-    required this.mailFrom,
+    required bool? dbDebug,
+    required String? cacheStore,
+    required String? redisHost,
+    required int? redisPort,
+    required String? storageDisk,
+    required String? awsBucket,
+    required String? awsDefaultRegion,
+    required String? awsAccessKeyId,
+    required String? awsSecretAccessKey,
+    required String? awsEndpoint,
+    required bool? socketioEnabled,
+    required bool? socketioOpenOrigin,
+    required String? mailMailer,
+    required String? mailHost,
+    required int? mailPort,
+    required String? mailFrom,
     required this.viteDevServer,
-  });
+    required String? sessionStore,
+    required bool? appStrict,
+  }) : _$appName = appName,
+       _$appEnv = appEnv,
+       _$appPort = appPort,
+       _$appTotalIsolate = appTotalIsolate,
+       _$appUrl = appUrl,
+       _$logRequests = logRequests,
+       _$logLevel = logLevel,
+       _$maxBodySize = maxBodySize,
+       _$maxMultipartSize = maxMultipartSize,
+       _$trustedProxies = trustedProxies,
+       _$dbConnection = dbConnection,
+       _$dbName = dbName,
+       _$dbDebug = dbDebug,
+       _$cacheStore = cacheStore,
+       _$redisHost = redisHost,
+       _$redisPort = redisPort,
+       _$storageDisk = storageDisk,
+       _$awsBucket = awsBucket,
+       _$awsDefaultRegion = awsDefaultRegion,
+       _$awsAccessKeyId = awsAccessKeyId,
+       _$awsSecretAccessKey = awsSecretAccessKey,
+       _$awsEndpoint = awsEndpoint,
+       _$socketioEnabled = socketioEnabled,
+       _$socketioOpenOrigin = socketioOpenOrigin,
+       _$mailMailer = mailMailer,
+       _$mailHost = mailHost,
+       _$mailPort = mailPort,
+       _$mailFrom = mailFrom,
+       _$sessionStore = sessionStore,
+       _$appStrict = appStrict;
 
+  final String? _$appName;
   @override
-  final String appName;
+  late final String appName = _$appName ?? super.appName;
+  final String? _$appEnv;
   @override
-  final String appEnv;
+  late final String appEnv = _$appEnv ?? super.appEnv;
   @override
   final String appKey;
+  final int? _$appPort;
   @override
-  final int appPort;
+  late final int appPort = _$appPort ?? super.appPort;
+  final int? _$appTotalIsolate;
   @override
-  final int appTotalIsolate;
+  late final int appTotalIsolate = _$appTotalIsolate ?? super.appTotalIsolate;
+  final String? _$appUrl;
   @override
-  final String appUrl;
+  late final String appUrl = _$appUrl ?? super.appUrl;
   @override
   final String apiKey;
+  final bool? _$logRequests;
   @override
-  final bool logRequests;
+  late final bool logRequests = _$logRequests ?? super.logRequests;
+  final String? _$logLevel;
   @override
-  final String logLevel;
+  late final String logLevel = _$logLevel ?? super.logLevel;
+  final int? _$maxBodySize;
   @override
-  final int maxBodySize;
+  late final int maxBodySize = _$maxBodySize ?? super.maxBodySize;
+  final int? _$maxMultipartSize;
   @override
-  final int maxMultipartSize;
+  late final int maxMultipartSize =
+      _$maxMultipartSize ?? super.maxMultipartSize;
+  final List<String>? _$trustedProxies;
   @override
-  final List<String> trustedProxies;
+  late final List<String> trustedProxies =
+      _$trustedProxies ?? super.trustedProxies;
+  final DbConnection? _$dbConnection;
   @override
-  final DbConnection dbConnection;
+  late final DbConnection dbConnection = _$dbConnection ?? super.dbConnection;
   @override
   final String? dbHost;
   @override
@@ -80,153 +124,206 @@ class _$AppEnv extends AppEnv {
   final String? dbUsername;
   @override
   final String? dbPassword;
+  final String? _$dbName;
   @override
-  final String dbName;
+  late final String dbName = _$dbName ?? super.dbName;
   @override
   final String? dbDatabase;
+  final bool? _$dbDebug;
   @override
-  final bool dbDebug;
+  late final bool dbDebug = _$dbDebug ?? super.dbDebug;
+  final String? _$cacheStore;
   @override
-  final String cacheStore;
+  late final String cacheStore = _$cacheStore ?? super.cacheStore;
+  final String? _$redisHost;
   @override
-  final String redisHost;
+  late final String redisHost = _$redisHost ?? super.redisHost;
+  final int? _$redisPort;
   @override
-  final int redisPort;
+  late final int redisPort = _$redisPort ?? super.redisPort;
+  final String? _$storageDisk;
   @override
-  final String storageDisk;
+  late final String storageDisk = _$storageDisk ?? super.storageDisk;
+  final String? _$awsBucket;
   @override
-  final String awsBucket;
+  late final String awsBucket = _$awsBucket ?? super.awsBucket;
+  final String? _$awsDefaultRegion;
   @override
-  final String awsDefaultRegion;
+  late final String awsDefaultRegion =
+      _$awsDefaultRegion ?? super.awsDefaultRegion;
+  final String? _$awsAccessKeyId;
   @override
-  final String awsAccessKeyId;
+  late final String awsAccessKeyId = _$awsAccessKeyId ?? super.awsAccessKeyId;
+  final String? _$awsSecretAccessKey;
   @override
-  final String awsSecretAccessKey;
+  late final String awsSecretAccessKey =
+      _$awsSecretAccessKey ?? super.awsSecretAccessKey;
+  final String? _$awsEndpoint;
   @override
-  final String awsEndpoint;
+  late final String awsEndpoint = _$awsEndpoint ?? super.awsEndpoint;
+  final bool? _$socketioEnabled;
   @override
-  final bool socketioEnabled;
+  late final bool socketioEnabled = _$socketioEnabled ?? super.socketioEnabled;
+  final bool? _$socketioOpenOrigin;
   @override
-  final bool socketioOpenOrigin;
+  late final bool socketioOpenOrigin =
+      _$socketioOpenOrigin ?? super.socketioOpenOrigin;
+  final String? _$mailMailer;
   @override
-  final String mailMailer;
+  late final String mailMailer = _$mailMailer ?? super.mailMailer;
+  final String? _$mailHost;
   @override
-  final String mailHost;
+  late final String mailHost = _$mailHost ?? super.mailHost;
+  final int? _$mailPort;
   @override
-  final int mailPort;
+  late final int mailPort = _$mailPort ?? super.mailPort;
+  final String? _$mailFrom;
   @override
-  final String mailFrom;
+  late final String mailFrom = _$mailFrom ?? super.mailFrom;
   @override
   final String? viteDevServer;
+  final String? _$sessionStore;
+  @override
+  late final String sessionStore = _$sessionStore ?? super.sessionStore;
+  final bool? _$appStrict;
+  @override
+  late final bool appStrict = _$appStrict ?? super.appStrict;
+
+  /// true while [load] runs. A default that reads the global `env` calls
+  /// [load] again, and would loop until the stack overflows.
+  static bool _$$loading = false;
 
   /// reads and checks every key once. Throws `EnvException` with all
-  /// missing or bad keys.
-  static AppEnv load([EnvReader? reader]) {
-    EnvReader r = reader ?? EnvReader();
-    _$AppEnvDefaults d = _$AppEnvDefaults();
-    String appName = r.string('APP_NAME') ?? d.appName;
-    String appEnv = r.string('APP_ENV') ?? d.appEnv;
-    String? appKey = r.string('APP_KEY');
-    r.need('APP_KEY');
-    int appPort = r.integer('APP_PORT') ?? d.appPort;
-    int appTotalIsolate = r.integer('APP_TOTAL_ISOLATE') ?? d.appTotalIsolate;
-    String appUrl = r.string('APP_URL') ?? d.appUrl;
-    String? apiKey = r.string('API_KEY');
-    r.need('API_KEY');
-    bool logRequests = r.boolean('LOG_REQUESTS') ?? d.logRequests;
-    String logLevel = r.string('LOG_LEVEL') ?? d.logLevel;
-    int maxBodySize = r.integer('MAX_BODY_SIZE') ?? d.maxBodySize;
-    int maxMultipartSize =
-        r.integer('MAX_MULTIPART_SIZE') ?? d.maxMultipartSize;
-    List<String> trustedProxies = r.list('TRUSTED_PROXIES') ?? d.trustedProxies;
-    DbConnection dbConnection =
-        r.enumByName('DB_CONNECTION', DbConnection.values) ?? d.dbConnection;
-    String? dbHost = r.string('DB_HOST');
-    int? dbPort = r.integer('DB_PORT');
-    String? dbUsername = r.string('DB_USERNAME');
-    String? dbPassword = r.string('DB_PASSWORD');
-    String dbName = r.string('DB_NAME') ?? d.dbName;
-    String? dbDatabase = r.string('DB_DATABASE');
-    bool dbDebug = r.boolean('DB_DEBUG') ?? d.dbDebug;
-    String cacheStore = r.string('CACHE_STORE') ?? d.cacheStore;
-    String redisHost = r.string('REDIS_HOST') ?? d.redisHost;
-    int redisPort = r.integer('REDIS_PORT') ?? d.redisPort;
-    String storageDisk = r.string('STORAGE_DISK') ?? d.storageDisk;
-    String awsBucket = r.string('AWS_BUCKET') ?? d.awsBucket;
-    String awsDefaultRegion =
-        r.string('AWS_DEFAULT_REGION') ?? d.awsDefaultRegion;
-    String awsAccessKeyId = r.string('AWS_ACCESS_KEY_ID') ?? d.awsAccessKeyId;
-    String awsSecretAccessKey =
-        r.string('AWS_SECRET_ACCESS_KEY') ?? d.awsSecretAccessKey;
-    String awsEndpoint = r.string('AWS_ENDPOINT') ?? d.awsEndpoint;
-    bool socketioEnabled = r.boolean('SOCKETIO_ENABLED') ?? d.socketioEnabled;
-    bool socketioOpenOrigin =
-        r.boolean('SOCKETIO_OPEN_ORIGIN') ?? d.socketioOpenOrigin;
-    String mailMailer = r.string('MAIL_MAILER') ?? d.mailMailer;
-    String mailHost = r.string('MAIL_HOST') ?? d.mailHost;
-    int mailPort = r.integer('MAIL_PORT') ?? d.mailPort;
-    String mailFrom = r.string('MAIL_FROM') ?? d.mailFrom;
-    String? viteDevServer = r.string('VITE_DEV_SERVER');
+  /// missing or bad keys. Then works out every default once, so a default
+  /// that throws stops the app here, at startup.
+  static AppEnv load([EnvReader? $reader]) {
+    if (_$$loading) {
+      throw StateError(
+        'A default of AppEnv reads the global `env`. Use the getter directly: write `appEnv`, not `env.appEnv`.',
+      );
+    }
+    _$$loading = true;
+    try {
+      EnvReader $r = $reader ?? EnvReader();
+      String? appName = $r.string('APP_NAME');
+      String? appEnv = $r.string('APP_ENV');
+      String? appKey = $r.string('APP_KEY');
+      $r.need('APP_KEY');
+      int? appPort = $r.integer('APP_PORT');
+      int? appTotalIsolate = $r.integer('APP_TOTAL_ISOLATE');
+      String? appUrl = $r.string('APP_URL');
+      String? apiKey = $r.string('API_KEY');
+      $r.need('API_KEY');
+      bool? logRequests = $r.boolean('LOG_REQUESTS');
+      String? logLevel = $r.string('LOG_LEVEL');
+      int? maxBodySize = $r.integer('MAX_BODY_SIZE');
+      int? maxMultipartSize = $r.integer('MAX_MULTIPART_SIZE');
+      List<String>? trustedProxies = $r.list('TRUSTED_PROXIES');
+      DbConnection? dbConnection = $r.enumByName(
+        'DB_CONNECTION',
+        DbConnection.values,
+      );
+      String? dbHost = $r.string('DB_HOST');
+      int? dbPort = $r.integer('DB_PORT');
+      String? dbUsername = $r.string('DB_USERNAME');
+      String? dbPassword = $r.string('DB_PASSWORD');
+      String? dbName = $r.string('DB_NAME');
+      String? dbDatabase = $r.string('DB_DATABASE');
+      bool? dbDebug = $r.boolean('DB_DEBUG');
+      String? cacheStore = $r.string('CACHE_STORE');
+      String? redisHost = $r.string('REDIS_HOST');
+      int? redisPort = $r.integer('REDIS_PORT');
+      String? storageDisk = $r.string('STORAGE_DISK');
+      String? awsBucket = $r.string('AWS_BUCKET');
+      String? awsDefaultRegion = $r.string('AWS_DEFAULT_REGION');
+      String? awsAccessKeyId = $r.string('AWS_ACCESS_KEY_ID');
+      String? awsSecretAccessKey = $r.string('AWS_SECRET_ACCESS_KEY');
+      String? awsEndpoint = $r.string('AWS_ENDPOINT');
+      bool? socketioEnabled = $r.boolean('SOCKETIO_ENABLED');
+      bool? socketioOpenOrigin = $r.boolean('SOCKETIO_OPEN_ORIGIN');
+      String? mailMailer = $r.string('MAIL_MAILER');
+      String? mailHost = $r.string('MAIL_HOST');
+      int? mailPort = $r.integer('MAIL_PORT');
+      String? mailFrom = $r.string('MAIL_FROM');
+      String? viteDevServer = $r.string('VITE_DEV_SERVER');
+      String? sessionStore = $r.string('SESSION_STORE');
+      bool? appStrict = $r.boolean('APP_STRICT');
 
-    r.check();
-    return _$AppEnv._(
-      appName: appName,
-      appEnv: appEnv,
-      appKey: appKey!,
-      appPort: appPort,
-      appTotalIsolate: appTotalIsolate,
-      appUrl: appUrl,
-      apiKey: apiKey!,
-      logRequests: logRequests,
-      logLevel: logLevel,
-      maxBodySize: maxBodySize,
-      maxMultipartSize: maxMultipartSize,
-      trustedProxies: trustedProxies,
-      dbConnection: dbConnection,
-      dbHost: dbHost,
-      dbPort: dbPort,
-      dbUsername: dbUsername,
-      dbPassword: dbPassword,
-      dbName: dbName,
-      dbDatabase: dbDatabase,
-      dbDebug: dbDebug,
-      cacheStore: cacheStore,
-      redisHost: redisHost,
-      redisPort: redisPort,
-      storageDisk: storageDisk,
-      awsBucket: awsBucket,
-      awsDefaultRegion: awsDefaultRegion,
-      awsAccessKeyId: awsAccessKeyId,
-      awsSecretAccessKey: awsSecretAccessKey,
-      awsEndpoint: awsEndpoint,
-      socketioEnabled: socketioEnabled,
-      socketioOpenOrigin: socketioOpenOrigin,
-      mailMailer: mailMailer,
-      mailHost: mailHost,
-      mailPort: mailPort,
-      mailFrom: mailFrom,
-      viteDevServer: viteDevServer,
-    );
+      $r.check();
+      _$AppEnv $env = _$AppEnv._(
+        appName: appName,
+        appEnv: appEnv,
+        appKey: appKey!,
+        appPort: appPort,
+        appTotalIsolate: appTotalIsolate,
+        appUrl: appUrl,
+        apiKey: apiKey!,
+        logRequests: logRequests,
+        logLevel: logLevel,
+        maxBodySize: maxBodySize,
+        maxMultipartSize: maxMultipartSize,
+        trustedProxies: trustedProxies,
+        dbConnection: dbConnection,
+        dbHost: dbHost,
+        dbPort: dbPort,
+        dbUsername: dbUsername,
+        dbPassword: dbPassword,
+        dbName: dbName,
+        dbDatabase: dbDatabase,
+        dbDebug: dbDebug,
+        cacheStore: cacheStore,
+        redisHost: redisHost,
+        redisPort: redisPort,
+        storageDisk: storageDisk,
+        awsBucket: awsBucket,
+        awsDefaultRegion: awsDefaultRegion,
+        awsAccessKeyId: awsAccessKeyId,
+        awsSecretAccessKey: awsSecretAccessKey,
+        awsEndpoint: awsEndpoint,
+        socketioEnabled: socketioEnabled,
+        socketioOpenOrigin: socketioOpenOrigin,
+        mailMailer: mailMailer,
+        mailHost: mailHost,
+        mailPort: mailPort,
+        mailFrom: mailFrom,
+        viteDevServer: viteDevServer,
+        sessionStore: sessionStore,
+        appStrict: appStrict,
+      );
+      $env.appName;
+      $env.appEnv;
+      $env.appPort;
+      $env.appTotalIsolate;
+      $env.appUrl;
+      $env.logRequests;
+      $env.logLevel;
+      $env.maxBodySize;
+      $env.maxMultipartSize;
+      $env.trustedProxies;
+      $env.dbConnection;
+      $env.dbName;
+      $env.dbDebug;
+      $env.cacheStore;
+      $env.redisHost;
+      $env.redisPort;
+      $env.storageDisk;
+      $env.awsBucket;
+      $env.awsDefaultRegion;
+      $env.awsAccessKeyId;
+      $env.awsSecretAccessKey;
+      $env.awsEndpoint;
+      $env.socketioEnabled;
+      $env.socketioOpenOrigin;
+      $env.mailMailer;
+      $env.mailHost;
+      $env.mailPort;
+      $env.mailFrom;
+      $env.sessionStore;
+      $env.appStrict;
+
+      return $env;
+    } finally {
+      _$$loading = false;
+    }
   }
-}
-
-/// gives the getter bodies of [AppEnv] (the defaults)
-class _$AppEnvDefaults extends AppEnv {
-  @override
-  String get appKey => throw StateError('APP_KEY has no default');
-  @override
-  String get apiKey => throw StateError('API_KEY has no default');
-  @override
-  String? get dbHost => throw StateError('DB_HOST has no default');
-  @override
-  int? get dbPort => throw StateError('DB_PORT has no default');
-  @override
-  String? get dbUsername => throw StateError('DB_USERNAME has no default');
-  @override
-  String? get dbPassword => throw StateError('DB_PASSWORD has no default');
-  @override
-  String? get dbDatabase => throw StateError('DB_DATABASE has no default');
-  @override
-  String? get viteDevServer =>
-      throw StateError('VITE_DEV_SERVER has no default');
 }

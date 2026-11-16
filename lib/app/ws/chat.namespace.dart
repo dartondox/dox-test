@@ -23,6 +23,15 @@ class ChatNamespace extends NamespaceHandler {
     socket.on('ping', onPing);
     socket.on('join', onJoin);
     socket.on('message', onMessage);
+    socket.on('late-join', onLateJoin);
+  }
+
+  /// `late-join(room)`: ack at once, join [room] 300 ms later. The client
+  /// leaves before that, so the join must leave no room entry.
+  Future<void> onLateJoin(SocketEvent event) async {
+    event.ack('ok');
+    await Future<void>.delayed(Duration(milliseconds: 300));
+    event.socket.join(event.data.toString());
   }
 
   /// Ack only: the client callback gets 'pong'.

@@ -38,7 +38,10 @@ AppConfig appConfig = AppConfig(
   /// Sessions live in Redis, so a logout ends the old session cookie too.
   /// The default `cookie` driver keeps all data in the cookie: a copy of
   /// an old cookie still works after logout.
-  session: SessionConfig(driver: 'cache', store: 'redis'),
+  session: SessionConfig(driver: 'cache', store: env.sessionStore),
+
+  /// Warnings on stderr when a route blocks the isolate. Off by default.
+  strict: StrictConfig(enabled: env.appStrict),
 
   /// Bigger bodies get 413. Small on purpose, so it is easy to try.
   maxBodySize: env.maxBodySize,

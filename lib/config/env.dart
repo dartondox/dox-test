@@ -97,6 +97,13 @@ abstract class AppEnv {
   /// The Vite dev server for the Inertia pages, like http://localhost:5173.
   /// Empty means the built files in public/build.
   String? get viteDevServer;
+
+  /// The cache store of the sessions. Only the multi isolate check of
+  /// test/e2e_32x_patch.dart sets `memory`.
+  String get sessionStore => 'redis';
+
+  /// true: strict mode warnings of dox_core (see `StrictConfig`).
+  bool get appStrict => false;
 }
 
 /// The env of the app. Read and checked once, on first use.
