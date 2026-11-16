@@ -103,15 +103,18 @@ class BadgeGenerator extends Model<Badge> with SoftDeletes<Badge> {
     ..code = m['code'] as String?
     ..meta = m['meta'] as Map<String, dynamic>?
     ..score = m['score'] as int?
-    ..deletedAt = m['deleted_at'] is DateTime?
-        ? m['deleted_at'] as DateTime?
-        : DateTime.parse(m['deleted_at'] as String)
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..deletedAt = switch (m['deleted_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Badge instance = this as Badge;
@@ -127,6 +130,30 @@ class BadgeGenerator extends Model<Badge> with SoftDeletes<Badge> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Badge instance = this as Badge;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'code':
+        return instance.code;
+      case 'meta':
+        return instance.meta;
+      case 'score':
+        return instance.score;
+      case 'deleted_at':
+        return instance.deletedAt?.toIso8601String();
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -183,5 +210,20 @@ class BadgeGenerator extends Model<Badge> with SoftDeletes<Badge> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Badge> other) {
+    Badge o = other as Badge;
+    (this as Badge)
+      ..id = o.id
+      ..name = o.name
+      ..code = o.code
+      ..meta = o.meta
+      ..score = o.score
+      ..deletedAt = o.deletedAt
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

@@ -66,6 +66,7 @@ class ProfileGenerator extends Model<Profile> {
       () => User(),
       foreignKey: 'user_id',
       localKey: 'id',
+      relation: 'user',
     );
   }
 
@@ -75,12 +76,14 @@ class ProfileGenerator extends Model<Profile> {
     ..userId = m['user_id'] as int?
     ..bio = m['bio'] as String?
     ..website = m['website'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Profile instance = this as Profile;
@@ -94,6 +97,26 @@ class ProfileGenerator extends Model<Profile> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Profile instance = this as Profile;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'user_id':
+        return instance.userId;
+      case 'bio':
+        return instance.bio;
+      case 'website':
+        return instance.website;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -139,5 +162,18 @@ class ProfileGenerator extends Model<Profile> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Profile> other) {
+    Profile o = other as Profile;
+    (this as Profile)
+      ..id = o.id
+      ..userId = o.userId
+      ..bio = o.bio
+      ..website = o.website
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

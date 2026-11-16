@@ -73,6 +73,7 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
       () => User(),
       foreignKey: 'user_id',
       localKey: 'id',
+      relation: 'author',
     );
   }
 
@@ -119,15 +120,18 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
     ..body = m['body'] as String?
     ..status = m['status'] as String?
     ..views = m['views'] as int?
-    ..deletedAt = m['deleted_at'] is DateTime?
-        ? m['deleted_at'] as DateTime?
-        : DateTime.parse(m['deleted_at'] as String)
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..deletedAt = switch (m['deleted_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Post instance = this as Post;
@@ -144,6 +148,32 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Post instance = this as Post;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'user_id':
+        return instance.userId;
+      case 'title':
+        return instance.title;
+      case 'body':
+        return instance.body;
+      case 'status':
+        return instance.status;
+      case 'views':
+        return instance.views;
+      case 'deleted_at':
+        return instance.deletedAt?.toIso8601String();
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -207,5 +237,21 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Post> other) {
+    Post o = other as Post;
+    (this as Post)
+      ..id = o.id
+      ..userId = o.userId
+      ..title = o.title
+      ..body = o.body
+      ..status = o.status
+      ..views = o.views
+      ..deletedAt = o.deletedAt
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

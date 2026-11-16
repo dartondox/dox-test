@@ -65,6 +65,7 @@ class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm> {
       'phone',
       _m,
     );
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return E2eTeamForm(
       kind: c0 as String,

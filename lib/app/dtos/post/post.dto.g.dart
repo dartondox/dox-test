@@ -47,6 +47,7 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
     Object? c2;
     c2 = s.list(s.read(input, 'status'), p, 'status', _m);
     if (c2 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'status'];
       List<PostStatus> o0 = <PostStatus>[];
       for (int i0 = 0; i0 < c2.length; i0++) {
@@ -67,13 +68,13 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
           o0.add(x0 as PostStatus);
         }
       }
-      c2 = o0;
+      c2 = s.issues.length != b0 ? invalid : o0;
     }
     if (c2 == null) s.required(p, 'status', _m);
     // authorId: int?
     Object? c3;
     c3 = s.integer(s.read(input, 'author_id'), p, 'author_id', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is int) {
       if (!(c0 >= 1)) {
         s.fail(
@@ -264,6 +265,7 @@ class _$SavePostDto extends DtoSchema<SavePost> {
     Object? c3;
     c3 = s.list(s.read(input, 'tags'), p, 'tags', _m);
     if (c3 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'tags'];
       List<String> o0 = <String>[];
       for (int i0 = 0; i0 < c3.length; i0++) {
@@ -275,10 +277,10 @@ class _$SavePostDto extends DtoSchema<SavePost> {
           o0.add(x0 as String);
         }
       }
-      c3 = o0;
+      c3 = s.issues.length != b0 ? invalid : o0;
     }
     if (c3 == null) s.required(p, 'tags', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length <= 255)) {
         s.fail(
@@ -412,7 +414,7 @@ class _$AddCommentDto extends DtoSchema<AddComment> {
     Object? c0;
     c0 = s.string(s.read(input, 'body'), p, 'body', _m, trim: true);
     if (c0 == null || c0 is Undefined) s.required(p, 'body', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length <= 1000)) {
         s.fail(

@@ -79,12 +79,14 @@ class E310bItemGenerator extends Model<E310bItem> {
     ..name = m['name'] as String?
     ..qty = m['qty'] as int?
     ..secret = m['secret'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     E310bItem instance = this as E310bItem;
@@ -98,6 +100,26 @@ class E310bItemGenerator extends Model<E310bItem> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    E310bItem instance = this as E310bItem;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'qty':
+        return instance.qty;
+      case 'secret':
+        return instance.secret;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -143,6 +165,19 @@ class E310bItemGenerator extends Model<E310bItem> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E310bItem> other) {
+    E310bItem o = other as E310bItem;
+    (this as E310bItem)
+      ..id = o.id
+      ..name = o.name
+      ..qty = o.qty
+      ..secret = o.secret
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }
 
@@ -199,6 +234,18 @@ class E310bTagGenerator extends Model<E310bTag> {
   }
 
   @override
+  dynamic $columnValue(String column) {
+    E310bTag instance = this as E310bTag;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+    }
+    return super.$columnValue(column);
+  }
+
+  @override
   Map<String, dynamic> convertToMap(dynamic i) {
     E310bTag instance = i as E310bTag;
     Map<String, dynamic> map = instance.columnsToMap();
@@ -220,6 +267,15 @@ class E310bTagGenerator extends Model<E310bTag> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E310bTag> other) {
+    E310bTag o = other as E310bTag;
+    (this as E310bTag)
+      ..id = o.id
+      ..name = o.name;
+    return true;
   }
 }
 
@@ -269,12 +325,14 @@ class E310bNoteGenerator extends Model<E310bNote> {
   E310bNote fromMap(Map<String, dynamic> m) => E310bNote()
     ..id = m['id'] as int?
     ..body = m['body'] as String?
-    ..createdAt = m['made_at'] is DateTime?
-        ? m['made_at'] as DateTime?
-        : DateTime.parse(m['made_at'] as String)
-    ..updatedAt = m['changed_at'] is DateTime?
-        ? m['changed_at'] as DateTime?
-        : DateTime.parse(m['changed_at'] as String);
+    ..createdAt = switch (m['made_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['changed_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     E310bNote instance = this as E310bNote;
@@ -286,6 +344,22 @@ class E310bNoteGenerator extends Model<E310bNote> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    E310bNote instance = this as E310bNote;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'body':
+        return instance.body;
+      case 'made_at':
+        return instance.createdAt?.toIso8601String();
+      case 'changed_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -318,5 +392,16 @@ class E310bNoteGenerator extends Model<E310bNote> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E310bNote> other) {
+    E310bNote o = other as E310bNote;
+    (this as E310bNote)
+      ..id = o.id
+      ..body = o.body
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

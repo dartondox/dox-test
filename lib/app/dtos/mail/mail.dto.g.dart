@@ -58,7 +58,7 @@ class _$SendWelcomeMailDto extends DtoSchema<SendWelcomeMail> {
     // mailer: String?
     Object? c3;
     c3 = s.string(s.read(input, 'mailer'), p, 'mailer', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c1 is int) {
       if (!(c1 >= 1)) {
         s.fail(

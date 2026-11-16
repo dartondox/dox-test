@@ -39,7 +39,7 @@ class _$ListTagsDto extends DtoSchema<ListTags> {
     // except: String?
     Object? c1;
     c1 = s.string(s.read(input, 'except'), p, 'except', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is int) {
       if (!(c0 >= 1 && c0 <= 100)) {
         s.fail(
@@ -124,6 +124,7 @@ class _$CreateTagsDto extends DtoSchema<CreateTags> {
     Object? c0;
     c0 = s.list(s.read(input, 'names'), p, 'names', _m);
     if (c0 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'names'];
       List<String> o0 = <String>[];
       for (int i0 = 0; i0 < c0.length; i0++) {
@@ -135,14 +136,17 @@ class _$CreateTagsDto extends DtoSchema<CreateTags> {
           o0.add(x0 as String);
         }
       }
-      c0 = o0;
+      c0 = s.issues.length != b0 ? invalid : o0;
     }
-    if (c0 == null || c0 is Undefined) s.required(p, 'names', _m);
+    if (c0 == null || c0 is Undefined || s.emptyList(c0)) {
+      s.required(p, 'names', _m);
+      c0 = invalid;
+    }
     // fail: bool
     Object? c1;
     c1 = s.boolean(s.read(input, 'fail'), p, 'fail', _m);
     if (c1 == null) s.required(p, 'fail', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is List<String>) {
       if (!(c0.length >= 1)) {
         s.fail(

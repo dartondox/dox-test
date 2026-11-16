@@ -44,6 +44,7 @@ class _$E2ePlanFormDto extends DtoSchema<E2ePlanForm> {
     );
     if (c1 == null || c1 is Undefined) s.required(p, 'plan', _m);
     s.requiredWhen(const RequiredIf('plan', 'pro'), c0, input, p, 'card', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return E2ePlanForm(
       card: c0 is Undefined ? null : c0 as String?,

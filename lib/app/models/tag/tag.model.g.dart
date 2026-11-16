@@ -74,12 +74,14 @@ class TagGenerator extends Model<Tag> {
   Tag fromMap(Map<String, dynamic> m) => Tag()
     ..id = m['id'] as int?
     ..name = m['name'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Tag instance = this as Tag;
@@ -91,6 +93,22 @@ class TagGenerator extends Model<Tag> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Tag instance = this as Tag;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -128,5 +146,16 @@ class TagGenerator extends Model<Tag> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Tag> other) {
+    Tag o = other as Tag;
+    (this as Tag)
+      ..id = o.id
+      ..name = o.name
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

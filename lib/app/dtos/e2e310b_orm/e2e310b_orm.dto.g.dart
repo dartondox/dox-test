@@ -46,6 +46,7 @@ class _$E310bAddressDto extends DtoSchema<E310bAddress> {
     Object? c2;
     c2 = s.string(s.read(input, 'zip'), p, 'zip', _m);
     if (c2 == null || c2 is Undefined) s.required(p, 'zip', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return E310bAddress(
       city: c0 as String,
@@ -132,6 +133,7 @@ class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm> {
     Object? c2;
     c2 = s.list(s.read(input, 'tags'), p, 'tags', _m);
     if (c2 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'tags'];
       List<String> o0 = <String>[];
       for (int i0 = 0; i0 < c2.length; i0++) {
@@ -143,9 +145,10 @@ class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm> {
           o0.add(x0 as String);
         }
       }
-      c2 = o0;
+      c2 = s.issues.length != b0 ? invalid : o0;
     }
     if (c2 == null) s.required(p, 'tags', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return E310bProfileForm(
       name: c0 as String,

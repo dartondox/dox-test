@@ -36,6 +36,7 @@ class _$HashPasswordDto extends DtoSchema<HashPassword> {
     Object? c0;
     c0 = s.string(s.read(input, 'password'), p, 'password', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'password', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return HashPassword(password: c0 as String);
   }
@@ -98,7 +99,7 @@ class _$AddressDto extends DtoSchema<Address> {
     Object? c1;
     c1 = s.string(s.read(input, 'post_code'), p, 'post_code', _m);
     if (c1 == null || c1 is Undefined) s.required(p, 'post_code', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c1 is String) {
       if (!(_r0.hasMatch(c1))) {
         s.fail(
@@ -180,7 +181,7 @@ class _$OrderItemDto extends DtoSchema<OrderItem> {
     Object? c1;
     c1 = s.integer(s.read(input, 'quantity'), p, 'quantity', _m);
     if (c1 == null || c1 is Undefined) s.required(p, 'quantity', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 1 && c0.runes.length <= 50)) {
         s.fail(
@@ -307,6 +308,7 @@ class _$CreateOrderDto extends DtoSchema<CreateOrder> {
     Object? c1;
     c1 = s.list(s.read(input, 'items'), p, 'items', _m);
     if (c1 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'items'];
       List<OrderItem> o0 = <OrderItem>[];
       for (int i0 = 0; i0 < c1.length; i0++) {
@@ -321,10 +323,13 @@ class _$CreateOrderDto extends DtoSchema<CreateOrder> {
           o0.add(x0 as OrderItem);
         }
       }
-      c1 = o0;
+      c1 = s.issues.length != b0 ? invalid : o0;
     }
-    if (c1 == null || c1 is Undefined) s.required(p, 'items', _m);
-    if (s.issues.length != e) return null;
+    if (c1 == null || c1 is Undefined || s.emptyList(c1)) {
+      s.required(p, 'items', _m);
+      c1 = invalid;
+    }
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c1 is List<OrderItem>) {
       if (!(c1.length >= 1)) {
         s.fail(
@@ -512,7 +517,7 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
       'phone',
       _m,
     );
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(const <String>{'team', 'solo'}.contains(c0))) {
         s.fail(

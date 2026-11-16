@@ -73,12 +73,14 @@ class ReactionGenerator extends Model<Reaction> {
     ..emoji = m['emoji'] as String?
     ..reactableId = m['reactable_id'] as int?
     ..reactableType = m['reactable_type'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Reaction instance = this as Reaction;
@@ -92,6 +94,26 @@ class ReactionGenerator extends Model<Reaction> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Reaction instance = this as Reaction;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'emoji':
+        return instance.emoji;
+      case 'reactable_id':
+        return instance.reactableId;
+      case 'reactable_type':
+        return instance.reactableType;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -137,5 +159,18 @@ class ReactionGenerator extends Model<Reaction> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Reaction> other) {
+    Reaction o = other as Reaction;
+    (this as Reaction)
+      ..id = o.id
+      ..emoji = o.emoji
+      ..reactableId = o.reactableId
+      ..reactableType = o.reactableType
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

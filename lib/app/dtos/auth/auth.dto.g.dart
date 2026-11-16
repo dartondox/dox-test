@@ -75,7 +75,7 @@ class _$RegisterUserDto extends DtoSchema<RegisterUser> {
     // lastName: String?
     Object? c5;
     c5 = s.string(s.read(input, 'last_name'), p, 'last_name', _m, trim: true);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
         s.fail(
@@ -280,7 +280,7 @@ class _$LoginUserDto extends DtoSchema<LoginUser> {
     Object? c1;
     c1 = s.string(s.read(input, 'password'), p, 'password', _m);
     if (c1 == null || c1 is Undefined) s.required(p, 'password', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(Patterns.email.hasMatch(c0))) {
         s.fail(

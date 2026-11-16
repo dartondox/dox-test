@@ -36,7 +36,7 @@ class _$CreateNoteDto extends DtoSchema<CreateNote> {
     Object? c0;
     c0 = s.string(s.read(input, 'text'), p, 'text', _m, trim: true);
     if (c0 == null || c0 is Undefined) s.required(p, 'text', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
         s.fail(

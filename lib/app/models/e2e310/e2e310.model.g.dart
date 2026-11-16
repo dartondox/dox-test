@@ -49,12 +49,14 @@ class Oauth2ClientGenerator extends Model<Oauth2Client> {
   Oauth2Client fromMap(Map<String, dynamic> m) => Oauth2Client()
     ..id = m['id'] as int?
     ..name = m['name'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Oauth2Client instance = this as Oauth2Client;
@@ -66,6 +68,22 @@ class Oauth2ClientGenerator extends Model<Oauth2Client> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Oauth2Client instance = this as Oauth2Client;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -98,6 +116,17 @@ class Oauth2ClientGenerator extends Model<Oauth2Client> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Oauth2Client> other) {
+    Oauth2Client o = other as Oauth2Client;
+    (this as Oauth2Client)
+      ..id = o.id
+      ..name = o.name
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }
 
@@ -151,12 +180,14 @@ class E2eMemberGenerator extends Model<E2eMember> {
     ..id = m['id'] as int?
     ..name = m['name'] as String?
     ..isAdmin = _isAdminCast.get(m['is_admin'])
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     E2eMember instance = this as E2eMember;
@@ -169,6 +200,24 @@ class E2eMemberGenerator extends Model<E2eMember> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    E2eMember instance = this as E2eMember;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'is_admin':
+        return _isAdminCast.set(instance.isAdmin);
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -205,6 +254,18 @@ class E2eMemberGenerator extends Model<E2eMember> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E2eMember> other) {
+    E2eMember o = other as E2eMember;
+    (this as E2eMember)
+      ..id = o.id
+      ..name = o.name
+      ..isAdmin = o.isAdmin
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }
 
@@ -276,12 +337,14 @@ class E2eShelfGenerator extends Model<E2eShelf> {
   E2eShelf fromMap(Map<String, dynamic> m) => E2eShelf()
     ..id = m['id'] as int?
     ..name = m['name'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     E2eShelf instance = this as E2eShelf;
@@ -293,6 +356,22 @@ class E2eShelfGenerator extends Model<E2eShelf> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    E2eShelf instance = this as E2eShelf;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'name':
+        return instance.name;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -330,6 +409,17 @@ class E2eShelfGenerator extends Model<E2eShelf> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E2eShelf> other) {
+    E2eShelf o = other as E2eShelf;
+    (this as E2eShelf)
+      ..id = o.id
+      ..name = o.name
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }
 
@@ -383,12 +473,14 @@ class E2eBookGenerator extends Model<E2eBook> {
     ..sku = m['sku'] as String?
     ..title = m['title'] as String?
     ..meta = m['meta'] as Map<String, dynamic>?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     E2eBook instance = this as E2eBook;
@@ -402,6 +494,26 @@ class E2eBookGenerator extends Model<E2eBook> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    E2eBook instance = this as E2eBook;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'sku':
+        return instance.sku;
+      case 'title':
+        return instance.title;
+      case 'meta':
+        return instance.meta;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -442,6 +554,19 @@ class E2eBookGenerator extends Model<E2eBook> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<E2eBook> other) {
+    E2eBook o = other as E2eBook;
+    (this as E2eBook)
+      ..id = o.id
+      ..sku = o.sku
+      ..title = o.title
+      ..meta = o.meta
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }
 

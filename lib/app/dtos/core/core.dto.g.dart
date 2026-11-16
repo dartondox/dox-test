@@ -40,6 +40,7 @@ class _$CreateTokenDto extends DtoSchema<CreateToken> {
     Object? c1;
     c1 = s.list(s.read(input, 'abilities'), p, 'abilities', _m);
     if (c1 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'abilities'];
       List<String> o0 = <String>[];
       for (int i0 = 0; i0 < c1.length; i0++) {
@@ -51,10 +52,13 @@ class _$CreateTokenDto extends DtoSchema<CreateToken> {
           o0.add(x0 as String);
         }
       }
-      c1 = o0;
+      c1 = s.issues.length != b0 ? invalid : o0;
     }
-    if (c1 == null || c1 is Undefined) s.required(p, 'abilities', _m);
-    if (s.issues.length != e) return null;
+    if (c1 == null || c1 is Undefined || s.emptyList(c1)) {
+      s.required(p, 'abilities', _m);
+      c1 = invalid;
+    }
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
         s.fail(
@@ -174,7 +178,7 @@ class _$SaveContactDto extends DtoSchema<SaveContact> {
       'country_code',
       _m,
     );
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(const <String>{'person', 'company'}.contains(c0))) {
         s.fail(
@@ -278,7 +282,7 @@ class _$UploadBannerDto extends DtoSchema<UploadBanner> {
     Object? c0;
     c0 = s.file(s.read(input, 'banner'), p, 'banner', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'banner', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is RequestFile) {
       if (!(FileTypes.matchesMimeTypes(c0, const <String>['image/png']))) {
         s.fail(

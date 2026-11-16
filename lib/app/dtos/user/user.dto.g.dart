@@ -43,7 +43,7 @@ class _$ListUsersDto extends DtoSchema<ListUsers> {
     // search: String?
     Object? c2;
     c2 = s.string(s.read(input, 'search'), p, 'search', _m, trim: true);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is int) {
       if (!(c0 >= 1)) {
         s.fail(
@@ -175,7 +175,7 @@ class _$UpdateUserDto extends DtoSchema<UpdateUser> {
       textCase: 1,
     );
     if (c1 == null || c1 is Undefined) s.required(p, 'email', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
         s.fail(
@@ -289,7 +289,7 @@ class _$SaveProfileDto extends DtoSchema<SaveProfile> {
     // website: String?
     Object? c1;
     c1 = s.string(s.read(input, 'website'), p, 'website', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length <= 500)) {
         s.fail(
@@ -386,7 +386,7 @@ class _$PatchProfileDto extends DtoSchema<PatchProfile> {
     // website: Maybe<String?>
     Object? c1;
     c1 = s.string(s.read(input, 'website'), p, 'website', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length <= 500)) {
         s.fail(

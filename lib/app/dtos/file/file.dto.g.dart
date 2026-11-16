@@ -40,7 +40,7 @@ class _$UploadFileDto extends DtoSchema<UploadFile> {
     Object? c1;
     c1 = s.string(s.read(input, 'note'), p, 'note', _m, trim: true);
     if (c1 == null || c1 is Undefined) s.required(p, 'note', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is RequestFile) {
       if (!(c0.length <= 1048576)) {
         s.fail(
@@ -119,7 +119,7 @@ class _$UploadAvatarDto extends DtoSchema<UploadAvatar> {
     Object? c0;
     c0 = s.file(s.read(input, 'avatar'), p, 'avatar', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'avatar', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is RequestFile) {
       if (!(FileTypes.matches(c0, SchemaConstants.imageExtensions))) {
         s.fail(
@@ -203,6 +203,7 @@ class _$StoreFileDto extends DtoSchema<StoreFile> {
     Object? c0;
     c0 = s.file(s.read(input, 'file'), p, 'file', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'file', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return StoreFile(file: c0 as RequestFile);
   }
@@ -259,7 +260,7 @@ class _$UploadPhotoDto extends DtoSchema<UploadPhoto> {
     Object? c0;
     c0 = s.file(s.read(input, 'photo'), p, 'photo', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'photo', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is RequestFile) {
       if (!(FileTypes.matchesMimeTypes(c0, const <String>[
         'image/png',
@@ -377,6 +378,7 @@ class _$AddTextDto extends DtoSchema<AddText> {
     Object? c1;
     c1 = s.boolean(s.read(input, 'at_start'), p, 'at_start', _m);
     if (c1 == null) s.required(p, 'at_start', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return AddText(
       text: c0 as String,

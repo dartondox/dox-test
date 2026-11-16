@@ -66,6 +66,7 @@ class CommentGenerator extends Model<Comment> {
       () => User(),
       foreignKey: 'user_id',
       localKey: 'id',
+      relation: 'user',
     );
   }
 
@@ -75,12 +76,14 @@ class CommentGenerator extends Model<Comment> {
     ..postId = m['post_id'] as int?
     ..userId = m['user_id'] as int?
     ..body = m['body'] as String?
-    ..createdAt = m['created_at'] is DateTime?
-        ? m['created_at'] as DateTime?
-        : DateTime.parse(m['created_at'] as String)
-    ..updatedAt = m['updated_at'] is DateTime?
-        ? m['updated_at'] as DateTime?
-        : DateTime.parse(m['updated_at'] as String);
+    ..createdAt = switch (m['created_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    }
+    ..updatedAt = switch (m['updated_at']) {
+      DateTime? v => v,
+      Object? v => DateTime.parse(v as String),
+    };
   @override
   Map<String, dynamic> columnsToMap() {
     Comment instance = this as Comment;
@@ -94,6 +97,26 @@ class CommentGenerator extends Model<Comment> {
     };
 
     return map;
+  }
+
+  @override
+  dynamic $columnValue(String column) {
+    Comment instance = this as Comment;
+    switch (column) {
+      case 'id':
+        return instance.id;
+      case 'post_id':
+        return instance.postId;
+      case 'user_id':
+        return instance.userId;
+      case 'body':
+        return instance.body;
+      case 'created_at':
+        return instance.createdAt?.toIso8601String();
+      case 'updated_at':
+        return instance.updatedAt?.toIso8601String();
+    }
+    return super.$columnValue(column);
   }
 
   @override
@@ -135,5 +158,18 @@ class CommentGenerator extends Model<Comment> {
         return true;
     }
     return false;
+  }
+
+  @override
+  bool $copyColumnsFrom(Model<Comment> other) {
+    Comment o = other as Comment;
+    (this as Comment)
+      ..id = o.id
+      ..postId = o.postId
+      ..userId = o.userId
+      ..body = o.body
+      ..createdAt = o.createdAt
+      ..updatedAt = o.updatedAt;
+    return true;
   }
 }

@@ -53,6 +53,7 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
     Object? c4;
     c4 = s.list(s.read(input, 'aliases'), p, 'aliases', _m);
     if (c4 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'aliases'];
       List<String> o0 = <String>[];
       for (int i0 = 0; i0 < c4.length; i0++) {
@@ -64,13 +65,14 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
           o0.add(x0 as String);
         }
       }
-      c4 = o0;
+      c4 = s.issues.length != b0 ? invalid : o0;
     }
     if (c4 == null) s.required(p, 'aliases', _m);
     // postIds: List<int>
     Object? c5;
     c5 = s.list(s.read(input, 'post_ids'), p, 'post_ids', _m);
     if (c5 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'post_ids'];
       List<int> o0 = <int>[];
       for (int i0 = 0; i0 < c5.length; i0++) {
@@ -82,10 +84,10 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
           o0.add(x0 as int);
         }
       }
-      c5 = o0;
+      c5 = s.issues.length != b0 ? invalid : o0;
     }
     if (c5 == null) s.required(p, 'post_ids', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 2 && c0.runes.length <= 50)) {
         s.fail(
@@ -330,7 +332,7 @@ class _$ListBadgesDto extends DtoSchema<ListBadges> {
     Object? c2;
     c2 = s.integer(s.read(input, 'per_page'), p, 'per_page', _m);
     if (c2 == null) s.required(p, 'per_page', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c1 is int) {
       if (!(c1 >= 1)) {
         s.fail(
@@ -440,6 +442,7 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
     Object? c0;
     c0 = s.list(s.read(input, 'post_ids'), p, 'post_ids', _m);
     if (c0 is List) {
+      int b0 = s.issues.length;
       List<Object> q0 = <Object>[...p, 'post_ids'];
       List<int> o0 = <int>[];
       for (int i0 = 0; i0 < c0.length; i0++) {
@@ -451,9 +454,12 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
           o0.add(x0 as int);
         }
       }
-      c0 = o0;
+      c0 = s.issues.length != b0 ? invalid : o0;
     }
-    if (c0 == null || c0 is Undefined) s.required(p, 'post_ids', _m);
+    if (c0 == null || c0 is Undefined || s.emptyList(c0)) {
+      s.required(p, 'post_ids', _m);
+      c0 = invalid;
+    }
     // note: String?
     Object? c1;
     c1 = s.string(s.read(input, 'note'), p, 'note', _m);
@@ -461,7 +467,7 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
     Object? c2;
     c2 = s.boolean(s.read(input, 'detaching'), p, 'detaching', _m);
     if (c2 == null) s.required(p, 'detaching', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is List<int>) {
       if (!(c0.length <= 10)) {
         s.fail(
@@ -584,7 +590,7 @@ class _$AddReactionDto extends DtoSchema<AddReaction> {
     Object? c0;
     c0 = s.string(s.read(input, 'emoji'), p, 'emoji', _m, trim: true);
     if (c0 == null || c0 is Undefined) s.required(p, 'emoji', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is String) {
       if (!(c0.runes.length >= 1 && c0.runes.length <= 20)) {
         s.fail(

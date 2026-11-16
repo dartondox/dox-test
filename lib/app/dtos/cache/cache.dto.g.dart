@@ -38,7 +38,7 @@ class _$PutCacheItemDto extends DtoSchema<PutCacheItem> {
     // ttl: int?
     Object? c1;
     c1 = s.integer(s.read(input, 'ttl'), p, 'ttl', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c1 is int) {
       if (!(c1 > 0)) {
         s.fail(
@@ -124,6 +124,7 @@ class _$IncrementCacheDto extends DtoSchema<IncrementCache> {
     Object? c0;
     c0 = s.integer(s.read(input, 'by'), p, 'by', _m);
     if (c0 == null) s.required(p, 'by', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return IncrementCache(by: c0 is Undefined ? 1 : c0 as int);
   }
@@ -181,7 +182,7 @@ class _$TakeLockDto extends DtoSchema<TakeLock> {
     Object? c0;
     c0 = s.integer(s.read(input, 'ttl'), p, 'ttl', _m);
     if (c0 == null) s.required(p, 'ttl', _m);
-    if (s.issues.length != e) return null;
+    if (s.issues.length != e && !s.allErrors) return null;
     if (c0 is int) {
       if (!(c0 > 0)) {
         s.fail(
@@ -255,6 +256,7 @@ class _$ReleaseLockDto extends DtoSchema<ReleaseLock> {
     Object? c0;
     c0 = s.string(s.read(input, 'owner'), p, 'owner', _m);
     if (c0 == null || c0 is Undefined) s.required(p, 'owner', _m);
+    if (s.issues.length != e && !s.allErrors) return null;
     if (s.issues.length != e) return null;
     return ReleaseLock(owner: c0 as String);
   }

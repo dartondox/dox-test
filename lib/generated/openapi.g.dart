@@ -2186,6 +2186,154 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'registerSession',
+      argumentTypes: <String>[],
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'uploadTemp',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e32x/upload-temp: a file over 1 MB is on disk while the',
+      description: 'handler runs.',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'uploadTempFail',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e32x/upload-temp-fail: the handler fails after the read.',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'body',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e32x/body?add=1: the body map of a GET. With `add`, it',
+      description: 'writes a key to it, which must not reach the next request.',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'flushThenThrow',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e32x/flush-then-throw: the head is out, then it fails.',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'version',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'headers',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'block',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e32x/block: blocks the isolate for 120 ms.',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'hashSync',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e32x/hash-sync: the sync hash, which strict mode warns about',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'pingSocket',
+      argumentTypes: <String>['WebSocket', 'DoxRequest'],
+      summary: 'the server pings a client that sends nothing for 300 ms',
+      tags: <String>['E32xRoutes'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32xRoutes',
+      method: 'sessionCount',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e32x/session-count: a count kept in the session, and the',
+      description: 'isolate that answered',
+      tags: <String>['E32xRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
       controller: 'InertiaController',
       method: 'home',
       argumentTypes: <String>['DoxRequest'],
@@ -2289,6 +2437,18 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       method: 'buildFile',
       argumentTypes: <String>['String'],
       summary: 'The file names have a hash, so the browser can keep them for a year.',
+      tags: <String>['WebRouter'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'WebRouter',
+      method: 'fontFile',
+      argumentTypes: <String>['String'],
       tags: <String>['WebRouter'],
       params: <Map<String, dynamic>>[
         <String, dynamic>{'type': 'string'},
@@ -2602,6 +2762,25 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       '/request-share',
       'E310bPkgInertiaRoutes.requestShare',
     ),
+    OpenApiRouteBinding('POST', '/upload-temp', 'E32xRoutes.uploadTemp'),
+    OpenApiRouteBinding(
+      'POST',
+      '/upload-temp-fail',
+      'E32xRoutes.uploadTempFail',
+    ),
+    OpenApiRouteBinding('GET', '/body', 'E32xRoutes.body'),
+    OpenApiRouteBinding(
+      'GET',
+      '/flush-then-throw',
+      'E32xRoutes.flushThenThrow',
+    ),
+    OpenApiRouteBinding('GET', '/v1.0/{id}', 'E32xRoutes.version'),
+    OpenApiRouteBinding('GET', '/headers', 'E32xRoutes.headers'),
+    OpenApiRouteBinding('GET', '/limit', 'E32xRoutes.headers'),
+    OpenApiRouteBinding('GET', '/limit-sliding', 'E32xRoutes.headers'),
+    OpenApiRouteBinding('GET', '/block', 'E32xRoutes.block'),
+    OpenApiRouteBinding('GET', '/hash-sync', 'E32xRoutes.hashSync'),
+    OpenApiRouteBinding('GET', '/session-count', 'E32xRoutes.sessionCount'),
     OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
     OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
     OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
@@ -2640,6 +2819,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'WebAuthController.sessionLogout',
     ),
     OpenApiRouteBinding('GET', '/build/{path*}', 'WebRouter.buildFile'),
+    OpenApiRouteBinding('GET', '/fonts/{path*}', 'WebRouter.fontFile'),
     OpenApiRouteBinding('GET', '/no-cors', 'SystemController.noCors'),
   ],
   schemas: <String, Map<String, dynamic>>{
