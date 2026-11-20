@@ -33,9 +33,10 @@ linter:
     - unnecessary_const
 
 
-# analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+analyzer:
+  exclude:
+    # protoc output (lib/generated/echo.pb*.dart): not our style
+    - lib/generated/*.pb*.dart
 
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints
