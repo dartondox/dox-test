@@ -33,6 +33,9 @@ import 'e2e_310b_core.dart';
 import 'e2e_32_orm.dart';
 import 'e2e_32_packages.dart';
 import 'e2e_32x_patch.dart';
+import 'e2e_32y_patch.dart';
+import 'e2e_33_http2_grpc.dart';
+import 'e2e_33_mcp.dart';
 import 'e2e_pdfme.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
@@ -1974,6 +1977,19 @@ void main() {
   /// 3.2.x: the changes merged after the 3.2 release, seen from the app
   /// (test/e2e_32x_patch.dart).
   patch32xTests(api);
+
+  /// 3.2.y: the patch fixes merged after 3.2.3, seen from the app
+  /// (test/e2e_32y_patch.dart).
+  patch32yTests(api);
+
+  /// HTTP/2 (h2c) on the app port, its limits, and gRPC with dox_grpc
+  /// (test/e2e_33_http2_grpc.dart).
+  http2GrpcTests(api);
+
+  /// The MCP server of dox_mcp: legacy and stateless 2026-07-28 calls,
+  /// MRTR input and OAuth with client ID metadata documents
+  /// (test/e2e_33_mcp.dart).
+  mcpTests(api);
 
   /// The pdfme playground route: dox_pdf_me (test/e2e_pdfme.dart).
   pdfmeTests(api);

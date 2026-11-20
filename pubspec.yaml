@@ -19,6 +19,10 @@ dependencies:
   dox_view: ^3.0.0
   dox_mailer: ^3.0.0
   dox_pdf_me: 0.0.2
+  dox_grpc: ^3.3.0
+  dox_mcp: ^3.2.1
+  grpc: ^5.2.0
+  protobuf: ^6.1.0
 
 dev_dependencies:
   dox_builder: ^3.0.0
@@ -29,3 +33,4 @@ dev_dependencies:
   test: ^1.33.0
   http: ^1.6.0
   ioredis: ^3.0.1
+  http2: ^2.3.1
