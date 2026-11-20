@@ -21,11 +21,14 @@ dependencies:
   dox_pdf_me: 0.0.2
   dox_grpc: ^3.3.0
   dox_mcp: ^3.2.1
+  dox_graphql: ^0.0.1
+  dox_graphql_orm: ^0.0.1
   grpc: ^5.2.0
   protobuf: ^6.1.0
 
 dev_dependencies:
   dox_builder: ^3.0.0
+  dox_graphql_builder: ^0.0.1
   dox_openapi: ^3.0.0
   build_runner: ^2.17.1
   crypto: ^3.0.6

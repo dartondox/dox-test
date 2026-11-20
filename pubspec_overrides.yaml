@@ -8,6 +8,12 @@ dependency_overrides:
     path: ../dox/packages/dox-builder
   dox_core:
     path: ../dox/packages/dox-core
+  dox_graphql:
+    path: ../dox-graphql/packages/dox-graphql
+  dox_graphql_builder:
+    path: ../dox-graphql/packages/dox-graphql-builder
+  dox_graphql_orm:
+    path: ../dox-graphql/packages/dox-graphql-orm
   dox_grpc:
     path: ../dox-grpc
   dox_http_native:

@@ -142,8 +142,8 @@ jobs:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           bash dox/ci/clone-siblings.sh
-          # not in clone-siblings.sh: the gRPC and MCP packages
-          for repo in dox-grpc dox-mcp; do
+          # not in clone-siblings.sh: the gRPC, MCP and GraphQL packages
+          for repo in dox-grpc dox-mcp dox-graphql; do
             ref=main
             if git ls-remote --exit-code "https://github.com/dartondox/$repo.git" "refs/heads/$BRANCH" >/dev/null; then
               ref=$BRANCH

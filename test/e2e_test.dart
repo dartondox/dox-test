@@ -36,6 +36,7 @@ import 'e2e_32x_patch.dart';
 import 'e2e_32y_patch.dart';
 import 'e2e_33_http2_grpc.dart';
 import 'e2e_33_mcp.dart';
+import 'e2e_33_graphql.dart';
 import 'e2e_pdfme.dart';
 
 /// End to end checks. Starts the real server on a fresh database,
@@ -1990,6 +1991,10 @@ void main() {
   /// MRTR input and OAuth with client ID metadata documents
   /// (test/e2e_33_mcp.dart).
   mcpTests(api);
+
+  /// GraphQL with dox_graphql: HTTP rules, auth, policies and limits
+  /// (test/e2e_33_graphql.dart).
+  graphqlTests(api);
 
   /// The pdfme playground route: dox_pdf_me (test/e2e_pdfme.dart).
   pdfmeTests(api);
