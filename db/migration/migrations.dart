@@ -13,6 +13,8 @@ import '2024_01_01_000008_add_views_to_posts_table.dart' as m8;
 import '2024_01_02_000001_create_badges_tables.dart' as m9;
 import '2026_11_03_112722_create_access_tokens_table.dart' as m10;
 import '2026_11_13_000001_create_batches_and_cache_tables.dart' as m11;
+import '2026_11_21_000001_create_e32y_items_table.dart' as m12;
+import '2026_11_21_100000_create_gql_secrets_table.dart' as m13;
 
 /// all Dart migrations of db/migration, sorted by name
 final List<MigrationEntry> migrations = <MigrationEntry>[
@@ -50,5 +52,13 @@ final List<MigrationEntry> migrations = <MigrationEntry>[
   MigrationEntry(
     '2026_11_13_000001_create_batches_and_cache_tables',
     m11.CreateBatchesAndCacheTables(),
+  ),
+  MigrationEntry(
+    '2026_11_21_000001_create_e32y_items_table',
+    m12.CreateE32yItemsTable(),
+  ),
+  MigrationEntry(
+    '2026_11_21_100000_create_gql_secrets_table',
+    m13.CreateGqlSecretsTable(),
   ),
 ];
