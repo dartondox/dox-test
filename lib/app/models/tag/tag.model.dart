@@ -1,3 +1,4 @@
+import 'package:dox_graphql/dox_graphql.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 
@@ -5,6 +6,7 @@ part 'tag.model.g.dart';
 
 /// One row in the `tags` table.
 @DoxModel(table: 'tags')
+@GraphQLType(queries: false)
 class Tag extends TagGenerator {
   @Column()
   String? name;
