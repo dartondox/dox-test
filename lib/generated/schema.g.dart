@@ -134,11 +134,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             guard: true,
             args: <Argument>[Argument('input', _iCreateGqlSecretInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _filterOne<i2.GqlSecret>(
-                  info,
-                  'view',
-                  Future<i2.GqlSecret?>.value(_createGqlSecret(info)),
-                ),
+                _createGqlSecret(info),
           ),
           Field<Object?, DoxGraphQLContext>(
             'createPost',
@@ -146,11 +142,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             guard: true,
             args: <Argument>[Argument('input', _iCreatePostInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _filterOne<i3.Post>(
-                  info,
-                  'view',
-                  Future<i3.Post?>.value(_createPost(info)),
-                ),
+                _createPost(info),
           ),
           Field<Object?, DoxGraphQLContext>(
             'updatePost',
