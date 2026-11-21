@@ -6,14 +6,14 @@ class E33Resolver {
   static int hits = 0;
 
   /// Counts its runs, so a test can see that a rejected query ran none.
-  @GraphQLQuery(auth: false)
+  @GraphQLQuery()
   int gqlHits() {
     hits++;
     return hits;
   }
 
   /// Throws an error with a secret text: production must hide it.
-  @GraphQLQuery(auth: false)
+  @GraphQLQuery()
   String gqlBoom() {
     throw StateError('e33 secret detail');
   }

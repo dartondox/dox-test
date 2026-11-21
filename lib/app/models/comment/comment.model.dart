@@ -4,9 +4,12 @@ import 'package:dox_test/app/models/user/user.model.dart';
 
 part 'comment.model.g.dart';
 
-/// One row in the `comments` table.
+/// One row in the `comments` table. GraphQL: every field that gives a
+/// Comment needs a login.
 @DoxModel(table: 'comments')
-@GraphQLType()
+@GraphQLType(guard: true)
+@GraphQLAll()
+@GraphQLFind()
 class Comment extends CommentGenerator {
   @Column()
   int? postId;

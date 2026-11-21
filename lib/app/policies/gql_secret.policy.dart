@@ -1,9 +1,9 @@
-import 'package:dox_auth/dox_auth.dart' show Policy;
+import 'package:dox_auth/dox_auth.dart' show Ability, Policy;
 import 'package:dox_test/app/models/gql_secret/gql_secret.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 import 'package:dox_test/app/policies/post.policy.dart';
 
-/// `viewAny` and `view` under other method names: GraphQL reads the
+/// `viewAny` and `view` under other method names: GraphQL asks the
 /// abilities of Gate, not the method names.
 class GqlSecretPolicy extends Policy<User, GqlSecret> {
   bool mayList(User user) => user.name != PostPolicy.blind;
@@ -12,7 +12,7 @@ class GqlSecretPolicy extends Policy<User, GqlSecret> {
 
   @override
   Map<String, Function> get abilities => <String, Function>{
-    'viewAny': mayList,
-    'view': isOwner,
+    Ability.viewAny: mayList,
+    Ability.view: isOwner,
   };
 }

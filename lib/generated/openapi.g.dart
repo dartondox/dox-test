@@ -3385,7 +3385,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     },
     'Comment': <String, dynamic>{
       'type': 'object',
-      'description': 'One row in the `comments` table.',
+      'description': 'One row in the `comments` table. GraphQL: every field that gives a\nComment needs a login.',
       'properties': <String, dynamic>{
         'id': <String, dynamic>{'type': 'integer'},
         'post_id': <String, dynamic>{

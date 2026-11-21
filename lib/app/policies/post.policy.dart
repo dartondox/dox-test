@@ -1,4 +1,4 @@
-import 'package:dox_auth/dox_auth.dart' show Policy;
+import 'package:dox_auth/dox_auth.dart' show Ability, Policy;
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 
@@ -30,10 +30,10 @@ class PostPolicy extends Policy<User?, Post> {
 
   @override
   Map<String, Function> get abilities => <String, Function>{
-    'viewAny': viewAny,
-    'view': view,
-    'create': create,
-    'update': update,
-    'delete': delete,
+    Ability.viewAny: viewAny,
+    Ability.view: view,
+    Ability.create: create,
+    Ability.update: update,
+    Ability.delete: delete,
   };
 }

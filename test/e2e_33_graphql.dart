@@ -473,23 +473,28 @@ void graphqlTests(Api api) {
         expect((await row(bobSecret))?['title'], 'gql bob hidden');
       });
 
-      test('viewAny denied: the list is FORBIDDEN', () async {
-        Map<String, dynamic> body = await gql.run(
-          '{ posts { id } }',
-          token: 'gql.blind',
-        );
-        // only the refused field is null: every root field is nullable
-        expect(body['data'], <String, dynamic>{'posts': null}, reason: '$body');
-        expect(codes(body), <Object?>['FORBIDDEN']);
-        Map<String, dynamic> rel = await gql.run(
-          '{ user(id: "${ids['ann']}") { name posts { id } } }',
-          token: 'gql.blind',
-        );
-        // posts is nullable (`[Post!]`), so `user` keeps its name
-        expect(rel['data']['user']?['name'], 'GQL Ann', reason: '$rel');
-        expect(rel['data']['user']?['posts'], isNull);
-        expect(codes(rel), <Object?>['FORBIDDEN']);
-      });
+      test(
+        'viewAny denied: the list is FORBIDDEN, a relation only filters',
+        () async {
+          Map<String, dynamic> body = await gql.run(
+            '{ posts { id } }',
+            token: 'gql.blind',
+          );
+          // only the refused field is null: every root field is nullable
+          expect(body['data'], <String, dynamic>{
+            'posts': null,
+          }, reason: '$body');
+          expect(codes(body), <Object?>['FORBIDDEN']);
+          Map<String, dynamic> rel = await gql.run(
+            '{ user(id: "${ids['ann']}") { name posts { id } } }',
+            token: 'gql.blind',
+          );
+          // a relation asks no viewAny: `filter: view` keeps ann's posts
+          expect(rel['errors'], isNull, reason: '$rel');
+          expect(rel['data']['user']?['name'], 'GQL Ann', reason: '$rel');
+          expect(rel['data']['user']?['posts'], isNotEmpty);
+        },
+      );
 
       test('view drops a secret post from the list and every relation '
           'path', () async {

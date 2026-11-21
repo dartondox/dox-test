@@ -1,10 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // Made by dox_graphql_builder. Run `dart run build_runner build`.
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, unused_element
 
 import 'package:dox_graphql/dox_graphql.dart';
 import 'package:dox_graphql_orm/dox_graphql_orm.dart';
-import 'package:dox_auth/dox_auth.dart' show Gate;
+import 'package:dox_auth/dox_auth.dart' show Gate, Policy;
 import 'package:dox_test/app/models/comment/comment.model.dart' as i1;
 import 'package:dox_test/app/models/gql_secret/gql_secret.model.dart' as i2;
 import 'package:dox_test/app/models/post/post.model.dart' as i3;
@@ -15,14 +15,14 @@ import 'package:dox_test/app/dtos/graphql/graphql.dto.dart' as i7;
 import 'package:dox_test/app/graphql/e33.resolver.dart' as i8;
 
 /// The GraphQL schema of the app, made from the
-/// `@GraphQLType`, `@GraphQLQuery` and `@GraphQLMutation` annotations.
+/// `@GraphQLType`, `@GraphQLAll`, `@GraphQLQuery`, ... annotations.
 /// Use it in `GraphQLConfig(schema: graphqlSchema)`.
 final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
     GraphQLSchema<DoxGraphQLContext>(
       query: ObjectType<Object?, DoxGraphQLContext>(
         'Query',
         fields: () => <Field<Object?, DoxGraphQLContext>>[
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'comments',
             _tComment.nonNull.list,
             args: <Argument>[
@@ -32,7 +32,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 GraphQLOrm.list<i1.Comment>(i1.Comment(), info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'comment',
             _tComment,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
@@ -42,58 +42,55 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
                   int.tryParse(info.args.get<String>('id')!),
                 ),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'gqlSecrets',
             _tGqlSecret.nonNull.list,
-            auth: true,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
               Argument('offset', graphqlInt, defaultValue: '0'),
             ],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _allowIf<i2.GqlSecret>(info, 'viewAny').then(
-                  (_) => _viewList<i2.GqlSecret>(
+                _allow(info, 'viewAny', i2.GqlSecret).then(
+                  (_) => _filterList<i2.GqlSecret>(
                     info,
+                    'view',
                     GraphQLOrm.list<i2.GqlSecret>(i2.GqlSecret(), info),
                   ),
                 ),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'gqlSecret',
             _tGqlSecret,
-            auth: true,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _findGqlSecret(info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'posts',
             _tPost.nonNull.list,
-            auth: false,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
               Argument('offset', graphqlInt, defaultValue: '0'),
             ],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _allowIf<i3.Post>(info, 'viewAny').then(
-                  (_) => _viewList<i3.Post>(
+                _allow(info, 'viewAny', i3.Post).then(
+                  (_) => _filterList<i3.Post>(
                     info,
+                    'view',
                     GraphQLOrm.list<i3.Post>(i3.Post(), info),
                   ),
                 ),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'post',
             _tPost,
-            auth: false,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _findPost(info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'users',
             _tUser.nonNull.list,
-            auth: true,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
               Argument('offset', graphqlInt, defaultValue: '0'),
@@ -101,10 +98,9 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 GraphQLOrm.list<i6.User>(i6.User(), info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'user',
             _tUser,
-            auth: true,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 GraphQLOrm.find<i6.User>(
@@ -116,7 +112,6 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             'gqlHits',
             graphqlInt,
             description: 'Counts its runs, so a test can see that a rejected query ran none.',
-            auth: false,
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 i8.E33Resolver().gqlHits(),
           ),
@@ -125,7 +120,6 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             graphqlString,
             description:
                 'Throws an error with a secret text: production must hide it.',
-            auth: false,
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 i8.E33Resolver().gqlBoom(),
           ),
@@ -134,45 +128,26 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
       mutation: ObjectType<Object?, DoxGraphQLContext>(
         'Mutation',
         fields: () => <Field<Object?, DoxGraphQLContext>>[
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'createGqlSecret',
             _tGqlSecret,
-            auth: true,
+            guard: true,
             args: <Argument>[Argument('input', _iCreateGqlSecretInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _createGqlSecret(info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
-            'updateGqlSecret',
-            _tGqlSecret,
-            auth: true,
-            args: <Argument>[
-              Argument('id', graphqlId.nonNull),
-              Argument('input', _iUpdateGqlSecretInput.nonNull),
-            ],
-            resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _updateGqlSecret(info),
-          ),
-          AutoField<Object?, DoxGraphQLContext>(
-            'deleteGqlSecret',
-            graphqlBoolean,
-            auth: true,
-            args: <Argument>[Argument('id', graphqlId.nonNull)],
-            resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
-                _deleteGqlSecret(info),
-          ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'createPost',
             _tPost,
-            auth: true,
+            guard: true,
             args: <Argument>[Argument('input', _iCreatePostInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _createPost(info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'updatePost',
             _tPost,
-            auth: true,
+            guard: true,
             args: <Argument>[
               Argument('id', graphqlId.nonNull),
               Argument('input', _iUpdatePostInput.nonNull),
@@ -180,10 +155,10 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _updatePost(info),
           ),
-          AutoField<Object?, DoxGraphQLContext>(
+          Field<Object?, DoxGraphQLContext>(
             'deletePost',
             graphqlBoolean,
-            auth: true,
+            guard: true,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _deletePost(info),
@@ -198,12 +173,14 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
         _tTag,
         _tUser,
       ],
+      startChecks: <void Function()>[_checkAbilities],
     );
 
 final ObjectType<i1.Comment, DoxGraphQLContext> _tComment =
     ObjectType<i1.Comment, DoxGraphQLContext>(
       'Comment',
-      description: 'One row in the `comments` table.',
+      description: 'One row in the `comments` table. GraphQL: every field that gives a\nComment needs a login.',
+      guard: true,
       fields: () {
         i1.Comment model = i1.Comment();
         List<String> hidden = model.hidden;
@@ -261,7 +238,7 @@ _tGqlSecret = ObjectType<i2.GqlSecret, DoxGraphQLContext>(
   'GqlSecret',
   description:
       'A private row of test/e2e_33_graphql.dart. Only its owner sees it.',
-  auth: true,
+  guard: true,
   fields: () {
     i2.GqlSecret model = i2.GqlSecret();
     List<String> hidden = model.hidden;
@@ -302,17 +279,16 @@ _tGqlSecret = ObjectType<i2.GqlSecret, DoxGraphQLContext>(
           'post',
           _tPost,
           description:
-              'a single relation to Post: `view` of PostPolicy makes it null',
+              'a single relation to Post: the `filter:` of Post makes it null',
           resolve: (i2.GqlSecret s, ResolveInfo<DoxGraphQLContext> info) =>
-              _allowIf<i3.Post>(info, 'viewAny').then(
-                (_) => _viewOne<i3.Post>(
-                  info,
-                  GraphQLOrm.relation<i2.GqlSecret, i3.Post?>(
-                    s,
-                    'post',
-                    info.context,
-                    (i2.GqlSecret p) => p.post,
-                  ),
+              _filterOne<i3.Post>(
+                info,
+                'view',
+                GraphQLOrm.relation<i2.GqlSecret, i3.Post?>(
+                  s,
+                  'post',
+                  info.context,
+                  (i2.GqlSecret p) => p.post,
                 ),
               ),
         ),
@@ -324,7 +300,6 @@ final ObjectType<i3.Post, DoxGraphQLContext> _tPost =
     ObjectType<i3.Post, DoxGraphQLContext>(
       'Post',
       description: 'One row in the `posts` table. Delete only sets `deleted_at`.\nGraphQL: public reads, PostPolicy checks, the owner is the caller.',
-      auth: false,
       fields: () {
         i3.Post model = i3.Post();
         List<String> hidden = model.hidden;
@@ -506,16 +481,15 @@ final ObjectType<i5.Tag, DoxGraphQLContext> _tTag =
               'posts',
               _tPost.nonNull.list,
               resolve: (i5.Tag s, ResolveInfo<DoxGraphQLContext> info) =>
-                  _allowIf<i3.Post>(info, 'viewAny').then(
-                    (_) => _viewList<i3.Post>(
-                      info,
-                      GraphQLOrm.many<i5.Tag, i3.Post>(
-                        s,
-                        'posts',
-                        info.context,
-                        (i5.Tag p) => p.posts,
-                        pivot: true,
-                      ),
+                  _filterList<i3.Post>(
+                    info,
+                    'view',
+                    GraphQLOrm.many<i5.Tag, i3.Post>(
+                      s,
+                      'posts',
+                      info.context,
+                      (i5.Tag p) => p.posts,
+                      pivot: true,
                     ),
                   ),
             ),
@@ -527,7 +501,7 @@ final ObjectType<i6.User, DoxGraphQLContext> _tUser =
     ObjectType<i6.User, DoxGraphQLContext>(
       'User',
       description: 'One row in the `users` table.\nNotifiable: `user.notify(AccountReady())` emails the user.\nGraphQL: every field that gives a User needs a login. `password` is\nin `hidden`, so it is not in the schema.',
-      auth: true,
+      guard: true,
       fields: () {
         i6.User model = i6.User();
         List<String> hidden = model.hidden;
@@ -594,15 +568,14 @@ final ObjectType<i6.User, DoxGraphQLContext> _tUser =
               'posts',
               _tPost.nonNull.list,
               resolve: (i6.User s, ResolveInfo<DoxGraphQLContext> info) =>
-                  _allowIf<i3.Post>(info, 'viewAny').then(
-                    (_) => _viewList<i3.Post>(
-                      info,
-                      GraphQLOrm.many<i6.User, i3.Post>(
-                        s,
-                        'posts',
-                        info.context,
-                        (i6.User p) => p.posts,
-                      ),
+                  _filterList<i3.Post>(
+                    info,
+                    'view',
+                    GraphQLOrm.many<i6.User, i3.Post>(
+                      s,
+                      'posts',
+                      info.context,
+                      (i6.User p) => p.posts,
                     ),
                   ),
             ),
@@ -636,22 +609,6 @@ Future<i7.GqlSecretInput> _vCreateGqlSecretInput(
     context,
     names: const <String, String>{'post_id': 'postId'},
   );
-}
-
-final InputObjectType _iUpdateGqlSecretInput = InputObjectType(
-  'UpdateGqlSecretInput',
-  description: 'The input of `createGqlSecret`. `policy:` needs a DTO.',
-  fields: () => <InputField>[
-    InputField('body', graphqlString),
-    InputField('postId', graphqlInt),
-  ],
-);
-
-Map<String, Object?> _mUpdateGqlSecretInput(InputValues v) {
-  return <String, Object?>{
-    if (v.has('body')) 'body': v.get<Object?>('body'),
-    if (v.has('postId')) 'post_id': v.get<Object?>('postId'),
-  };
 }
 
 final InputObjectType _iCreatePostInput = InputObjectType(
@@ -702,31 +659,26 @@ Map<String, Object?> _mUpdatePostInput(InputValues v) {
   };
 }
 
-/// The GqlSecret with the id, after the `view` check of the policy when it has
-/// one. A missing id is checked as a blank GqlSecret, so a user the policy
-/// denies gets the same error for an id that exists and one that does not.
+/// The GqlSecret with the id, after the 'view' check. A missing id
+/// is checked as a blank GqlSecret, so a denied user gets the same error for
+/// an id that exists and one that does not.
 Future<i2.GqlSecret?> _findGqlSecret(
   ResolveInfo<DoxGraphQLContext> info,
 ) async {
-  bool view = Gate.hasAbility<i2.GqlSecret>('view');
-  if (view) await _login(info);
   i2.GqlSecret? model = await GraphQLOrm.find<i2.GqlSecret>(
     i2.GqlSecret(),
     int.tryParse(info.args.get<String>('id')!),
   );
-  if (view) {
-    await (model == null
-        ? _allowMissing(info, 'view', i2.GqlSecret())
-        : _allow(info, 'view', model));
-  }
+  await (model == null
+      ? _allowMissing(info, 'view', i2.GqlSecret())
+      : _allow(info, 'view', model));
   return model;
 }
 
-/// Makes a GqlSecret from the input of `createGqlSecret`.
+/// Makes a GqlSecret from the input of `@GraphQLCreate`.
 Future<i2.GqlSecret> _createGqlSecret(
   ResolveInfo<DoxGraphQLContext> info,
 ) async {
-  await _allowIf<i2.GqlSecret>(info, 'create');
   i7.GqlSecretInput dto = await _vCreateGqlSecretInput(
     info.args.input('input')!,
     info.context,
@@ -742,76 +694,23 @@ Future<i2.GqlSecret> _createGqlSecret(
   return model;
 }
 
-/// Sets the fields the client sent on a GqlSecret. Null when there is no
-/// GqlSecret with that id and the policy allows the update of a blank one.
-Future<i2.GqlSecret?> _updateGqlSecret(
-  ResolveInfo<DoxGraphQLContext> info,
-) async {
-  await _login(info);
-  i2.GqlSecret? model = await GraphQLOrm.find<i2.GqlSecret>(
-    i2.GqlSecret(),
-    int.tryParse(info.args.get<String>('id')!),
-  );
-  if (model == null) {
-    await _allowMissing(info, 'update', i2.GqlSecret());
-    return null;
-  }
-  await _allow(info, 'update', model);
-  InputValues input = info.args.input('input')!;
-  Map<String, Object?> given = _mUpdateGqlSecretInput(input);
-  // the other fields keep their stored values, and are not checked
-  i7.GqlSecretInput dto = await GraphQLDto.validateSent<i7.GqlSecretInput>(
-    i7.$GqlSecretInputDto,
-    <String, Object?>{'body': model.body, 'post_id': model.postId, ...given},
-    info.context,
-    sent: given.keys.toSet(),
-    placeholders: const <String, Object?>{'body': '-', 'post_id': 0},
-    names: const <String, String>{'post_id': 'postId'},
-    params: <String, String>{'id': '${model.id}'},
-  );
-  if (input.has('body')) model.body = dto.body;
-  if (input.has('postId')) model.postId = dto.postId;
-  await model.save();
-  return model;
-}
-
-/// Deletes a GqlSecret. False when there is no GqlSecret with that id and the
-/// policy allows the delete of a blank one.
-Future<bool> _deleteGqlSecret(ResolveInfo<DoxGraphQLContext> info) async {
-  await _login(info);
-  i2.GqlSecret? model = await GraphQLOrm.find<i2.GqlSecret>(
-    i2.GqlSecret(),
-    int.tryParse(info.args.get<String>('id')!),
-  );
-  if (model == null) {
-    await _allowMissing(info, 'delete', i2.GqlSecret());
-    return false;
-  }
-  await _allow(info, 'delete', model);
-  await model.delete();
-  return true;
-}
-
-/// The Post with the id, after the `view` check of the policy when it has
-/// one. A missing id is checked as a blank Post, so a user the policy
-/// denies gets the same error for an id that exists and one that does not.
+/// The Post with the id, after the 'view' check. A missing id
+/// is checked as a blank Post, so a denied user gets the same error for
+/// an id that exists and one that does not.
 Future<i3.Post?> _findPost(ResolveInfo<DoxGraphQLContext> info) async {
-  bool view = Gate.hasAbility<i3.Post>('view');
   i3.Post? model = await GraphQLOrm.find<i3.Post>(
     i3.Post(),
     int.tryParse(info.args.get<String>('id')!),
   );
-  if (view) {
-    await (model == null
-        ? _allowMissing(info, 'view', i3.Post())
-        : _allow(info, 'view', model));
-  }
+  await (model == null
+      ? _allowMissing(info, 'view', i3.Post())
+      : _allow(info, 'view', model));
   return model;
 }
 
-/// Makes a Post from the input of `createPost`.
+/// Makes a Post from the input of `@GraphQLCreate`.
 Future<i3.Post> _createPost(ResolveInfo<DoxGraphQLContext> info) async {
-  await _allowIf<i3.Post>(info, 'create');
+  await _allow(info, 'create', i3.Post);
   i7.GqlPostInput dto = await _vCreatePostInput(
     info.args.input('input')!,
     info.context,
@@ -826,7 +725,7 @@ Future<i3.Post> _createPost(ResolveInfo<DoxGraphQLContext> info) async {
 }
 
 /// Sets the fields the client sent on a Post. Null when there is no
-/// Post with that id and the policy allows the update of a blank one.
+/// Post with that id.
 Future<i3.Post?> _updatePost(ResolveInfo<DoxGraphQLContext> info) async {
   i3.Post? model = await GraphQLOrm.find<i3.Post>(
     i3.Post(),
@@ -865,8 +764,7 @@ Future<i3.Post?> _updatePost(ResolveInfo<DoxGraphQLContext> info) async {
   return model;
 }
 
-/// Deletes a Post. False when there is no Post with that id and the
-/// policy allows the delete of a blank one.
+/// Deletes a Post. False when there is no Post with that id.
 Future<bool> _deletePost(ResolveInfo<DoxGraphQLContext> info) async {
   i3.Post? model = await GraphQLOrm.find<i3.Post>(
     i3.Post(),
@@ -881,9 +779,10 @@ Future<bool> _deletePost(ResolveInfo<DoxGraphQLContext> info) async {
   return true;
 }
 
-/// Asks the policy (registered with `Gate.policy`) if the user may do
-/// [ability] on [subject]: a row, or the model type. Throws when not:
-/// "Unauthenticated" for a guest, else "Forbidden".
+/// Asks `Gate` (a policy registered with `Gate.policy`, or a
+/// `Gate.define`) if the user may do [ability] on [subject]: a row, or
+/// the model type. Throws when not: "Unauthenticated" for a guest, else
+/// "Forbidden".
 Future<void> _allow(
   ResolveInfo<DoxGraphQLContext> info,
   String ability,
@@ -917,50 +816,96 @@ Future<void> _allowMissing(
   if (!allowed) throw _denied(user);
 }
 
-/// [_allow] on the model type [T], when the policy of [T] lists
-/// [ability] (`viewAny`, `create`). Else nothing is checked.
-Future<void> _allowIf<T>(
+/// The rows of [rows] that [ability] allows (`filter:`). The others are
+/// left out, with no error.
+Future<List<T>?> _filterList<T extends Object>(
   ResolveInfo<DoxGraphQLContext> info,
   String ability,
-) async {
-  if (Gate.hasAbility<T>(ability)) await _allow(info, ability, T);
-}
-
-/// The rows of [rows] that the `view` ability of the policy allows, when
-/// the policy of [T] lists `view`. The others are left out, with no error.
-Future<List<T>?> _viewList<T extends Object>(
-  ResolveInfo<DoxGraphQLContext> info,
   Future<List<T>?> rows,
 ) async {
   List<T>? list = await rows;
-  if (list == null || list.isEmpty || !Gate.hasAbility<T>('view')) {
-    return list;
-  }
+  if (list == null || list.isEmpty) return list;
   Object? user = await info.context.user<Object>();
   return <T>[
     for (T row in list)
-      if (await Gate.allows(user, 'view', row)) row,
+      if (await Gate.allows(user, ability, row)) row,
   ];
 }
 
-/// [row] when the `view` ability of the policy allows it (or the policy
-/// of [T] does not list `view`), else null.
-Future<T?> _viewOne<T extends Object>(
+/// [row] when [ability] allows it (`filter:`), else null.
+Future<T?> _filterOne<T extends Object>(
   ResolveInfo<DoxGraphQLContext> info,
+  String ability,
   Future<T?> row,
 ) async {
   T? value = await row;
-  if (value == null || !Gate.hasAbility<T>('view')) return value;
+  if (value == null) return null;
   Object? user = await info.context.user<Object>();
-  return await Gate.allows(user, 'view', value) ? value : null;
+  return await Gate.allows(user, ability, value) ? value : null;
 }
 
-/// "Unauthenticated" before the row lookup, when the policy denies every
-/// guest.
-Future<void> _login(ResolveInfo<DoxGraphQLContext> info) async {
-  if (await info.context.auth() == null)
-    throw GraphQLAuth.unauthenticatedError();
+/// [page] with only the rows that [ability] allows (`filter:`). The
+/// count query ran before, so `total` and `lastPage` still count the
+/// rows that are left out.
+Future<Pagination<T>> _filterPage<T extends Object>(
+  ResolveInfo<DoxGraphQLContext> info,
+  String ability,
+  Future<Pagination<T>> page,
+) async {
+  Pagination<T> result = await page;
+  result.data = (await _filterList<T>(
+    info,
+    ability,
+    Future<List<T>>.value(result.data),
+  ))!;
+  return result;
 }
 
 GraphQLError _denied(Object? user) =>
     user == null ? GraphQLAuth.unauthenticatedError() : GraphQLAuth.forbidden();
+
+/// The abilities of `can:` and `filter:`, checked when the
+/// app starts (`GraphQLSchema.startChecks`).
+void _checkAbilities() {
+  _checkAbility<i2.GqlSecret>(
+    '@GraphQLType(filter: \'view\')',
+    'GqlSecret',
+    'view',
+  );
+  _checkAbility<i2.GqlSecret>(
+    '@GraphQLAll(can: \'viewAny\')',
+    'GqlSecret',
+    'viewAny',
+  );
+  _checkAbility<i2.GqlSecret>(
+    '@GraphQLFind(can: \'view\')',
+    'GqlSecret',
+    'view',
+  );
+  _checkAbility<i3.Post>('@GraphQLType(filter: \'view\')', 'Post', 'view');
+  _checkAbility<i3.Post>('@GraphQLAll(can: \'viewAny\')', 'Post', 'viewAny');
+  _checkAbility<i3.Post>('@GraphQLFind(can: \'view\')', 'Post', 'view');
+  _checkAbility<i3.Post>('@GraphQLCreate(can: \'create\')', 'Post', 'create');
+  _checkAbility<i3.Post>('@GraphQLUpdate(can: \'update\')', 'Post', 'update');
+  _checkAbility<i3.Post>('@GraphQLDelete(can: \'delete\')', 'Post', 'delete');
+}
+
+/// Throws when [ability] (of [annotation] on [model]) is not an ability
+/// of the policy of [M] and not a `Gate.define`: a typo, or a policy that
+/// is not registered.
+void _checkAbility<M>(String annotation, String model, String ability) {
+  if (Gate.isDefined(ability)) return;
+  Policy<dynamic, M>? policy = Gate.policyOf<M>();
+  if (policy == null) {
+    throw StateError(
+      '$annotation on $model: $model has no policy and there is no '
+      "Gate.define('$ability'). Register the policy with "
+      'Gate.policy<$model>(...) in the setup() of a provider.',
+    );
+  }
+  if (policy.has(ability)) return;
+  throw StateError(
+    "$annotation on $model: ${policy.runtimeType} has no ability "
+    "'$ability'. Available: ${policy.abilities.keys.join(', ')}.",
+  );
+}

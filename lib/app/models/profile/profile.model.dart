@@ -6,7 +6,7 @@ part 'profile.model.g.dart';
 
 /// One row in the `profiles` table. Each user has one profile.
 @DoxModel(table: 'profiles')
-@GraphQLType(queries: false)
+@GraphQLType()
 class Profile extends ProfileGenerator {
   @Column()
   int? userId;
