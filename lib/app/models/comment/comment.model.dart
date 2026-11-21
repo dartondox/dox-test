@@ -7,7 +7,7 @@ part 'comment.model.g.dart';
 /// One row in the `comments` table. GraphQL: every field that gives a
 /// Comment needs a login.
 @DoxModel(table: 'comments')
-@GraphQLType(guard: true)
+@GraphQL(guard: true)
 @GraphQLAll()
 @GraphQLFind()
 class Comment extends CommentGenerator {

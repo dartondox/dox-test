@@ -8,7 +8,7 @@ part 'gql_secret.model.g.dart';
 
 /// A private row of test/e2e_33_graphql.dart. Only its owner sees it.
 @DoxModel(table: 'gql_secrets')
-@GraphQLType(guard: true, filter: Ability.view)
+@GraphQL(guard: true, filter: Ability.view)
 @GraphQLAll(can: Ability.viewAny)
 @GraphQLFind(can: Ability.view)
 @GraphQLCreate(dto: GqlSecretInput, owner: 'userId')

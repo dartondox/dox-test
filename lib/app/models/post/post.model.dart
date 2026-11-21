@@ -11,7 +11,7 @@ part 'post.model.g.dart';
 /// One row in the `posts` table. Delete only sets `deleted_at`.
 /// GraphQL: public reads, PostPolicy checks, the owner is the caller.
 @DoxModel(table: 'posts', softDelete: true)
-@GraphQLType(filter: Ability.view)
+@GraphQL(filter: Ability.view)
 @GraphQLAll(can: Ability.viewAny)
 @GraphQLFind(can: Ability.view)
 @GraphQLCreate(dto: GqlPostInput, can: Ability.create, owner: 'userId')

@@ -11,7 +11,7 @@ part 'user.model.g.dart';
 /// GraphQL: every field that gives a User needs a login. `password` is
 /// in `hidden`, so it is not in the schema.
 @DoxModel(table: 'users')
-@GraphQLType(guard: true)
+@GraphQL(guard: true)
 @GraphQLAll()
 @GraphQLFind()
 class User extends UserGenerator with Notifiable {

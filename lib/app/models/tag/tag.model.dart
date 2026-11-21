@@ -6,7 +6,7 @@ part 'tag.model.g.dart';
 
 /// One row in the `tags` table.
 @DoxModel(table: 'tags')
-@GraphQLType()
+@GraphQL()
 class Tag extends TagGenerator {
   @Column()
   String? name;
