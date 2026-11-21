@@ -104,6 +104,10 @@ abstract class AppEnv {
 
   /// true: strict mode warnings of dox_core (see `StrictConfig`).
   bool get appStrict => false;
+
+  /// true: the port also speaks HTTP/2 (h2c), for gRPC and
+  /// test/e2e_33_http2_grpc.dart. HTTP/1.1 keeps working.
+  bool get appHttp2 => true;
 }
 
 /// The env of the app. Read and checked once, on first use.

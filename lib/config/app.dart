@@ -47,6 +47,9 @@ AppConfig appConfig = AppConfig(
   maxBodySize: env.maxBodySize,
   maxMultipartSize: env.maxMultipartSize,
 
+  /// The same port also speaks HTTP/2 (h2c): gRPC needs it.
+  http2: env.appHttp2,
+
   /// Only these clients may set X-Forwarded-For and X-Forwarded-Proto.
   trustedProxies: env.trustedProxies,
 );

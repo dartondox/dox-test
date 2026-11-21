@@ -8,6 +8,8 @@ import 'package:dox_test/routes/e2e_core.dart';
 import 'package:dox_test/routes/e2e_core_b.dart';
 import 'package:dox_test/routes/e2e310b_orm.dart';
 import 'package:dox_test/routes/e32x.dart';
+import 'package:dox_test/routes/e32y.dart';
+import 'package:dox_test/routes/e33.dart';
 import 'package:dox_test/routes/e310b_pkg.dart';
 
 /// The dox_core features of 3.1.0. All routes here start with /core.
@@ -90,6 +92,8 @@ class CoreRouter extends Router {
     Route.group('/e310b-pkg', E310bPkgRoutes().register);
     Route.group('/e32x', E32xRoutes().register);
     Route.mount('/e32x-sse', E32xRoutes.sse);
+    Route.group('/e32y', E32yRoutes().register);
+    Route.group('/e33', E33Routes().register);
 
     /// GET /core/<no route> gets this, not the plain 404.
     Route.fallback((CoreController c) => c.notFound);

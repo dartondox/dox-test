@@ -10,7 +10,9 @@ import 'package:dox_test/app/dtos/core/core.dto.dart';
 import 'package:dox_test/app/dtos/e2e310/e2e310.dto.dart';
 import 'package:dox_test/app/dtos/e2e310b/e2e310b.dto.dart';
 import 'package:dox_test/app/dtos/e2e310b_orm/e2e310b_orm.dto.dart';
+import 'package:dox_test/app/dtos/e32y/e32y.dto.dart';
 import 'package:dox_test/app/dtos/file/file.dto.dart';
+import 'package:dox_test/app/dtos/graphql/graphql.dto.dart';
 import 'package:dox_test/app/dtos/mail/mail.dto.dart';
 import 'package:dox_test/app/dtos/note/note.dto.dart';
 import 'package:dox_test/app/dtos/post/post.dto.dart';
@@ -33,6 +35,9 @@ const List<DtoSchema<Object>> dtos = <DtoSchema<Object>>[
   $E2eTeamFormDto,
   $E310bAddressDto,
   $E310bProfileFormDto,
+  $E32yFormDto,
+  $GqlPostInputDto,
+  $GqlSecretInputDto,
   $HashPasswordDto,
   $IncrementCacheDto,
   $ListBadgesDto,

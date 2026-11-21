@@ -138,7 +138,19 @@ jobs:
       # dox-test (main, or the branch with the same name as this one), so
       # the pubspec_overrides.yaml lines for them work.
       - name: Clone the other Dox repos
-        run: bash dox/ci/clone-siblings.sh
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          bash dox/ci/clone-siblings.sh
+          # not in clone-siblings.sh: the gRPC, MCP and GraphQL packages
+          for repo in dox-grpc dox-mcp dox-graphql; do
+            ref=main
+            if git ls-remote --exit-code "https://github.com/dartondox/$repo.git" "refs/heads/$BRANCH" >/dev/null; then
+              ref=$BRANCH
+            fi
+            echo "$repo: $ref"
+            git clone -q --depth 1 --branch "$ref" "https://github.com/dartondox/$repo.git" "$repo"
+          done
       # Caches the Rust dependencies of the native packages.
       - uses: Swatinem/rust-cache@v2
         with:

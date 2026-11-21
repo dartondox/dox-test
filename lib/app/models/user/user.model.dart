@@ -1,4 +1,5 @@
 import 'package:dox_mailer/dox_mailer.dart' show Address, Notifiable;
+import 'package:dox_graphql/dox_graphql.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/profile/profile.model.dart';
@@ -7,7 +8,12 @@ part 'user.model.g.dart';
 
 /// One row in the `users` table.
 /// Notifiable: `user.notify(AccountReady())` emails the user.
+/// GraphQL: every field that gives a User needs a login. `password` is
+/// in `hidden`, so it is not in the schema.
 @DoxModel(table: 'users')
+@GraphQL(guard: true)
+@GraphQLAll()
+@GraphQLFind()
 class User extends UserGenerator with Notifiable {
   /// Never send the password hash in a response.
   @override

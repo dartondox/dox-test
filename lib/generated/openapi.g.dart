@@ -2334,6 +2334,277 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       },
     ),
     OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'books',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'item',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e32y/items/{id}: the model, as JSON',
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'valid',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+        422: ResponseDoc(
+          description: 'Validation failed',
+          schema: <String, dynamic>{
+            '\$ref': '#/components/schemas/ValidationError',
+          },
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'validDto',
+      argumentTypes: <String>['E32yForm'],
+      tags: <String>['E32yRoutes'],
+      schema: <String, dynamic>{'\$ref': '#/components/schemas/E32yForm'},
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'attempt',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e32y/attempt: the body as it is goes to Auth().attempt',
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'whoami',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E32yRoutes',
+      method: 'pingOthers',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e32y/ping-others/{id}: broadcasts to `private-users.{id}`,',
+      description: 'skipping the socket of the X-Socket-ID header.',
+      tags: <String>['E32yRoutes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'proto',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e33/proto: the HTTP version of the request',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'echo',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e33/echo: the JSON body back',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'form',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'POST /core/e33/form: a multipart field and the size of its file',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'empty',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'notModified',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'cookie',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e33/cookie: the Cookie header as the handler sees it',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'big',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e33/big?kb=N: N KiB of `x`',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'string'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'slow',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e33/slow?ms=N: answers after N ms',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'hold',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e33/hold?ms=N: never reads its body (eg. an',
+      description:
+          'application/grpc body, that Dox does not read), answers after N ms',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'trailers',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /core/e33/trailers: a body and a trailer. HTTP/2 sends the',
+      description: 'trailer, HTTP/1.1 drops it.',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'takeover',
+      argumentTypes: <String>['DoxRequest'],
+      summary:
+          'GET /core/e33/takeover?throw=before|after: the handler sends the',
+      description: 'answer itself. `before`: it fails before any write (Dox sends 500).\n`after`: it fails after the head went out (Dox sends nothing more).',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'rpc',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /core/e33/rpc: always fails, rendered by [rpcError]',
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'E33Routes',
+      method: 'fallback',
+      argumentTypes: <String>['DoxRequest'],
+      tags: <String>['E33Routes'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(
+          description: 'Successful response',
+          schema: <String, dynamic>{'type': 'object'},
+        ),
+      },
+    ),
+    OpenApiOperation(
       controller: 'InertiaController',
       method: 'home',
       argumentTypes: <String>['DoxRequest'],
@@ -2404,6 +2675,78 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       method: 'logoutForm',
       argumentTypes: <String>['DoxRequest'],
       ignore: true,
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'register',
+      argumentTypes: <String>[],
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'handle',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'The session and the question state are tied to the user.',
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'verify',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /mcp-consent/verify: the async check of the consent page.',
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'check',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /mcp-consent/check: the old sync checkClient.',
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'deny',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'GET /mcp-consent/deny: the old sync deny.',
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'approve',
+      argumentTypes: <String>['DoxRequest'],
+      summary: 'POST /mcp-consent/approve: the signed-in user says yes.',
+      tags: <String>['McpRouter'],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
+    ),
+    OpenApiOperation(
+      controller: 'McpRouter',
+      method: 'guard',
+      argumentTypes: <String>['Future<Map<String, dynamic>> Function()'],
+      summary: 'An OAuth error as `400 {"error": ...}`.',
+      tags: <String>['McpRouter'],
+      params: <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'string'},
+      ],
+      responses: <int, ResponseDoc>{
+        200: ResponseDoc(description: 'Successful response'),
+      },
     ),
     OpenApiOperation(
       controller: 'ViewController',
@@ -2781,6 +3124,26 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     OpenApiRouteBinding('GET', '/block', 'E32xRoutes.block'),
     OpenApiRouteBinding('GET', '/hash-sync', 'E32xRoutes.hashSync'),
     OpenApiRouteBinding('GET', '/session-count', 'E32xRoutes.sessionCount'),
+    OpenApiRouteBinding('GET', '/books:search', 'E32yRoutes.books'),
+    OpenApiRouteBinding('GET', '/items/{id}', 'E32yRoutes.item'),
+    OpenApiRouteBinding('POST', '/valid/{kind}', 'E32yRoutes.valid'),
+    OpenApiRouteBinding('POST', '/valid-dto', 'E32yRoutes.validDto'),
+    OpenApiRouteBinding('POST', '/attempt', 'E32yRoutes.attempt'),
+    OpenApiRouteBinding('GET', '/optional-api', 'E32yRoutes.whoami'),
+    OpenApiRouteBinding('GET', '/optional-tokens', 'E32yRoutes.whoami'),
+    OpenApiRouteBinding('POST', '/ping-others/{id}', 'E32yRoutes.pingOthers'),
+    OpenApiRouteBinding('GET', '/proto', 'E33Routes.proto'),
+    OpenApiRouteBinding('POST', '/echo', 'E33Routes.echo'),
+    OpenApiRouteBinding('POST', '/form', 'E33Routes.form'),
+    OpenApiRouteBinding('GET', '/empty', 'E33Routes.empty'),
+    OpenApiRouteBinding('GET', '/not-modified', 'E33Routes.notModified'),
+    OpenApiRouteBinding('GET', '/cookie', 'E33Routes.cookie'),
+    OpenApiRouteBinding('GET', '/big', 'E33Routes.big'),
+    OpenApiRouteBinding('GET', '/slow', 'E33Routes.slow'),
+    OpenApiRouteBinding('POST', '/hold', 'E33Routes.hold'),
+    OpenApiRouteBinding('GET', '/trailers', 'E33Routes.trailers'),
+    OpenApiRouteBinding('GET', '/takeover', 'E33Routes.takeover'),
+    OpenApiRouteBinding('POST', '/rpc', 'E33Routes.rpc'),
     OpenApiRouteBinding('GET', 'inertia/', 'InertiaController.home'),
     OpenApiRouteBinding('GET', 'inertia/notes', 'InertiaController.index'),
     OpenApiRouteBinding('POST', 'inertia/notes', 'InertiaController.store'),
@@ -2802,6 +3165,10 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
       'inertia/logout',
       'WebAuthController.logoutForm',
     ),
+    OpenApiRouteBinding('GET', '/mcp-consent/verify', 'McpRouter.verify'),
+    OpenApiRouteBinding('GET', '/mcp-consent/check', 'McpRouter.check'),
+    OpenApiRouteBinding('GET', '/mcp-consent/deny', 'McpRouter.deny'),
+    OpenApiRouteBinding('POST', '/mcp-consent/approve', 'McpRouter.approve'),
     OpenApiRouteBinding('GET', 'views/', 'ViewController.index'),
     OpenApiRouteBinding('POST', 'views/notes', 'ViewController.store'),
     OpenApiRouteBinding('DELETE', 'views/notes/{id}', 'ViewController.destroy'),
@@ -2899,7 +3266,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     },
     'User': <String, dynamic>{
       'type': 'object',
-      'description': 'One row in the `users` table.\nNotifiable: `user.notify(AccountReady())` emails the user.',
+      'description': 'One row in the `users` table.\nNotifiable: `user.notify(AccountReady())` emails the user.\nGraphQL: every field that gives a User needs a login. `password` is\nin `hidden`, so it is not in the schema.',
       'properties': <String, dynamic>{
         'id': <String, dynamic>{'type': 'integer'},
         'name': <String, dynamic>{
@@ -2970,8 +3337,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     },
     'Post': <String, dynamic>{
       'type': 'object',
-      'description':
-          'One row in the `posts` table. Delete only sets `deleted_at`.',
+      'description': 'One row in the `posts` table. Delete only sets `deleted_at`.\nGraphQL: public reads, PostPolicy checks, the owner is the caller.',
       'properties': <String, dynamic>{
         'id': <String, dynamic>{'type': 'integer'},
         'user_id': <String, dynamic>{
@@ -3019,7 +3385,7 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
     },
     'Comment': <String, dynamic>{
       'type': 'object',
-      'description': 'One row in the `comments` table.',
+      'description': 'One row in the `comments` table. GraphQL: every field that gives a\nComment needs a login.',
       'properties': <String, dynamic>{
         'id': <String, dynamic>{'type': 'integer'},
         'post_id': <String, dynamic>{
@@ -3685,6 +4051,19 @@ const OpenApiRegistry openApiRegistry = OpenApiRegistry(
         'plan': <String, dynamic>{'type': 'string'},
       },
       'required': <dynamic>['plan'],
+    },
+    'E32yForm': <String, dynamic>{
+      'type': 'object',
+      'title': 'E32yForm',
+      'properties': <String, dynamic>{
+        'at': <String, dynamic>{
+          'type': <dynamic>['string', 'null'],
+          'format': 'date-time',
+        },
+        'count': <String, dynamic>{
+          'type': <dynamic>['integer', 'null'],
+        },
+      },
     },
   },
 );

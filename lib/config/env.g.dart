@@ -46,6 +46,7 @@ class _$AppEnv extends AppEnv {
     required this.viteDevServer,
     required String? sessionStore,
     required bool? appStrict,
+    required bool? appHttp2,
   }) : _$appName = appName,
        _$appEnv = appEnv,
        _$appPort = appPort,
@@ -75,7 +76,8 @@ class _$AppEnv extends AppEnv {
        _$mailPort = mailPort,
        _$mailFrom = mailFrom,
        _$sessionStore = sessionStore,
-       _$appStrict = appStrict;
+       _$appStrict = appStrict,
+       _$appHttp2 = appHttp2;
 
   final String? _$appName;
   @override
@@ -188,6 +190,9 @@ class _$AppEnv extends AppEnv {
   final bool? _$appStrict;
   @override
   late final bool appStrict = _$appStrict ?? super.appStrict;
+  final bool? _$appHttp2;
+  @override
+  late final bool appHttp2 = _$appHttp2 ?? super.appHttp2;
 
   /// true while [load] runs. A default that reads the global `env` calls
   /// [load] again, and would loop until the stack overflows.
@@ -248,6 +253,7 @@ class _$AppEnv extends AppEnv {
       String? viteDevServer = $r.string('VITE_DEV_SERVER');
       String? sessionStore = $r.string('SESSION_STORE');
       bool? appStrict = $r.boolean('APP_STRICT');
+      bool? appHttp2 = $r.boolean('APP_HTTP2');
 
       $r.check();
       _$AppEnv $env = _$AppEnv._(
@@ -289,6 +295,7 @@ class _$AppEnv extends AppEnv {
         viteDevServer: viteDevServer,
         sessionStore: sessionStore,
         appStrict: appStrict,
+        appHttp2: appHttp2,
       );
       $env.appName;
       $env.appEnv;
@@ -320,6 +327,7 @@ class _$AppEnv extends AppEnv {
       $env.mailFrom;
       $env.sessionStore;
       $env.appStrict;
+      $env.appHttp2;
 
       return $env;
     } finally {

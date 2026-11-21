@@ -1,0 +1,23 @@
+// The test service: one method per call type.
+syntax = "proto3";
+
+package dox.test;
+
+message EchoRequest {
+  string text = 1;
+  int32 count = 2;
+  bytes payload = 3;
+  int32 delay_ms = 4;
+}
+
+message EchoReply {
+  string text = 1;
+  bytes payload = 2;
+}
+
+service Echo {
+  rpc Unary(EchoRequest) returns (EchoReply);
+  rpc ServerStream(EchoRequest) returns (stream EchoReply);
+  rpc ClientStream(stream EchoRequest) returns (EchoReply);
+  rpc Bidi(stream EchoRequest) returns (stream EchoReply);
+}

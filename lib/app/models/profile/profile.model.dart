@@ -1,3 +1,4 @@
+import 'package:dox_graphql/dox_graphql.dart';
 import 'package:dox_orm/dox_orm.dart';
 import 'package:dox_test/app/models/user/user.model.dart';
 
@@ -5,6 +6,7 @@ part 'profile.model.g.dart';
 
 /// One row in the `profiles` table. Each user has one profile.
 @DoxModel(table: 'profiles')
+@GraphQL()
 class Profile extends ProfileGenerator {
   @Column()
   int? userId;
