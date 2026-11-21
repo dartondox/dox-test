@@ -249,6 +249,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.4"
+  dox_graphql:
+    dependency: "direct main"
+    description:
+      name: dox_graphql
+      sha256: d7b1265b2228f11cebeca16c4bfb0b59681809b66f072f144c9c62977bce57bc
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
+  dox_graphql_builder:
+    dependency: "direct dev"
+    description:
+      name: dox_graphql_builder
+      sha256: f9cd88559d1d2f04039f13ca387bb1d929264a1db68f07e968cb76d1c648db6d
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
+  dox_graphql_orm:
+    dependency: "direct main"
+    description:
+      name: dox_graphql_orm
+      sha256: "748f573662370c419a61ae1a9fe70f05864bce07564bf127e4280068a45a9d75"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
+  dox_grpc:
+    dependency: "direct main"
+    description:
+      name: dox_grpc
+      sha256: "6df5e1f0d75c5f0d776fd39cab8111fdc23ec96eed29f77a94307abc661482e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   dox_http_native:
     dependency: transitive
     description:
@@ -270,6 +302,14 @@ packages:
     description:
       name: dox_mailer
       sha256: b8fb0959c669f8796726d70721924e13ec8cf0202d509e20e958ae083af09e63
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.2"
+  dox_mcp:
+    dependency: "direct main"
+    description:
+      name: dox_mcp
+      sha256: "0d521c04b34f5df508de09f937560ac2627d53dde2f3849fc16a2708d462a82d"
       url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
@@ -425,6 +465,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  google_cloud:
+    dependency: transitive
+    description:
+      name: google_cloud
+      sha256: b385e20726ef5315d302c5933bfb728103116c5be2d3d17094b01a82da538c1f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
+  google_identity_services_web:
+    dependency: transitive
+    description:
+      name: google_identity_services_web
+      sha256: "5d187c46dc59e02646e10fe82665fc3884a9b71bc1c90c2b8b749316d33ee454"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+1"
+  googleapis_auth:
+    dependency: transitive
+    description:
+      name: googleapis_auth
+      sha256: "6c37e60a7e9139b6cb143615b740663f427ffd5162f47c06eb8b9632fc217520"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.7"
+  gql:
+    dependency: transitive
+    description:
+      name: gql
+      sha256: "67c32325eb55c15f526f0f5e7d8b38a463dbff2ec3c2e046be4a1a95f0dc93d1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   graphs:
     dependency: transitive
     description:
@@ -433,6 +505,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  grpc:
+    dependency: "direct main"
+    description:
+      name: grpc
+      sha256: "0cde49bc17f6b1e96c374ad1b5d389816cc8ade2015f24294eaa76193de87090"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.0"
   hooks:
     dependency: transitive
     description:
@@ -449,6 +529,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  http2:
+    dependency: "direct dev"
+    description:
+      name: http2
+      sha256: "382d3aefc5bd6dc68c6b892d7664f29b5beb3251611ae946a98d35158a82bbfa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -609,6 +697,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.6"
+  protobuf:
+    dependency: "direct main"
+    description:
+      name: protobuf
+      sha256: "13b6717366aa7ec3792dd62c19c7d33a785708224365f2db23c5ca01f1c1a0f2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.0"
   pub_semver:
     dependency: transitive
     description:
