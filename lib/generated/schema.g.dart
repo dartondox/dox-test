@@ -659,9 +659,10 @@ Map<String, Object?> _mUpdatePostInput(InputValues v) {
   };
 }
 
-/// The GqlSecret with the id, after the 'view' check. A missing id
-/// is checked as a blank GqlSecret, so a denied user gets the same error for
-/// an id that exists and one that does not.
+/// The GqlSecret with the id, after the `can:` check and the `filter:` of
+/// the type. A missing id is checked as a blank GqlSecret, so a denied user
+/// gets the same error for an id that exists and one that does not. A
+/// row that the filter denies gives null, like a missing id.
 Future<i2.GqlSecret?> _findGqlSecret(
   ResolveInfo<DoxGraphQLContext> info,
 ) async {
@@ -672,7 +673,11 @@ Future<i2.GqlSecret?> _findGqlSecret(
   await (model == null
       ? _allowMissing(info, 'view', i2.GqlSecret())
       : _allow(info, 'view', model));
-  return model;
+  return await _filterOne<i2.GqlSecret>(
+    info,
+    'view',
+    Future<i2.GqlSecret?>.value(model),
+  );
 }
 
 /// Makes a GqlSecret from the input of `@GraphQLCreate`.
@@ -694,9 +699,10 @@ Future<i2.GqlSecret> _createGqlSecret(
   return model;
 }
 
-/// The Post with the id, after the 'view' check. A missing id
-/// is checked as a blank Post, so a denied user gets the same error for
-/// an id that exists and one that does not.
+/// The Post with the id, after the `can:` check and the `filter:` of
+/// the type. A missing id is checked as a blank Post, so a denied user
+/// gets the same error for an id that exists and one that does not. A
+/// row that the filter denies gives null, like a missing id.
 Future<i3.Post?> _findPost(ResolveInfo<DoxGraphQLContext> info) async {
   i3.Post? model = await GraphQLOrm.find<i3.Post>(
     i3.Post(),
@@ -705,7 +711,7 @@ Future<i3.Post?> _findPost(ResolveInfo<DoxGraphQLContext> info) async {
   await (model == null
       ? _allowMissing(info, 'view', i3.Post())
       : _allow(info, 'view', model));
-  return model;
+  return await _filterOne<i3.Post>(info, 'view', Future<i3.Post?>.value(model));
 }
 
 /// Makes a Post from the input of `@GraphQLCreate`.
@@ -795,7 +801,8 @@ Future<void> _allow(
 /// [_allow] for an id with no row: [blank] is a new, empty row. A user
 /// the policy denies gets the same error as for a row that exists, so the
 /// answer does not show which ids exist. A policy that fails to read the
-/// empty row (a null check, a missing value) denies. Other errors, like a
+/// empty row (a null check, a missing value, a `late` field that is not
+/// set) denies. Other errors, like a
 /// database error, are thrown.
 Future<void> _allowMissing(
   ResolveInfo<DoxGraphQLContext> info,
@@ -811,6 +818,11 @@ Future<void> _allowMissing(
   } on StateError {
     allowed = false;
   } on NoSuchMethodError {
+    allowed = false;
+  } on Error catch (e) {
+    // a `late` field of the blank row that is not set. The type of the
+    // error is not public, and --obfuscate renames it: read the message.
+    if (!e.toString().contains('has not been initialized')) rethrow;
     allowed = false;
   }
   if (!allowed) throw _denied(user);
@@ -891,16 +903,17 @@ void _checkAbilities() {
 }
 
 /// Throws when [ability] (of [annotation] on [model]) is not an ability
-/// of the policy of [M] and not a `Gate.define`: a typo, or a policy that
-/// is not registered.
+/// of the policy of [M]: a typo. A model with no policy needs a
+/// `Gate.define` of [ability].
 void _checkAbility<M>(String annotation, String model, String ability) {
-  if (Gate.isDefined(ability)) return;
   Policy<dynamic, M>? policy = Gate.policyOf<M>();
   if (policy == null) {
+    if (Gate.isDefined(ability)) return;
     throw StateError(
       '$annotation on $model: $model has no policy and there is no '
       "Gate.define('$ability'). Register the policy with "
-      'Gate.policy<$model>(...) in the setup() of a provider.',
+      'Gate.policy<$model>(...) in the setup() of a provider: the check '
+      'runs in GraphQLProvider.boot(), after every setup().',
     );
   }
   if (policy.has(ability)) return;
