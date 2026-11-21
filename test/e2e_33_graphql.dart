@@ -660,7 +660,14 @@ void graphqlTests(Api api) {
       test('no N+1: the query count does not grow with the rows', () async {
         Future<int> count(int limit) async {
           List<String> sql = <String>[];
-          void listen(QueryEvent e) => sql.add(e.sql);
+          // the listener sees every query of the isolate, also the queue
+          // worker and the scheduler (eg. a user count). Count only the
+          // row reads of the tables in this GraphQL query.
+          RegExp tables = RegExp(r'\b(posts|comments|users)\b');
+          void listen(QueryEvent e) {
+            String q = e.sql.toLowerCase();
+            if (tables.hasMatch(q) && !q.contains('count(')) sql.add(e.sql);
+          }
           SqlQueryBuilder().listen(listen);
           try {
             Map<String, dynamic> body = await gql.run(
@@ -673,6 +680,7 @@ void graphqlTests(Api api) {
           } finally {
             SqlQueryBuilder().removeListener(listen);
           }
+          printOnFailure('limit $limit: ${sql.join('\n')}');
           return sql.length;
         }
 
