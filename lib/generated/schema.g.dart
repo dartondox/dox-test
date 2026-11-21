@@ -24,7 +24,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
         fields: () => <Field<Object?, DoxGraphQLContext>>[
           AutoField<Object?, DoxGraphQLContext>(
             'comments',
-            _tComment.nonNull.list.nonNull,
+            _tComment.nonNull.list,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
               Argument('offset', graphqlInt, defaultValue: '0'),
@@ -44,7 +44,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'gqlSecrets',
-            _tGqlSecret.nonNull.list.nonNull,
+            _tGqlSecret.nonNull.list,
             auth: true,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
@@ -68,7 +68,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'posts',
-            _tPost.nonNull.list.nonNull,
+            _tPost.nonNull.list,
             auth: false,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
@@ -92,7 +92,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'users',
-            _tUser.nonNull.list.nonNull,
+            _tUser.nonNull.list,
             auth: true,
             args: <Argument>[
               Argument('limit', graphqlInt, defaultValue: '20'),
@@ -114,7 +114,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           Field<Object?, DoxGraphQLContext>(
             'gqlHits',
-            graphqlInt.nonNull,
+            graphqlInt,
             description: 'Counts its runs, so a test can see that a rejected query ran none.',
             auth: false,
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
@@ -122,7 +122,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           Field<Object?, DoxGraphQLContext>(
             'gqlBoom',
-            graphqlString.nonNull,
+            graphqlString,
             description:
                 'Throws an error with a secret text: production must hide it.',
             auth: false,
@@ -136,7 +136,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
         fields: () => <Field<Object?, DoxGraphQLContext>>[
           AutoField<Object?, DoxGraphQLContext>(
             'createGqlSecret',
-            _tGqlSecret.nonNull,
+            _tGqlSecret,
             auth: true,
             args: <Argument>[Argument('input', _iCreateGqlSecretInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
@@ -155,7 +155,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'deleteGqlSecret',
-            graphqlBoolean.nonNull,
+            graphqlBoolean,
             auth: true,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
@@ -163,7 +163,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'createPost',
-            _tPost.nonNull,
+            _tPost,
             auth: true,
             args: <Argument>[Argument('input', _iCreatePostInput.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
@@ -172,7 +172,7 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           AutoField<Object?, DoxGraphQLContext>(
             'updatePost',
             _tPost,
-            auth: false,
+            auth: true,
             args: <Argument>[
               Argument('id', graphqlId.nonNull),
               Argument('input', _iUpdatePostInput.nonNull),
@@ -182,8 +182,8 @@ final GraphQLSchema<DoxGraphQLContext> graphqlSchema =
           ),
           AutoField<Object?, DoxGraphQLContext>(
             'deletePost',
-            graphqlBoolean.nonNull,
-            auth: false,
+            graphqlBoolean,
+            auth: true,
             args: <Argument>[Argument('id', graphqlId.nonNull)],
             resolve: (Object? _, ResolveInfo<DoxGraphQLContext> info) =>
                 _deletePost(info),
@@ -397,7 +397,7 @@ final ObjectType<i3.Post, DoxGraphQLContext> _tPost =
           if (show('comments'))
             Field<i3.Post, DoxGraphQLContext>(
               'comments',
-              _tComment.nonNull.list.nonNull,
+              _tComment.nonNull.list,
               resolve: (i3.Post s, ResolveInfo<DoxGraphQLContext> info) =>
                   GraphQLOrm.many<i3.Post, i1.Comment>(
                     s,
@@ -409,7 +409,7 @@ final ObjectType<i3.Post, DoxGraphQLContext> _tPost =
           if (show('tags'))
             Field<i3.Post, DoxGraphQLContext>(
               'tags',
-              _tTag.nonNull.list.nonNull,
+              _tTag.nonNull.list,
               resolve: (i3.Post s, ResolveInfo<DoxGraphQLContext> info) =>
                   GraphQLOrm.many<i3.Post, i5.Tag>(
                     s,
@@ -504,7 +504,7 @@ final ObjectType<i5.Tag, DoxGraphQLContext> _tTag =
           if (show('posts'))
             Field<i5.Tag, DoxGraphQLContext>(
               'posts',
-              _tPost.nonNull.list.nonNull,
+              _tPost.nonNull.list,
               resolve: (i5.Tag s, ResolveInfo<DoxGraphQLContext> info) =>
                   _allowIf<i3.Post>(info, 'viewAny').then(
                     (_) => _viewList<i3.Post>(
@@ -592,7 +592,7 @@ final ObjectType<i6.User, DoxGraphQLContext> _tUser =
           if (show('posts'))
             Field<i6.User, DoxGraphQLContext>(
               'posts',
-              _tPost.nonNull.list.nonNull,
+              _tPost.nonNull.list,
               resolve: (i6.User s, ResolveInfo<DoxGraphQLContext> info) =>
                   _allowIf<i3.Post>(info, 'viewAny').then(
                     (_) => _viewList<i3.Post>(

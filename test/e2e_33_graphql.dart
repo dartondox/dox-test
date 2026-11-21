@@ -298,7 +298,7 @@ void graphqlTests(Api api) {
             '{ post(id: "$annPost") { title comments { id } } }',
           );
           expect(codes(body), <Object?>['UNAUTHENTICATED'], reason: '$body');
-          // bug: comments is `[Comment!]!`, so the null goes up to `post`
+          // comments is nullable (`[Comment!]`), so `post` keeps its title
           expect(
             body['data']['post']?['title'],
             'gql ann public',
@@ -478,13 +478,14 @@ void graphqlTests(Api api) {
           '{ posts { id } }',
           token: 'gql.blind',
         );
-        expect(body['data'], isNull, reason: '$body');
+        // only the refused field is null: every root field is nullable
+        expect(body['data'], <String, dynamic>{'posts': null}, reason: '$body');
         expect(codes(body), <Object?>['FORBIDDEN']);
         Map<String, dynamic> rel = await gql.run(
           '{ user(id: "${ids['ann']}") { name posts { id } } }',
           token: 'gql.blind',
         );
-        // bug: posts is `[Post!]!`, so the null goes up to `user`
+        // posts is nullable (`[Post!]`), so `user` keeps its name
         expect(rel['data']['user']?['name'], 'GQL Ann', reason: '$rel');
         expect(rel['data']['user']?['posts'], isNull);
         expect(codes(rel), <Object?>['FORBIDDEN']);
@@ -632,7 +633,10 @@ void graphqlTests(Api api) {
           token: 'gql.bob',
           path: '/graphql-small',
         );
-        expect(big['data'], <String, dynamic>{'post': null}, reason: '$big');
+        // only the capped relation is null: every relation is nullable
+        expect(big['data'], <String, dynamic>{
+          'post': <String, dynamic>{'title': 'gql bob big', 'comments': null},
+        }, reason: '$big');
         expect(big['errors'].first['message'], contains('Post.comments'));
         Map<String, dynamic> small = await gql.run(
           '{ user(id: "${ids['nocreate']}") { posts { comments { id } } } }',

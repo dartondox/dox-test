@@ -259,10 +259,8 @@ void http2GrpcTests(Api api) {
       expect(one.statusCode, 500);
     });
 
-    // bug: dox_core never ends a taken over answer that throws after it
-    // started: http_response_handler.dart returns early for it, and
-    // http_error_handler.dart gives null. The client waits forever (on
-    // HTTP/1.1 too).
+    // a taken over answer that throws after it started still ends
+    // (dox#505): the client gets the part, not a hang.
     test('a taken over response that throws after its first write still '
         'ends', () async {
       H2Res after = await h2.send(
