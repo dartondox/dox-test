@@ -245,10 +245,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_core
-      sha256: "56f90104a4b4cc01a2cdfc23a1ac549a16460cf47d2c1140de69d66211e025c4"
+      sha256: bb8dd2e8728da8e05cc49783bd19dfafb682a6bdfd51808c00390410f66e3ac7
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.4"
+    version: "3.2.5"
   dox_graphql:
     dependency: "direct main"
     description:
@@ -277,18 +277,18 @@ packages:
     dependency: "direct main"
     description:
       name: dox_grpc
-      sha256: "6df5e1f0d75c5f0d776fd39cab8111fdc23ec96eed29f77a94307abc661482e9"
+      sha256: "38df8fda44a3aa72a2273fd0b30c224d265f2e90d366f5368aa81fab283dc790"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   dox_http_native:
     dependency: transitive
     description:
       name: dox_http_native
-      sha256: "86e545da47441f855f8d8649979db76f91711715b26a61b3fac1e0f169118836"
+      sha256: d138ff2dabe9ff0614ba1cc5dd0f801259f185155f3cbbecb722c7013b20011f
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.2"
+    version: "3.2.3"
   dox_inertia:
     dependency: "direct main"
     description:
