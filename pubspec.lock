@@ -253,10 +253,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_graphql
-      sha256: d7b1265b2228f11cebeca16c4bfb0b59681809b66f072f144c9c62977bce57bc
+      sha256: "444fdd50297c8d46c24c1d85f4c9fd02ff18efdf44451bd082333e7d4fe21c87"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   dox_graphql_builder:
     dependency: "direct dev"
     description:
@@ -269,10 +269,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_graphql_orm
-      sha256: "748f573662370c419a61ae1a9fe70f05864bce07564bf127e4280068a45a9d75"
+      sha256: "09d1734f87e6a988e6965d78136aa2d1761073056e3564e3bcb5dc1b783aa137"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   dox_grpc:
     dependency: "direct main"
     description:
