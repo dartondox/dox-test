@@ -21,8 +21,8 @@ dependencies:
   dox_pdf_me: 0.0.2
   dox_grpc: ^0.0.1
   dox_mcp: ^3.2.1
-  dox_graphql: ^0.0.1
-  dox_graphql_orm: ^0.0.1
+  dox_graphql: ^0.0.2
+  dox_graphql_orm: ^0.0.2
   grpc: ^5.2.0
   protobuf: ^6.1.0
 
