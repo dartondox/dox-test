@@ -32,7 +32,7 @@ overrides() {
     "$parent"/dox-validation/ "$parent"/dox-socketio/ "$parent"/dox-storage/ \
     "$parent"/dox-mailer/ "$parent"/dox-view/ "$parent"/dox-inertia/ \
     "$parent"/dox-scheduler/ "$parent"/dox-mcp/ "$parent"/ioredis/ \
-    "$parent"/dox-http-native/ "$parent"/dox-postgres-native/ \
+    "$parent"/dox-http-native/packages/*/ "$parent"/dox-postgres-native/ \
     "$parent"/dox-mysql-native/; do
     [ -f "$dir/pubspec.yaml" ] || continue
     name=$(sed -nE 's/^name:[[:space:]]*([a-z0-9_]+).*/\1/p' "$dir/pubspec.yaml")
