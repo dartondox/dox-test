@@ -17,7 +17,7 @@ dependency_overrides:
   dox_grpc:
     path: ../dox-grpc
   dox_http_native:
-    path: ../dox-http-native
+    path: ../dox-http-native/packages/dox-http-native
   dox_inertia:
     path: ../dox-inertia
   dox_mailer:

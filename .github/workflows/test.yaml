@@ -156,6 +156,7 @@ jobs:
         with:
           workspaces: |
             dox-http-native/native -> target
+            dox-http-native/packages/dox-http-native/native -> target
             dox-postgres-native/native -> target
             dox-mysql-native/native -> target
       # Builds the native libraries of the clones, for this machine only
@@ -165,7 +166,10 @@ jobs:
         run: |
           for repo in dox-http-native dox-postgres-native dox-mysql-native; do
             start=$SECONDS
-            cargo build --release --manifest-path "$repo/native/Cargo.toml"
+            manifest="$repo/native/Cargo.toml"
+            # a repo that keeps its packages in packages/ (a pub workspace)
+            [ -f "$manifest" ] || manifest="$repo/packages/$repo/native/Cargo.toml"
+            cargo build --release --manifest-path "$manifest"
             echo "$repo: built in $((SECONDS - start))s"
           done
       # sqlite3 v3 bundles SQLite with a build hook. No system library needed.
