@@ -413,10 +413,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_storage
-      sha256: c1a036620886aeeb6263cd61b0fa6d3b1a655ba6d0930f9aac47467378f941e2
+      sha256: "342844e0edbb0da7bc8e672301feb5abe88c63f57a89ff59f84c7fe3f3a63f45"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   dox_validation:
     dependency: transitive
     description:
