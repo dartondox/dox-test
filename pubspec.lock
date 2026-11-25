@@ -285,18 +285,18 @@ packages:
     dependency: transitive
     description:
       name: dox_http_client
-      sha256: b0e3a8c5f0717009f7c3eed491031796374b7de354a671dfc3838c18a8e18fc4
+      sha256: f5c2e2a652c02ee8fbeeb98969c6471b3b3b600d56217841516c6b435a103cbb
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   dox_http_native:
     dependency: transitive
     description:
       name: dox_http_native
-      sha256: a20810faf6b5809c95385b39b0062dddb6afcaf46acc507666ae67f3216847d8
+      sha256: "1c6a823a9057b42dd6b3301a473189d3de0891c0c25b1c0357acadd619ed3810"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.4"
+    version: "3.2.5"
   dox_inertia:
     dependency: "direct main"
     description:
