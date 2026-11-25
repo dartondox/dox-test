@@ -285,10 +285,10 @@ packages:
     dependency: transitive
     description:
       name: dox_http_client
-      sha256: f5c2e2a652c02ee8fbeeb98969c6471b3b3b600d56217841516c6b435a103cbb
+      sha256: "2b1c0c41164bf5f3d75663f30414138aa6ccd092cae80d05e8b9fdfc31ff5d5d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   dox_http_native:
     dependency: transitive
     description:
