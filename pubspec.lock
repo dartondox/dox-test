@@ -309,10 +309,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_mailer
-      sha256: a0659b39af5226094665dc685b0c50ad5244592b6c6c2368e350a5f564c0e73a
+      sha256: f83ae63d358093a2677066f9708ba6de4903874c902c4948ebb40328449871ec
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   dox_mcp:
     dependency: "direct main"
     description:
