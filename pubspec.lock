@@ -237,18 +237,18 @@ packages:
     dependency: "direct main"
     description:
       name: dox_cache_database
-      sha256: "392a18d92f93084e5c0a5fca0152cc48515a9cea3d21d1c6ff138c4d4961f220"
+      sha256: a8585a754bf7ba545c64a1465c3321f1326da059304bd991cf6d3b05b1697932
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   dox_core:
     dependency: "direct main"
     description:
       name: dox_core
-      sha256: bb8dd2e8728da8e05cc49783bd19dfafb682a6bdfd51808c00390410f66e3ac7
+      sha256: "369445a2687038d3770567d740387176cc57185376d9302694d4c39158ee6b8e"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.5"
+    version: "3.2.6"
   dox_graphql:
     dependency: "direct main"
     description:
@@ -293,10 +293,10 @@ packages:
     dependency: transitive
     description:
       name: dox_http_native
-      sha256: "1c6a823a9057b42dd6b3301a473189d3de0891c0c25b1c0357acadd619ed3810"
+      sha256: dd5fc3ad4f0312fa04779ca12262a0f6fcf356bf53b0f7803f704f3c7ff5afba
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.5"
+    version: "3.2.6"
   dox_inertia:
     dependency: "direct main"
     description:
@@ -325,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_migration
-      sha256: "8b5473bec38f1fa00f214857be51e865d30e5e05f6086e383fe895ca8a35e808"
+      sha256: aac941b5cb8cc4ba0e5290cab388b98e1ebc70dc661e59a7ed7e7f70d15182bf
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   dox_mysql_native:
     dependency: transitive
     description:
@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: dox_orm
-      sha256: "0ef70c62d336cbea6e9bdfa8d14cb49da5def99d9defa8471c8166cc34a95e97"
+      sha256: ca0451fb6c864e26ce9f8336e15ed4cdded0bc83b0a572df495946988b76e26c
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   dox_pdf_lib:
     dependency: transitive
     description:
