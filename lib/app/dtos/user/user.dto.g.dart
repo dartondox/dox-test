@@ -11,10 +11,10 @@ part of 'user.dto.dart';
 /// The checks, the converter and the JSON Schema of [ListUsers].
 const DtoSchema<ListUsers> $ListUsersDto = _$ListUsersDto();
 
-class _$ListUsersDto extends DtoSchema<ListUsers> {
+class _$ListUsersDto extends DtoSchema<ListUsers> implements JsonObjectWriter {
   const _$ListUsersDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => ListUsers;
@@ -26,86 +26,106 @@ class _$ListUsersDto extends DtoSchema<ListUsers> {
   bool get usesRequiredWhen => false;
 
   @override
-  ListUsers? convert(Object? input, DtoState s, List<Object> p) {
+  ListUsers? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // page: int
-    Object? c0;
-    c0 = s.integer(s.read(input, 'page'), p, 'page', _m);
-    if (c0 == null) s.required(p, 'page', _m);
+    Object? page = state.integer(
+      state.read(input, 'page'),
+      path,
+      'page',
+      _messages,
+    );
+    if (page == null) state.required(path, 'page', _messages);
     // perPage: int
-    Object? c1;
-    c1 = s.integer(s.read(input, 'per_page'), p, 'per_page', _m);
-    if (c1 == null) s.required(p, 'per_page', _m);
+    Object? perPage = state.integer(
+      state.read(input, 'per_page'),
+      path,
+      'per_page',
+      _messages,
+    );
+    if (perPage == null) state.required(path, 'per_page', _messages);
     // search: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'search'), p, 'search', _m, trim: true);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is int) {
-      if (!(c0 >= 1)) {
-        s.fail(
-          p,
+    Object? search = state.string(
+      state.read(input, 'search'),
+      path,
+      'search',
+      _messages,
+      trim: true,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (page is int) {
+      if (!(page >= 1)) {
+        state.fail(
+          path,
           'page',
           IssueCodes.min,
           DefaultMessages.min,
-          c0,
+          page,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is int) {
-      if (!(c1 >= 1)) {
-        s.fail(
-          p,
+    if (perPage is int) {
+      if (!(perPage >= 1)) {
+        state.fail(
+          path,
           'per_page',
           IssueCodes.min,
           DefaultMessages.min,
-          c1,
+          perPage,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c1 <= 100)) {
-        s.fail(
-          p,
+      } else if (!(perPage <= 100)) {
+        state.fail(
+          path,
           'per_page',
           IssueCodes.max,
           DefaultMessages.max,
-          c1,
+          perPage,
           params: const <String, Object?>{'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return ListUsers(
-      page: c0 is Undefined ? 1 : c0 as int,
-      perPage: c1 is Undefined ? AppConstants.defaultPerPage : c1 as int,
-      search: c2 is Undefined ? null : c2 as String?,
+      page: page is Undefined ? 1 : page as int,
+      perPage: perPage is Undefined
+          ? AppConstants.defaultPerPage
+          : perPage as int,
+      search: search is Undefined ? null : search as String?,
     );
   }
 
   @override
-  ListUsers fromMap(Map<String, dynamic> m) {
+  ListUsers fromMap(Map<String, dynamic> map) {
     return ListUsers(
-      page: m.containsKey('page') ? (m['page'] as num).toInt() : 1,
-      perPage: m.containsKey('per_page')
-          ? (m['per_page'] as num).toInt()
+      page: map.containsKey('page') ? (map['page'] as num).toInt() : 1,
+      perPage: map.containsKey('per_page')
+          ? (map['per_page'] as num).toInt()
           : AppConstants.defaultPerPage,
-      search: m['search'] == null ? null : (m['search'] as String),
+      search: map['search'] == null ? null : (map['search'] as String),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(ListUsers o) {
-    int f0 = o.page;
-    int f1 = o.perPage;
-    String? f2 = o.search;
-    return <String, dynamic>{'page': f0, 'per_page': f1, 'search': f2};
+  Map<String, dynamic> toMap(ListUsers dto) {
+    return <String, dynamic>{
+      'page': dto.page,
+      'per_page': dto.perPage,
+      'search': dto.search,
+    };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as ListUsers));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -136,10 +156,11 @@ class _$ListUsersDto extends DtoSchema<ListUsers> {
 /// The checks, the converter and the JSON Schema of [UpdateUser].
 const DtoSchema<UpdateUser> $UpdateUserDto = _$UpdateUserDto();
 
-class _$UpdateUserDto extends DtoSchema<UpdateUser> {
+class _$UpdateUserDto extends DtoSchema<UpdateUser>
+    implements JsonObjectWriter {
   const _$UpdateUserDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => UpdateUser;
@@ -154,86 +175,101 @@ class _$UpdateUserDto extends DtoSchema<UpdateUser> {
   bool get isAsync => true;
 
   @override
-  UpdateUser? convert(Object? input, DtoState s, List<Object> p) {
+  UpdateUser? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // name: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'name'), p, 'name', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'name', _m);
+    Object? name = state.string(
+      state.read(input, 'name'),
+      path,
+      'name',
+      _messages,
+      trim: true,
+    );
+    if (name == null || name is Undefined)
+      state.required(path, 'name', _messages);
     // email: String
-    Object? c1;
-    c1 = s.string(
-      s.read(input, 'email'),
-      p,
+    Object? email = state.string(
+      state.read(input, 'email'),
+      path,
       'email',
-      _m,
+      _messages,
       trim: true,
       textCase: 1,
     );
-    if (c1 == null || c1 is Undefined) s.required(p, 'email', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
-        s.fail(
-          p,
+    if (email == null || email is Undefined)
+      state.required(path, 'email', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (name is String) {
+      if (!(name.runes.length >= 2 && name.runes.length <= 100)) {
+        state.fail(
+          path,
           'name',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          name,
           params: const <String, Object?>{'min': 2, 'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is String) {
-      if (!(Patterns.email.hasMatch(c1))) {
-        s.fail(
-          p,
+    if (email is String) {
+      if (!(Patterns.email.hasMatch(email))) {
+        state.fail(
+          path,
           'email',
           IssueCodes.email,
           DefaultMessages.email,
-          c1,
-          messages: _m,
+          email,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return UpdateUser(name: c0 as String, email: c1 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return UpdateUser(name: name as String, email: email as String);
   }
 
   @override
-  Future<void> checkAsync(UpdateUser o, DtoState s, List<Object> p) async {
+  Future<void> checkAsync(
+    UpdateUser dto,
+    DtoState state,
+    List<Object> path,
+  ) async {
     {
-      String f = o.email;
-      await s.asyncRule(
+      String value = dto.email;
+      await state.asyncRule(
         const Unique('users', column: 'email', ignoreParam: 'id'),
-        f,
-        p,
+        value,
+        path,
         'email',
-        _m,
+        _messages,
       );
     }
   }
 
   @override
-  UpdateUser fromMap(Map<String, dynamic> m) {
-    return UpdateUser(name: m['name'] as String, email: m['email'] as String);
+  UpdateUser fromMap(Map<String, dynamic> map) {
+    return UpdateUser(
+      name: map['name'] as String,
+      email: map['email'] as String,
+    );
   }
 
   @override
-  Map<String, dynamic> toMap(UpdateUser o) {
-    String f0 = o.name;
-    String f1 = o.email;
-    return <String, dynamic>{'name': f0, 'email': f1};
+  Map<String, dynamic> toMap(UpdateUser dto) {
+    return <String, dynamic>{'name': dto.name, 'email': dto.email};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as UpdateUser));
 
   @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'UpdateUser',
       'properties': <String, dynamic>{
@@ -251,21 +287,22 @@ class _$UpdateUserDto extends DtoSchema<UpdateUser> {
       'required': <dynamic>['name', 'email'],
     };
     JsonSchemaTools.merge(
-      j,
+      schema,
       <String>['properties', 'email'],
       const Unique('users', column: 'email', ignoreParam: 'id').toJsonSchema(),
     );
-    return j;
+    return schema;
   }
 }
 
 /// The checks, the converter and the JSON Schema of [SaveProfile].
 const DtoSchema<SaveProfile> $SaveProfileDto = _$SaveProfileDto();
 
-class _$SaveProfileDto extends DtoSchema<SaveProfile> {
+class _$SaveProfileDto extends DtoSchema<SaveProfile>
+    implements JsonObjectWriter {
   const _$SaveProfileDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => SaveProfile;
@@ -277,65 +314,75 @@ class _$SaveProfileDto extends DtoSchema<SaveProfile> {
   bool get usesRequiredWhen => false;
 
   @override
-  SaveProfile? convert(Object? input, DtoState s, List<Object> p) {
+  SaveProfile? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // bio: String?
-    Object? c0;
-    c0 = s.string(s.read(input, 'bio'), p, 'bio', _m);
+    Object? bio = state.string(
+      state.read(input, 'bio'),
+      path,
+      'bio',
+      _messages,
+    );
     // website: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'website'), p, 'website', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length <= 500)) {
-        s.fail(
-          p,
+    Object? website = state.string(
+      state.read(input, 'website'),
+      path,
+      'website',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (bio is String) {
+      if (!(bio.runes.length <= 500)) {
+        state.fail(
+          path,
           'bio',
           IssueCodes.maxLength,
           DefaultMessages.maxLength,
-          c0,
+          bio,
           params: const <String, Object?>{'max': 500},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is String) {
-      if (!(DtoChecks.url(c1))) {
-        s.fail(
-          p,
+    if (website is String) {
+      if (!(DtoChecks.url(website))) {
+        state.fail(
+          path,
           'website',
           IssueCodes.url,
           DefaultMessages.url,
-          c1,
-          messages: _m,
+          website,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return SaveProfile(
-      bio: c0 is Undefined ? null : c0 as String?,
-      website: c1 is Undefined ? null : c1 as String?,
+      bio: bio is Undefined ? null : bio as String?,
+      website: website is Undefined ? null : website as String?,
     );
   }
 
   @override
-  SaveProfile fromMap(Map<String, dynamic> m) {
+  SaveProfile fromMap(Map<String, dynamic> map) {
     return SaveProfile(
-      bio: m['bio'] == null ? null : (m['bio'] as String),
-      website: m['website'] == null ? null : (m['website'] as String),
+      bio: map['bio'] == null ? null : (map['bio'] as String),
+      website: map['website'] == null ? null : (map['website'] as String),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(SaveProfile o) {
-    String? f0 = o.bio;
-    String? f1 = o.website;
-    return <String, dynamic>{'bio': f0, 'website': f1};
+  Map<String, dynamic> toMap(SaveProfile dto) {
+    return <String, dynamic>{'bio': dto.bio, 'website': dto.website};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as SaveProfile));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -359,10 +406,11 @@ class _$SaveProfileDto extends DtoSchema<SaveProfile> {
 /// The checks, the converter and the JSON Schema of [PatchProfile].
 const DtoSchema<PatchProfile> $PatchProfileDto = _$PatchProfileDto();
 
-class _$PatchProfileDto extends DtoSchema<PatchProfile> {
+class _$PatchProfileDto extends DtoSchema<PatchProfile>
+    implements JsonObjectWriter {
   const _$PatchProfileDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => PatchProfile;
@@ -374,79 +422,93 @@ class _$PatchProfileDto extends DtoSchema<PatchProfile> {
   bool get usesRequiredWhen => false;
 
   @override
-  PatchProfile? convert(Object? input, DtoState s, List<Object> p) {
+  PatchProfile? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // bio: Maybe<String?>
-    Object? c0;
-    c0 = s.string(s.read(input, 'bio'), p, 'bio', _m);
+    Object? bio = state.string(
+      state.read(input, 'bio'),
+      path,
+      'bio',
+      _messages,
+    );
     // website: Maybe<String?>
-    Object? c1;
-    c1 = s.string(s.read(input, 'website'), p, 'website', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length <= 500)) {
-        s.fail(
-          p,
+    Object? website = state.string(
+      state.read(input, 'website'),
+      path,
+      'website',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (bio is String) {
+      if (!(bio.runes.length <= 500)) {
+        state.fail(
+          path,
           'bio',
           IssueCodes.maxLength,
           DefaultMessages.maxLength,
-          c0,
+          bio,
           params: const <String, Object?>{'max': 500},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is String) {
-      if (!(DtoChecks.url(c1))) {
-        s.fail(
-          p,
+    if (website is String) {
+      if (!(DtoChecks.url(website))) {
+        state.fail(
+          path,
           'website',
           IssueCodes.url,
           DefaultMessages.url,
-          c1,
-          messages: _m,
+          website,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return PatchProfile(
-      bio: c0 is Undefined
+      bio: bio is Undefined
           ? const Maybe<String?>.missing()
-          : Maybe<String?>(c0 as String?),
-      website: c1 is Undefined
+          : Maybe<String?>(bio as String?),
+      website: website is Undefined
           ? const Maybe<String?>.missing()
-          : Maybe<String?>(c1 as String?),
+          : Maybe<String?>(website as String?),
     );
   }
 
   @override
-  PatchProfile fromMap(Map<String, dynamic> m) {
+  PatchProfile fromMap(Map<String, dynamic> map) {
     return PatchProfile(
-      bio: m.containsKey('bio')
-          ? Maybe<String?>(m['bio'] == null ? null : (m['bio'] as String))
+      bio: map.containsKey('bio')
+          ? Maybe<String?>(map['bio'] == null ? null : (map['bio'] as String))
           : const Maybe<String?>.missing(),
-      website: m.containsKey('website')
+      website: map.containsKey('website')
           ? Maybe<String?>(
-              m['website'] == null ? null : (m['website'] as String),
+              map['website'] == null ? null : (map['website'] as String),
             )
           : const Maybe<String?>.missing(),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(PatchProfile o) {
-    Maybe<String?> f0 = o.bio;
-    Maybe<String?> f1 = o.website;
+  Map<String, dynamic> toMap(PatchProfile dto) {
     return <String, dynamic>{
-      if (f0 case Maybe<String?>(isPresent: true, value: String? g0)) 'bio': g0,
-      if (f1 case Maybe<String?>(isPresent: true, value: String? g1))
-        'website': g1,
+      if (dto.bio case Maybe<String?>(isPresent: true, value: String? bio))
+        'bio': bio,
+      if (dto.website case Maybe<String?>(
+        isPresent: true,
+        value: String? website,
+      ))
+        'website': website,
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as PatchProfile));
 
   @override
   Map<String, dynamic> toJsonSchema() {

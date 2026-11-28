@@ -11,10 +11,11 @@ part of 'cache.dto.dart';
 /// The checks, the converter and the JSON Schema of [PutCacheItem].
 const DtoSchema<PutCacheItem> $PutCacheItemDto = _$PutCacheItemDto();
 
-class _$PutCacheItemDto extends DtoSchema<PutCacheItem> {
+class _$PutCacheItemDto extends DtoSchema<PutCacheItem>
+    implements JsonObjectWriter {
   const _$PutCacheItemDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => PutCacheItem;
@@ -26,53 +27,58 @@ class _$PutCacheItemDto extends DtoSchema<PutCacheItem> {
   bool get usesRequiredWhen => false;
 
   @override
-  PutCacheItem? convert(Object? input, DtoState s, List<Object> p) {
+  PutCacheItem? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // value: Object?
-    Object? c0;
-    c0 = s.read(input, 'value');
+    Object? value = state.read(input, 'value');
     // ttl: int?
-    Object? c1;
-    c1 = s.integer(s.read(input, 'ttl'), p, 'ttl', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c1 is int) {
-      if (!(c1 > 0)) {
-        s.fail(
-          p,
+    Object? ttl = state.integer(
+      state.read(input, 'ttl'),
+      path,
+      'ttl',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (ttl is int) {
+      if (!(ttl > 0)) {
+        state.fail(
+          path,
           'ttl',
           IssueCodes.greaterThan,
           DefaultMessages.greaterThan,
-          c1,
+          ttl,
           params: const <String, Object?>{'min': 0},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return PutCacheItem(
-      value: c0 is Undefined ? null : c0,
-      ttl: c1 is Undefined ? null : c1 as int?,
+      value: value is Undefined ? null : value,
+      ttl: ttl is Undefined ? null : ttl as int?,
     );
   }
 
   @override
-  PutCacheItem fromMap(Map<String, dynamic> m) {
+  PutCacheItem fromMap(Map<String, dynamic> map) {
     return PutCacheItem(
-      value: m['value'],
-      ttl: m['ttl'] == null ? null : ((m['ttl'] as num).toInt()),
+      value: map['value'],
+      ttl: map['ttl'] == null ? null : ((map['ttl'] as num).toInt()),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(PutCacheItem o) {
-    Object? f0 = o.value;
-    int? f1 = o.ttl;
-    return <String, dynamic>{'value': f0, 'ttl': f1};
+  Map<String, dynamic> toMap(PutCacheItem dto) {
+    return <String, dynamic>{'value': dto.value, 'ttl': dto.ttl};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as PutCacheItem));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -99,10 +105,11 @@ class _$PutCacheItemDto extends DtoSchema<PutCacheItem> {
 /// The checks, the converter and the JSON Schema of [IncrementCache].
 const DtoSchema<IncrementCache> $IncrementCacheDto = _$IncrementCacheDto();
 
-class _$IncrementCacheDto extends DtoSchema<IncrementCache> {
+class _$IncrementCacheDto extends DtoSchema<IncrementCache>
+    implements JsonObjectWriter {
   const _$IncrementCacheDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => IncrementCache;
@@ -114,33 +121,35 @@ class _$IncrementCacheDto extends DtoSchema<IncrementCache> {
   bool get usesRequiredWhen => false;
 
   @override
-  IncrementCache? convert(Object? input, DtoState s, List<Object> p) {
+  IncrementCache? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // by: int
-    Object? c0;
-    c0 = s.integer(s.read(input, 'by'), p, 'by', _m);
-    if (c0 == null) s.required(p, 'by', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
-    return IncrementCache(by: c0 is Undefined ? 1 : c0 as int);
+    Object? by = state.integer(state.read(input, 'by'), path, 'by', _messages);
+    if (by == null) state.required(path, 'by', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
+    return IncrementCache(by: by is Undefined ? 1 : by as int);
   }
 
   @override
-  IncrementCache fromMap(Map<String, dynamic> m) {
+  IncrementCache fromMap(Map<String, dynamic> map) {
     return IncrementCache(
-      by: m.containsKey('by') ? (m['by'] as num).toInt() : 1,
+      by: map.containsKey('by') ? (map['by'] as num).toInt() : 1,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(IncrementCache o) {
-    int f0 = o.by;
-    return <String, dynamic>{'by': f0};
+  Map<String, dynamic> toMap(IncrementCache dto) {
+    return <String, dynamic>{'by': dto.by};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as IncrementCache));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -157,10 +166,10 @@ class _$IncrementCacheDto extends DtoSchema<IncrementCache> {
 /// The checks, the converter and the JSON Schema of [TakeLock].
 const DtoSchema<TakeLock> $TakeLockDto = _$TakeLockDto();
 
-class _$TakeLockDto extends DtoSchema<TakeLock> {
+class _$TakeLockDto extends DtoSchema<TakeLock> implements JsonObjectWriter {
   const _$TakeLockDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => TakeLock;
@@ -172,44 +181,53 @@ class _$TakeLockDto extends DtoSchema<TakeLock> {
   bool get usesRequiredWhen => false;
 
   @override
-  TakeLock? convert(Object? input, DtoState s, List<Object> p) {
+  TakeLock? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // ttl: int
-    Object? c0;
-    c0 = s.integer(s.read(input, 'ttl'), p, 'ttl', _m);
-    if (c0 == null) s.required(p, 'ttl', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is int) {
-      if (!(c0 > 0)) {
-        s.fail(
-          p,
+    Object? ttl = state.integer(
+      state.read(input, 'ttl'),
+      path,
+      'ttl',
+      _messages,
+    );
+    if (ttl == null) state.required(path, 'ttl', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (ttl is int) {
+      if (!(ttl > 0)) {
+        state.fail(
+          path,
           'ttl',
           IssueCodes.greaterThan,
           DefaultMessages.greaterThan,
-          c0,
+          ttl,
           params: const <String, Object?>{'min': 0},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return TakeLock(ttl: c0 is Undefined ? 30 : c0 as int);
+    if (state.issues.length != issuesBefore) return null;
+    return TakeLock(ttl: ttl is Undefined ? 30 : ttl as int);
   }
 
   @override
-  TakeLock fromMap(Map<String, dynamic> m) {
-    return TakeLock(ttl: m.containsKey('ttl') ? (m['ttl'] as num).toInt() : 30);
+  TakeLock fromMap(Map<String, dynamic> map) {
+    return TakeLock(
+      ttl: map.containsKey('ttl') ? (map['ttl'] as num).toInt() : 30,
+    );
   }
 
   @override
-  Map<String, dynamic> toMap(TakeLock o) {
-    int f0 = o.ttl;
-    return <String, dynamic>{'ttl': f0};
+  Map<String, dynamic> toMap(TakeLock dto) {
+    return <String, dynamic>{'ttl': dto.ttl};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as TakeLock));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -231,10 +249,11 @@ class _$TakeLockDto extends DtoSchema<TakeLock> {
 /// The checks, the converter and the JSON Schema of [ReleaseLock].
 const DtoSchema<ReleaseLock> $ReleaseLockDto = _$ReleaseLockDto();
 
-class _$ReleaseLockDto extends DtoSchema<ReleaseLock> {
+class _$ReleaseLockDto extends DtoSchema<ReleaseLock>
+    implements JsonObjectWriter {
   const _$ReleaseLockDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => ReleaseLock;
@@ -246,31 +265,39 @@ class _$ReleaseLockDto extends DtoSchema<ReleaseLock> {
   bool get usesRequiredWhen => false;
 
   @override
-  ReleaseLock? convert(Object? input, DtoState s, List<Object> p) {
+  ReleaseLock? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // owner: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'owner'), p, 'owner', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'owner', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
-    return ReleaseLock(owner: c0 as String);
+    Object? owner = state.string(
+      state.read(input, 'owner'),
+      path,
+      'owner',
+      _messages,
+    );
+    if (owner == null || owner is Undefined)
+      state.required(path, 'owner', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
+    return ReleaseLock(owner: owner as String);
   }
 
   @override
-  ReleaseLock fromMap(Map<String, dynamic> m) {
-    return ReleaseLock(owner: m['owner'] as String);
+  ReleaseLock fromMap(Map<String, dynamic> map) {
+    return ReleaseLock(owner: map['owner'] as String);
   }
 
   @override
-  Map<String, dynamic> toMap(ReleaseLock o) {
-    String f0 = o.owner;
-    return <String, dynamic>{'owner': f0};
+  Map<String, dynamic> toMap(ReleaseLock dto) {
+    return <String, dynamic>{'owner': dto.owner};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as ReleaseLock));
 
   @override
   Map<String, dynamic> toJsonSchema() {

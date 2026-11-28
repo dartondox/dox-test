@@ -11,10 +11,11 @@ part of 'badge.dto.dart';
 /// The checks, the converter and the JSON Schema of [CreateBadge].
 const DtoSchema<CreateBadge> $CreateBadgeDto = _$CreateBadgeDto();
 
-class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
+class _$CreateBadgeDto extends DtoSchema<CreateBadge>
+    implements JsonObjectWriter {
   const _$CreateBadgeDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => CreateBadge;
@@ -29,181 +30,217 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
   bool get isAsync => true;
 
   @override
-  CreateBadge? convert(Object? input, DtoState s, List<Object> p) {
+  CreateBadge? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // name: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'name'), p, 'name', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'name', _m);
+    Object? name = state.string(
+      state.read(input, 'name'),
+      path,
+      'name',
+      _messages,
+      trim: true,
+    );
+    if (name == null || name is Undefined)
+      state.required(path, 'name', _messages);
     // code: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'code'), p, 'code', _m);
+    Object? code = state.string(
+      state.read(input, 'code'),
+      path,
+      'code',
+      _messages,
+    );
     // meta: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'meta'), p, 'meta', _m);
+    Object? meta = state.string(
+      state.read(input, 'meta'),
+      path,
+      'meta',
+      _messages,
+    );
     // score: int
-    Object? c3;
-    c3 = s.integer(s.read(input, 'score'), p, 'score', _m);
-    if (c3 == null) s.required(p, 'score', _m);
+    Object? score = state.integer(
+      state.read(input, 'score'),
+      path,
+      'score',
+      _messages,
+    );
+    if (score == null) state.required(path, 'score', _messages);
     // aliases: List<String>
-    Object? c4;
-    c4 = s.list(s.read(input, 'aliases'), p, 'aliases', _m);
-    if (c4 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'aliases'];
+    Object? aliases = state.list(
+      state.read(input, 'aliases'),
+      path,
+      'aliases',
+      _messages,
+    );
+    if (aliases is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'aliases'];
       List<String> o0 = <String>[];
-      for (int i0 = 0; i0 < c4.length; i0++) {
-        Object? x0;
-        x0 = s.string(c4[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < aliases.length; i0++) {
+        Object? x0 = state.string(aliases[i0], q0, i0, _messages);
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as String);
         }
       }
-      c4 = s.issues.length != b0 ? invalid : o0;
+      aliases = state.issues.length != b0 ? invalid : o0;
     }
-    if (c4 == null) s.required(p, 'aliases', _m);
+    if (aliases == null) state.required(path, 'aliases', _messages);
     // postIds: List<int>
-    Object? c5;
-    c5 = s.list(s.read(input, 'post_ids'), p, 'post_ids', _m);
-    if (c5 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'post_ids'];
+    Object? postIds = state.list(
+      state.read(input, 'post_ids'),
+      path,
+      'post_ids',
+      _messages,
+    );
+    if (postIds is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'post_ids'];
       List<int> o0 = <int>[];
-      for (int i0 = 0; i0 < c5.length; i0++) {
-        Object? x0;
-        x0 = s.integer(c5[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < postIds.length; i0++) {
+        Object? x0 = state.integer(postIds[i0], q0, i0, _messages);
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as int);
         }
       }
-      c5 = s.issues.length != b0 ? invalid : o0;
+      postIds = state.issues.length != b0 ? invalid : o0;
     }
-    if (c5 == null) s.required(p, 'post_ids', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 2 && c0.runes.length <= 50)) {
-        s.fail(
-          p,
+    if (postIds == null) state.required(path, 'post_ids', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (name is String) {
+      if (!(name.runes.length >= 2 && name.runes.length <= 50)) {
+        state.fail(
+          path,
           'name',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          name,
           params: const <String, Object?>{'min': 2, 'max': 50},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is String) {
-      if (!(const Digits(4).check(c1, s.context(p, 'code', c1)))) {
-        s.failRule(const Digits(4), p, 'code', c1, _m);
+    if (code is String) {
+      if (!(const Digits(4).check(code, state.context(path, 'code', code)))) {
+        state.failRule(const Digits(4), path, 'code', code, _messages);
       }
     }
-    if (c2 is String) {
-      if (!(const Json().check(c2, s.context(p, 'meta', c2)))) {
-        s.failRule(const Json(), p, 'meta', c2, _m);
+    if (meta is String) {
+      if (!(const Json().check(meta, state.context(path, 'meta', meta)))) {
+        state.failRule(const Json(), path, 'meta', meta, _messages);
       }
     }
-    if (c3 is int) {
-      if (!(c3 >= 0 && c3 <= 100)) {
-        s.fail(
-          p,
+    if (score is int) {
+      if (!(score >= 0 && score <= 100)) {
+        state.fail(
+          path,
           'score',
           IssueCodes.between,
           DefaultMessages.between,
-          c3,
+          score,
           params: const <String, Object?>{'min': 0, 'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c4 is List<String>) {
-      if (!(c4.length <= 5)) {
-        s.fail(
-          p,
+    if (aliases is List<String>) {
+      if (!(aliases.length <= 5)) {
+        state.fail(
+          path,
           'aliases',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c4,
+          aliases,
           params: const <String, Object?>{'max': 5},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c5 is List<int>) {
-      if (!(c5.length <= 10)) {
-        s.fail(
-          p,
+    if (postIds is List<int>) {
+      if (!(postIds.length <= 10)) {
+        state.fail(
+          path,
           'post_ids',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c5,
+          postIds,
           params: const <String, Object?>{'max': 10},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return CreateBadge(
-      name: c0 as String,
-      code: c1 is Undefined ? null : c1 as String?,
-      meta: c2 is Undefined ? null : c2 as String?,
-      score: c3 is Undefined ? 0 : c3 as int,
-      aliases: c4 is Undefined ? const <String>[] : c4 as List<String>,
-      postIds: c5 is Undefined ? const <int>[] : c5 as List<int>,
+      name: name as String,
+      code: code is Undefined ? null : code as String?,
+      meta: meta is Undefined ? null : meta as String?,
+      score: score is Undefined ? 0 : score as int,
+      aliases: aliases is Undefined
+          ? const <String>[]
+          : aliases as List<String>,
+      postIds: postIds is Undefined ? const <int>[] : postIds as List<int>,
     );
   }
 
   @override
-  Future<void> checkAsync(CreateBadge o, DtoState s, List<Object> p) async {
+  Future<void> checkAsync(
+    CreateBadge dto,
+    DtoState state,
+    List<Object> path,
+  ) async {
     {
-      String f = o.name;
-      await s.asyncRule(
+      String value = dto.name;
+      await state.asyncRule(
         const Unique('badges', column: 'name'),
-        f,
-        p,
+        value,
+        path,
         'name',
-        _m,
+        _messages,
       );
     }
     {
-      List<String> f = o.aliases;
-      await s.asyncItems(
+      List<String> value = dto.aliases;
+      await state.asyncItems(
         const Unique('badges', column: 'name'),
-        f,
-        p,
+        value,
+        path,
         'aliases',
-        _m,
+        _messages,
       );
     }
     {
-      List<int> f = o.postIds;
-      await s.asyncItems(const Exists('posts'), f, p, 'post_ids', _m);
+      List<int> value = dto.postIds;
+      await state.asyncItems(
+        const Exists('posts'),
+        value,
+        path,
+        'post_ids',
+        _messages,
+      );
     }
   }
 
   @override
-  CreateBadge fromMap(Map<String, dynamic> m) {
+  CreateBadge fromMap(Map<String, dynamic> map) {
     return CreateBadge(
-      name: m['name'] as String,
-      code: m['code'] == null ? null : (m['code'] as String),
-      meta: m['meta'] == null ? null : (m['meta'] as String),
-      score: m.containsKey('score') ? (m['score'] as num).toInt() : 0,
-      aliases: m.containsKey('aliases')
+      name: map['name'] as String,
+      code: map['code'] == null ? null : (map['code'] as String),
+      meta: map['meta'] == null ? null : (map['meta'] as String),
+      score: map.containsKey('score') ? (map['score'] as num).toInt() : 0,
+      aliases: map.containsKey('aliases')
           ? <String>[
-              for (Object? x0 in m['aliases'] as List<dynamic>) x0 as String,
+              for (Object? x0 in map['aliases'] as List<dynamic>) x0 as String,
             ]
           : const <String>[],
-      postIds: m.containsKey('post_ids')
+      postIds: map.containsKey('post_ids')
           ? <int>[
-              for (Object? x0 in m['post_ids'] as List<dynamic>)
+              for (Object? x0 in map['post_ids'] as List<dynamic>)
                 (x0 as num).toInt(),
             ]
           : const <int>[],
@@ -211,26 +248,24 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
   }
 
   @override
-  Map<String, dynamic> toMap(CreateBadge o) {
-    String f0 = o.name;
-    String? f1 = o.code;
-    String? f2 = o.meta;
-    int f3 = o.score;
-    List<String> f4 = o.aliases;
-    List<int> f5 = o.postIds;
+  Map<String, dynamic> toMap(CreateBadge dto) {
     return <String, dynamic>{
-      'name': f0,
-      'code': f1,
-      'meta': f2,
-      'score': f3,
-      'aliases': f4,
-      'post_ids': f5,
+      'name': dto.name,
+      'code': dto.code,
+      'meta': dto.meta,
+      'score': dto.score,
+      'aliases': dto.aliases,
+      'post_ids': dto.postIds,
     };
   }
 
   @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as CreateBadge));
+
+  @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'CreateBadge',
       'properties': <String, dynamic>{
@@ -271,39 +306,40 @@ class _$CreateBadgeDto extends DtoSchema<CreateBadge> {
       },
       'required': <dynamic>['name'],
     };
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'name',
     ], const Unique('badges', column: 'name').toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'code',
     ], const Digits(4).toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'meta',
     ], const Json().toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'aliases',
       'items',
     ], const Unique('badges', column: 'name').toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'post_ids',
       'items',
     ], const Exists('posts').toJsonSchema());
-    return j;
+    return schema;
   }
 }
 
 /// The checks, the converter and the JSON Schema of [ListBadges].
 const DtoSchema<ListBadges> $ListBadgesDto = _$ListBadgesDto();
 
-class _$ListBadgesDto extends DtoSchema<ListBadges> {
+class _$ListBadgesDto extends DtoSchema<ListBadges>
+    implements JsonObjectWriter {
   const _$ListBadgesDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => ListBadges;
@@ -315,74 +351,93 @@ class _$ListBadgesDto extends DtoSchema<ListBadges> {
   bool get usesRequiredWhen => false;
 
   @override
-  ListBadges? convert(Object? input, DtoState s, List<Object> p) {
+  ListBadges? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // cursor: String?
-    Object? c0;
-    c0 = s.string(s.read(input, 'cursor'), p, 'cursor', _m);
+    Object? cursor = state.string(
+      state.read(input, 'cursor'),
+      path,
+      'cursor',
+      _messages,
+    );
     // page: int
-    Object? c1;
-    c1 = s.integer(s.read(input, 'page'), p, 'page', _m);
-    if (c1 == null) s.required(p, 'page', _m);
+    Object? page = state.integer(
+      state.read(input, 'page'),
+      path,
+      'page',
+      _messages,
+    );
+    if (page == null) state.required(path, 'page', _messages);
     // perPage: int
-    Object? c2;
-    c2 = s.integer(s.read(input, 'per_page'), p, 'per_page', _m);
-    if (c2 == null) s.required(p, 'per_page', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c1 is int) {
-      if (!(c1 >= 1)) {
-        s.fail(
-          p,
+    Object? perPage = state.integer(
+      state.read(input, 'per_page'),
+      path,
+      'per_page',
+      _messages,
+    );
+    if (perPage == null) state.required(path, 'per_page', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (page is int) {
+      if (!(page >= 1)) {
+        state.fail(
+          path,
           'page',
           IssueCodes.min,
           DefaultMessages.min,
-          c1,
+          page,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c2 is int) {
-      if (!(c2 >= 1 && c2 <= 50)) {
-        s.fail(
-          p,
+    if (perPage is int) {
+      if (!(perPage >= 1 && perPage <= 50)) {
+        state.fail(
+          path,
           'per_page',
           IssueCodes.between,
           DefaultMessages.between,
-          c2,
+          perPage,
           params: const <String, Object?>{'min': 1, 'max': 50},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return ListBadges(
-      cursor: c0 is Undefined ? null : c0 as String?,
-      page: c1 is Undefined ? 1 : c1 as int,
-      perPage: c2 is Undefined ? 2 : c2 as int,
+      cursor: cursor is Undefined ? null : cursor as String?,
+      page: page is Undefined ? 1 : page as int,
+      perPage: perPage is Undefined ? 2 : perPage as int,
     );
   }
 
   @override
-  ListBadges fromMap(Map<String, dynamic> m) {
+  ListBadges fromMap(Map<String, dynamic> map) {
     return ListBadges(
-      cursor: m['cursor'] == null ? null : (m['cursor'] as String),
-      page: m.containsKey('page') ? (m['page'] as num).toInt() : 1,
-      perPage: m.containsKey('per_page') ? (m['per_page'] as num).toInt() : 2,
+      cursor: map['cursor'] == null ? null : (map['cursor'] as String),
+      page: map.containsKey('page') ? (map['page'] as num).toInt() : 1,
+      perPage: map.containsKey('per_page')
+          ? (map['per_page'] as num).toInt()
+          : 2,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(ListBadges o) {
-    String? f0 = o.cursor;
-    int f1 = o.page;
-    int f2 = o.perPage;
-    return <String, dynamic>{'cursor': f0, 'page': f1, 'per_page': f2};
+  Map<String, dynamic> toMap(ListBadges dto) {
+    return <String, dynamic>{
+      'cursor': dto.cursor,
+      'page': dto.page,
+      'per_page': dto.perPage,
+    };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as ListBadges));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -414,10 +469,11 @@ class _$ListBadgesDto extends DtoSchema<ListBadges> {
 /// The checks, the converter and the JSON Schema of [SyncBadgePosts].
 const DtoSchema<SyncBadgePosts> $SyncBadgePostsDto = _$SyncBadgePostsDto();
 
-class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
+class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts>
+    implements JsonObjectWriter {
   const _$SyncBadgePostsDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => SyncBadgePosts;
@@ -432,106 +488,133 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
   bool get isAsync => true;
 
   @override
-  SyncBadgePosts? convert(Object? input, DtoState s, List<Object> p) {
+  SyncBadgePosts? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // postIds: List<int>
-    Object? c0;
-    c0 = s.list(s.read(input, 'post_ids'), p, 'post_ids', _m);
-    if (c0 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'post_ids'];
+    Object? postIds = state.list(
+      state.read(input, 'post_ids'),
+      path,
+      'post_ids',
+      _messages,
+    );
+    if (postIds is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'post_ids'];
       List<int> o0 = <int>[];
-      for (int i0 = 0; i0 < c0.length; i0++) {
-        Object? x0;
-        x0 = s.integer(c0[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < postIds.length; i0++) {
+        Object? x0 = state.integer(postIds[i0], q0, i0, _messages);
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as int);
         }
       }
-      c0 = s.issues.length != b0 ? invalid : o0;
+      postIds = state.issues.length != b0 ? invalid : o0;
     }
-    if (c0 == null || c0 is Undefined || s.emptyList(c0)) {
-      s.required(p, 'post_ids', _m);
-      c0 = invalid;
+    if (postIds == null || postIds is Undefined || state.emptyList(postIds)) {
+      state.required(path, 'post_ids', _messages);
+      postIds = invalid;
     }
     // note: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'note'), p, 'note', _m);
+    Object? note = state.string(
+      state.read(input, 'note'),
+      path,
+      'note',
+      _messages,
+    );
     // detaching: bool
-    Object? c2;
-    c2 = s.boolean(s.read(input, 'detaching'), p, 'detaching', _m);
-    if (c2 == null) s.required(p, 'detaching', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is List<int>) {
-      if (!(c0.length <= 10)) {
-        s.fail(
-          p,
+    Object? detaching = state.boolean(
+      state.read(input, 'detaching'),
+      path,
+      'detaching',
+      _messages,
+    );
+    if (detaching == null) state.required(path, 'detaching', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (postIds is List<int>) {
+      if (!(postIds.length <= 10)) {
+        state.fail(
+          path,
           'post_ids',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c0,
+          postIds,
           params: const <String, Object?>{'max': 10},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is String) {
-      if (!(c1.runes.length <= 50)) {
-        s.fail(
-          p,
+    if (note is String) {
+      if (!(note.runes.length <= 50)) {
+        state.fail(
+          path,
           'note',
           IssueCodes.maxLength,
           DefaultMessages.maxLength,
-          c1,
+          note,
           params: const <String, Object?>{'max': 50},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return SyncBadgePosts(
-      postIds: c0 as List<int>,
-      note: c1 is Undefined ? null : c1 as String?,
-      detaching: c2 is Undefined ? true : c2 as bool,
+      postIds: postIds as List<int>,
+      note: note is Undefined ? null : note as String?,
+      detaching: detaching is Undefined ? true : detaching as bool,
     );
   }
 
   @override
-  Future<void> checkAsync(SyncBadgePosts o, DtoState s, List<Object> p) async {
+  Future<void> checkAsync(
+    SyncBadgePosts dto,
+    DtoState state,
+    List<Object> path,
+  ) async {
     {
-      List<int> f = o.postIds;
-      await s.asyncItems(const Exists('posts'), f, p, 'post_ids', _m);
+      List<int> value = dto.postIds;
+      await state.asyncItems(
+        const Exists('posts'),
+        value,
+        path,
+        'post_ids',
+        _messages,
+      );
     }
   }
 
   @override
-  SyncBadgePosts fromMap(Map<String, dynamic> m) {
+  SyncBadgePosts fromMap(Map<String, dynamic> map) {
     return SyncBadgePosts(
       postIds: <int>[
-        for (Object? x0 in m['post_ids'] as List<dynamic>) (x0 as num).toInt(),
+        for (Object? x0 in map['post_ids'] as List<dynamic>)
+          (x0 as num).toInt(),
       ],
-      note: m['note'] == null ? null : (m['note'] as String),
-      detaching: m.containsKey('detaching') ? m['detaching'] as bool : true,
+      note: map['note'] == null ? null : (map['note'] as String),
+      detaching: map.containsKey('detaching') ? map['detaching'] as bool : true,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(SyncBadgePosts o) {
-    List<int> f0 = o.postIds;
-    String? f1 = o.note;
-    bool f2 = o.detaching;
-    return <String, dynamic>{'post_ids': f0, 'note': f1, 'detaching': f2};
+  Map<String, dynamic> toMap(SyncBadgePosts dto) {
+    return <String, dynamic>{
+      'post_ids': dto.postIds,
+      'note': dto.note,
+      'detaching': dto.detaching,
+    };
   }
 
   @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as SyncBadgePosts));
+
+  @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'SyncBadgePosts',
       'properties': <String, dynamic>{
@@ -553,22 +636,23 @@ class _$SyncBadgePostsDto extends DtoSchema<SyncBadgePosts> {
       },
       'required': <dynamic>['post_ids'],
     };
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'post_ids',
       'items',
     ], const Exists('posts').toJsonSchema());
-    return j;
+    return schema;
   }
 }
 
 /// The checks, the converter and the JSON Schema of [AddReaction].
 const DtoSchema<AddReaction> $AddReactionDto = _$AddReactionDto();
 
-class _$AddReactionDto extends DtoSchema<AddReaction> {
+class _$AddReactionDto extends DtoSchema<AddReaction>
+    implements JsonObjectWriter {
   const _$AddReactionDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => AddReaction;
@@ -580,44 +664,53 @@ class _$AddReactionDto extends DtoSchema<AddReaction> {
   bool get usesRequiredWhen => false;
 
   @override
-  AddReaction? convert(Object? input, DtoState s, List<Object> p) {
+  AddReaction? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // emoji: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'emoji'), p, 'emoji', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'emoji', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 1 && c0.runes.length <= 20)) {
-        s.fail(
-          p,
+    Object? emoji = state.string(
+      state.read(input, 'emoji'),
+      path,
+      'emoji',
+      _messages,
+      trim: true,
+    );
+    if (emoji == null || emoji is Undefined)
+      state.required(path, 'emoji', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (emoji is String) {
+      if (!(emoji.runes.length >= 1 && emoji.runes.length <= 20)) {
+        state.fail(
+          path,
           'emoji',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          emoji,
           params: const <String, Object?>{'min': 1, 'max': 20},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return AddReaction(emoji: c0 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return AddReaction(emoji: emoji as String);
   }
 
   @override
-  AddReaction fromMap(Map<String, dynamic> m) {
-    return AddReaction(emoji: m['emoji'] as String);
+  AddReaction fromMap(Map<String, dynamic> map) {
+    return AddReaction(emoji: map['emoji'] as String);
   }
 
   @override
-  Map<String, dynamic> toMap(AddReaction o) {
-    String f0 = o.emoji;
-    return <String, dynamic>{'emoji': f0};
+  Map<String, dynamic> toMap(AddReaction dto) {
+    return <String, dynamic>{'emoji': dto.emoji};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as AddReaction));
 
   @override
   Map<String, dynamic> toJsonSchema() {

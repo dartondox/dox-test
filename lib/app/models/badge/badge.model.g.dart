@@ -8,7 +8,9 @@ part of 'badge.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class BadgeGenerator extends Model<Badge> with SoftDeletes<Badge> {
+class BadgeGenerator extends Model<Badge>
+    with SoftDeletes<Badge>
+    implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -225,5 +227,60 @@ class BadgeGenerator extends Model<Badge> with SoftDeletes<Badge> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Badge) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Badge instance = this as Badge;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('code')) {
+      w.key('code');
+      w.string(instance.code);
+    }
+    if (all || !hide.contains('meta')) {
+      w.key('meta');
+      w.value(instance.meta);
+    }
+    if (all || !hide.contains('score')) {
+      w.key('score');
+      w.integer(instance.score);
+    }
+    if (all || !hide.contains('deleted_at')) {
+      w.key('deleted_at');
+      w.dateTime(instance.deletedAt);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('posts') && (all || !hide.contains('posts'))) {
+      w.key('posts');
+      w.value(instance.posts);
+    }
+    if (preload.contains('reactions') && (all || !hide.contains('reactions'))) {
+      w.key('reactions');
+      w.value(instance.reactions);
+    }
+    w.endObject();
   }
 }

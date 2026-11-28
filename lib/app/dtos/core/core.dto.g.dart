@@ -11,10 +11,11 @@ part of 'core.dto.dart';
 /// The checks, the converter and the JSON Schema of [CreateToken].
 const DtoSchema<CreateToken> $CreateTokenDto = _$CreateTokenDto();
 
-class _$CreateTokenDto extends DtoSchema<CreateToken> {
+class _$CreateTokenDto extends DtoSchema<CreateToken>
+    implements JsonObjectWriter {
   const _$CreateTokenDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => CreateToken;
@@ -26,85 +27,101 @@ class _$CreateTokenDto extends DtoSchema<CreateToken> {
   bool get usesRequiredWhen => false;
 
   @override
-  CreateToken? convert(Object? input, DtoState s, List<Object> p) {
+  CreateToken? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // name: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'name'), p, 'name', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'name', _m);
+    Object? name = state.string(
+      state.read(input, 'name'),
+      path,
+      'name',
+      _messages,
+      trim: true,
+    );
+    if (name == null || name is Undefined)
+      state.required(path, 'name', _messages);
     // abilities: List<String>
-    Object? c1;
-    c1 = s.list(s.read(input, 'abilities'), p, 'abilities', _m);
-    if (c1 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'abilities'];
+    Object? abilities = state.list(
+      state.read(input, 'abilities'),
+      path,
+      'abilities',
+      _messages,
+    );
+    if (abilities is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'abilities'];
       List<String> o0 = <String>[];
-      for (int i0 = 0; i0 < c1.length; i0++) {
-        Object? x0;
-        x0 = s.string(c1[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < abilities.length; i0++) {
+        Object? x0 = state.string(abilities[i0], q0, i0, _messages);
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as String);
         }
       }
-      c1 = s.issues.length != b0 ? invalid : o0;
+      abilities = state.issues.length != b0 ? invalid : o0;
     }
-    if (c1 == null || c1 is Undefined || s.emptyList(c1)) {
-      s.required(p, 'abilities', _m);
-      c1 = invalid;
+    if (abilities == null ||
+        abilities is Undefined ||
+        state.emptyList(abilities)) {
+      state.required(path, 'abilities', _messages);
+      abilities = invalid;
     }
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
-        s.fail(
-          p,
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (name is String) {
+      if (!(name.runes.length >= 2 && name.runes.length <= 100)) {
+        state.fail(
+          path,
           'name',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          name,
           params: const <String, Object?>{'min': 2, 'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is List<String>) {
-      if (!(c1.length >= 1)) {
-        s.fail(
-          p,
+    if (abilities is List<String>) {
+      if (!(abilities.length >= 1)) {
+        state.fail(
+          path,
           'abilities',
           IssueCodes.minItems,
           DefaultMessages.minItems,
-          c1,
+          abilities,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return CreateToken(name: c0 as String, abilities: c1 as List<String>);
+    if (state.issues.length != issuesBefore) return null;
+    return CreateToken(
+      name: name as String,
+      abilities: abilities as List<String>,
+    );
   }
 
   @override
-  CreateToken fromMap(Map<String, dynamic> m) {
+  CreateToken fromMap(Map<String, dynamic> map) {
     return CreateToken(
-      name: m['name'] as String,
+      name: map['name'] as String,
       abilities: <String>[
-        for (Object? x0 in m['abilities'] as List<dynamic>) x0 as String,
+        for (Object? x0 in map['abilities'] as List<dynamic>) x0 as String,
       ],
     );
   }
 
   @override
-  Map<String, dynamic> toMap(CreateToken o) {
-    String f0 = o.name;
-    List<String> f1 = o.abilities;
-    return <String, dynamic>{'name': f0, 'abilities': f1};
+  Map<String, dynamic> toMap(CreateToken dto) {
+    return <String, dynamic>{'name': dto.name, 'abilities': dto.abilities};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as CreateToken));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -131,10 +148,11 @@ class _$CreateTokenDto extends DtoSchema<CreateToken> {
 /// The checks, the converter and the JSON Schema of [SaveContact].
 const DtoSchema<SaveContact> $SaveContactDto = _$SaveContactDto();
 
-class _$SaveContactDto extends DtoSchema<SaveContact> {
+class _$SaveContactDto extends DtoSchema<SaveContact>
+    implements JsonObjectWriter {
   const _$SaveContactDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => SaveContact;
@@ -143,91 +161,108 @@ class _$SaveContactDto extends DtoSchema<SaveContact> {
   String get name => 'SaveContact';
 
   @override
-  SaveContact? convert(Object? input, DtoState s, List<Object> p) {
+  SaveContact? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // accountType: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'account_type'), p, 'account_type', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'account_type', _m);
+    Object? accountType = state.string(
+      state.read(input, 'account_type'),
+      path,
+      'account_type',
+      _messages,
+    );
+    if (accountType == null || accountType is Undefined)
+      state.required(path, 'account_type', _messages);
     // companyName: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'company_name'), p, 'company_name', _m);
-    // phone: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'phone'), p, 'phone', _m);
-    // countryCode: String?
-    Object? c3;
-    c3 = s.string(s.read(input, 'country_code'), p, 'country_code', _m);
-    s.requiredWhen(
-      const RequiredIf('account_type', 'company'),
-      c1,
-      input,
-      p,
+    Object? companyName = state.string(
+      state.read(input, 'company_name'),
+      path,
       'company_name',
-      _m,
+      _messages,
     );
-    s.requiredWhen(
-      const RequiredWith(<String>['phone']),
-      c3,
-      input,
-      p,
+    // phone: String?
+    Object? phone = state.string(
+      state.read(input, 'phone'),
+      path,
+      'phone',
+      _messages,
+    );
+    // countryCode: String?
+    Object? countryCode = state.string(
+      state.read(input, 'country_code'),
+      path,
       'country_code',
-      _m,
+      _messages,
     );
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(const <String>{'person', 'company'}.contains(c0))) {
-        s.fail(
-          p,
+    state.requiredWhen(
+      const RequiredIf('account_type', 'company'),
+      companyName,
+      input,
+      path,
+      'company_name',
+      _messages,
+    );
+    state.requiredWhen(
+      const RequiredWith(<String>['phone']),
+      countryCode,
+      input,
+      path,
+      'country_code',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (accountType is String) {
+      if (!(const <String>{'person', 'company'}.contains(accountType))) {
+        state.fail(
+          path,
           'account_type',
           IssueCodes.inList,
           DefaultMessages.inList,
-          c0,
+          accountType,
           params: const <String, Object?>{'values': 'person, and company'},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return SaveContact(
-      accountType: c0 as String,
-      companyName: c1 is Undefined ? null : c1 as String?,
-      phone: c2 is Undefined ? null : c2 as String?,
-      countryCode: c3 is Undefined ? null : c3 as String?,
+      accountType: accountType as String,
+      companyName: companyName is Undefined ? null : companyName as String?,
+      phone: phone is Undefined ? null : phone as String?,
+      countryCode: countryCode is Undefined ? null : countryCode as String?,
     );
   }
 
   @override
-  SaveContact fromMap(Map<String, dynamic> m) {
+  SaveContact fromMap(Map<String, dynamic> map) {
     return SaveContact(
-      accountType: m['account_type'] as String,
-      companyName: m['company_name'] == null
+      accountType: map['account_type'] as String,
+      companyName: map['company_name'] == null
           ? null
-          : (m['company_name'] as String),
-      phone: m['phone'] == null ? null : (m['phone'] as String),
-      countryCode: m['country_code'] == null
+          : (map['company_name'] as String),
+      phone: map['phone'] == null ? null : (map['phone'] as String),
+      countryCode: map['country_code'] == null
           ? null
-          : (m['country_code'] as String),
+          : (map['country_code'] as String),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(SaveContact o) {
-    String f0 = o.accountType;
-    String? f1 = o.companyName;
-    String? f2 = o.phone;
-    String? f3 = o.countryCode;
+  Map<String, dynamic> toMap(SaveContact dto) {
     return <String, dynamic>{
-      'account_type': f0,
-      'company_name': f1,
-      'phone': f2,
-      'country_code': f3,
+      'account_type': dto.accountType,
+      'company_name': dto.companyName,
+      'phone': dto.phone,
+      'country_code': dto.countryCode,
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as SaveContact));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -257,10 +292,11 @@ class _$SaveContactDto extends DtoSchema<SaveContact> {
 /// The checks, the converter and the JSON Schema of [UploadBanner].
 const DtoSchema<UploadBanner> $UploadBannerDto = _$UploadBannerDto();
 
-class _$UploadBannerDto extends DtoSchema<UploadBanner> {
+class _$UploadBannerDto extends DtoSchema<UploadBanner>
+    implements JsonObjectWriter {
   const _$UploadBannerDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => UploadBanner;
@@ -272,63 +308,71 @@ class _$UploadBannerDto extends DtoSchema<UploadBanner> {
   bool get usesRequiredWhen => false;
 
   @override
-  UploadBanner? convert(Object? input, DtoState s, List<Object> p) {
+  UploadBanner? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // banner: RequestFile
-    Object? c0;
-    c0 = s.file(s.read(input, 'banner'), p, 'banner', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'banner', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is RequestFile) {
-      if (!(FileTypes.matchesMimeTypes(c0, const <String>['image/png']))) {
-        s.fail(
-          p,
+    Object? banner = state.file(
+      state.read(input, 'banner'),
+      path,
+      'banner',
+      _messages,
+    );
+    if (banner == null || banner is Undefined)
+      state.required(path, 'banner', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (banner is RequestFile) {
+      if (!(FileTypes.matchesMimeTypes(banner, const <String>['image/png']))) {
+        state.fail(
+          path,
           'banner',
           IssueCodes.mimeTypes,
           DefaultMessages.mimes,
-          c0,
+          banner,
           params: const <String, Object?>{'types': 'image/png'},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c0.length >= 100)) {
-        s.fail(
-          p,
+      } else if (!(banner.length >= 100)) {
+        state.fail(
+          path,
           'banner',
           IssueCodes.minSize,
           DefaultMessages.minSize,
-          c0,
+          banner,
           params: const <String, Object?>{'min': '100B'},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(ImageSize.fits(c0, minWidth: 2, minHeight: 2))) {
-        s.fail(
-          p,
+      } else if (!(ImageSize.fits(banner, minWidth: 2, minHeight: 2))) {
+        state.fail(
+          path,
           'banner',
           IssueCodes.dimensions,
           DefaultMessages.dimensions,
-          c0,
-          messages: _m,
+          banner,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return UploadBanner(banner: c0 as RequestFile);
+    if (state.issues.length != issuesBefore) return null;
+    return UploadBanner(banner: banner as RequestFile);
   }
 
   @override
-  UploadBanner fromMap(Map<String, dynamic> m) {
-    return UploadBanner(banner: m['banner'] as RequestFile);
+  UploadBanner fromMap(Map<String, dynamic> map) {
+    return UploadBanner(banner: map['banner'] as RequestFile);
   }
 
   @override
-  Map<String, dynamic> toMap(UploadBanner o) {
-    RequestFile f0 = o.banner;
-    return <String, dynamic>{'banner': f0};
+  Map<String, dynamic> toMap(UploadBanner dto) {
+    return <String, dynamic>{'banner': dto.banner};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as UploadBanner));
 
   @override
   Map<String, dynamic> toJsonSchema() {

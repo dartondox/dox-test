@@ -8,7 +8,7 @@ part of 'e32y.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class E32yItemGenerator extends Model<E32yItem> {
+class E32yItemGenerator extends Model<E32yItem> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -141,5 +141,39 @@ class E32yItemGenerator extends Model<E32yItem> {
       ..fallback = o.fallback
       ..kind = o.kind;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E32yItem) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E32yItem instance = this as E32yItem;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('title')) {
+      w.key('title');
+      w.string(instance.title);
+    }
+    if (all || !hide.contains('status')) {
+      w.key('status');
+      w.value(_statusCast.set(instance.status));
+    }
+    if (all || !hide.contains('fallback')) {
+      w.key('fallback');
+      w.value(_fallbackCast.set(instance.fallback));
+    }
+    if (all || !hide.contains('kind')) {
+      w.key('kind');
+      w.value(_kindCast.set(instance.kind));
+    }
+    w.endObject();
   }
 }

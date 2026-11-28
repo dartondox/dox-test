@@ -8,7 +8,8 @@ part of 'e2e310.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class Oauth2ClientGenerator extends Model<Oauth2Client> {
+class Oauth2ClientGenerator extends Model<Oauth2Client>
+    implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -128,11 +129,41 @@ class Oauth2ClientGenerator extends Model<Oauth2Client> {
       ..updatedAt = o.updatedAt;
     return true;
   }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Oauth2Client) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Oauth2Client instance = this as Oauth2Client;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    w.endObject();
+  }
 }
 
 // ignore_for_file: always_specify_types
 
-class E2eMemberGenerator extends Model<E2eMember> {
+class E2eMemberGenerator extends Model<E2eMember> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -267,11 +298,45 @@ class E2eMemberGenerator extends Model<E2eMember> {
       ..updatedAt = o.updatedAt;
     return true;
   }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E2eMember) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E2eMember instance = this as E2eMember;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('is_admin')) {
+      w.key('is_admin');
+      w.value(_isAdminCast.set(instance.isAdmin));
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    w.endObject();
+  }
 }
 
 // ignore_for_file: always_specify_types
 
-class E2eShelfGenerator extends Model<E2eShelf> {
+class E2eShelfGenerator extends Model<E2eShelf> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -421,11 +486,46 @@ class E2eShelfGenerator extends Model<E2eShelf> {
       ..updatedAt = o.updatedAt;
     return true;
   }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E2eShelf) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E2eShelf instance = this as E2eShelf;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('books') && (all || !hide.contains('books'))) {
+      w.key('books');
+      w.value(instance.books);
+    }
+    w.endObject();
+  }
 }
 
 // ignore_for_file: always_specify_types
 
-class E2eBookGenerator extends Model<E2eBook> {
+class E2eBookGenerator extends Model<E2eBook> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -567,6 +667,44 @@ class E2eBookGenerator extends Model<E2eBook> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E2eBook) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E2eBook instance = this as E2eBook;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('sku')) {
+      w.key('sku');
+      w.string(instance.sku);
+    }
+    if (all || !hide.contains('title')) {
+      w.key('title');
+      w.string(instance.title);
+    }
+    if (all || !hide.contains('meta')) {
+      w.key('meta');
+      w.value(instance.meta);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    w.endObject();
   }
 }
 

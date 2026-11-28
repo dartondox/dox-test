@@ -11,10 +11,10 @@ part of 'post.dto.dart';
 /// The checks, the converter and the JSON Schema of [ListPosts].
 const DtoSchema<ListPosts> $ListPostsDto = _$ListPostsDto();
 
-class _$ListPostsDto extends DtoSchema<ListPosts> {
+class _$ListPostsDto extends DtoSchema<ListPosts> implements JsonObjectWriter {
   const _$ListPostsDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => ListPosts;
@@ -29,33 +29,47 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
   bool get isAsync => true;
 
   @override
-  ListPosts? convert(Object? input, DtoState s, List<Object> p) {
+  ListPosts? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // page: int
-    Object? c0;
-    c0 = s.integer(s.read(input, 'page'), p, 'page', _m);
-    if (c0 == null) s.required(p, 'page', _m);
+    Object? page = state.integer(
+      state.read(input, 'page'),
+      path,
+      'page',
+      _messages,
+    );
+    if (page == null) state.required(path, 'page', _messages);
     // perPage: int
-    Object? c1;
-    c1 = s.integer(s.read(input, 'per_page'), p, 'per_page', _m);
-    if (c1 == null) s.required(p, 'per_page', _m);
+    Object? perPage = state.integer(
+      state.read(input, 'per_page'),
+      path,
+      'per_page',
+      _messages,
+    );
+    if (perPage == null) state.required(path, 'per_page', _messages);
     // status: List<PostStatus>
-    Object? c2;
-    c2 = s.list(s.read(input, 'status'), p, 'status', _m);
-    if (c2 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'status'];
+    Object? status = state.list(
+      state.read(input, 'status'),
+      path,
+      'status',
+      _messages,
+    );
+    if (status is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'status'];
       List<PostStatus> o0 = <PostStatus>[];
-      for (int i0 = 0; i0 < c2.length; i0++) {
-        Object? x0;
-        x0 = s.enumName(c2[i0], q0, i0, _m, const <String>[
-          'draft',
-          'published',
-        ]);
+      for (int i0 = 0; i0 < status.length; i0++) {
+        Object? x0 = state.enumName(
+          status[i0],
+          q0,
+          i0,
+          _messages,
+          const <String>['draft', 'published'],
+        );
         if (x0 is String) {
           x0 = switch (x0) {
             'draft' => PostStatus.draft,
@@ -63,121 +77,139 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
           };
         }
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as PostStatus);
         }
       }
-      c2 = s.issues.length != b0 ? invalid : o0;
+      status = state.issues.length != b0 ? invalid : o0;
     }
-    if (c2 == null) s.required(p, 'status', _m);
+    if (status == null) state.required(path, 'status', _messages);
     // authorId: int?
-    Object? c3;
-    c3 = s.integer(s.read(input, 'author_id'), p, 'author_id', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is int) {
-      if (!(c0 >= 1)) {
-        s.fail(
-          p,
+    Object? authorId = state.integer(
+      state.read(input, 'author_id'),
+      path,
+      'author_id',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (page is int) {
+      if (!(page >= 1)) {
+        state.fail(
+          path,
           'page',
           IssueCodes.min,
           DefaultMessages.min,
-          c0,
+          page,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is int) {
-      if (!(c1 >= 1)) {
-        s.fail(
-          p,
+    if (perPage is int) {
+      if (!(perPage >= 1)) {
+        state.fail(
+          path,
           'per_page',
           IssueCodes.min,
           DefaultMessages.min,
-          c1,
+          perPage,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c1 <= 100)) {
-        s.fail(
-          p,
+      } else if (!(perPage <= 100)) {
+        state.fail(
+          path,
           'per_page',
           IssueCodes.max,
           DefaultMessages.max,
-          c1,
+          perPage,
           params: const <String, Object?>{'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c2 is List<PostStatus>) {
-      if (!(!DtoChecks.hasDuplicates(c2))) {
-        s.fail(
-          p,
+    if (status is List<PostStatus>) {
+      if (!(!DtoChecks.hasDuplicates(status))) {
+        state.fail(
+          path,
           'status',
           IssueCodes.uniqueItems,
           DefaultMessages.uniqueItems,
-          c2,
-          messages: _m,
+          status,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return ListPosts(
-      page: c0 is Undefined ? 1 : c0 as int,
-      perPage: c1 is Undefined ? AppConstants.defaultPerPage : c1 as int,
-      status: c2 is Undefined ? const <PostStatus>[] : c2 as List<PostStatus>,
-      authorId: c3 is Undefined ? null : c3 as int?,
+      page: page is Undefined ? 1 : page as int,
+      perPage: perPage is Undefined
+          ? AppConstants.defaultPerPage
+          : perPage as int,
+      status: status is Undefined
+          ? const <PostStatus>[]
+          : status as List<PostStatus>,
+      authorId: authorId is Undefined ? null : authorId as int?,
     );
   }
 
   @override
-  Future<void> checkAsync(ListPosts o, DtoState s, List<Object> p) async {
+  Future<void> checkAsync(
+    ListPosts dto,
+    DtoState state,
+    List<Object> path,
+  ) async {
     {
-      int? f = o.authorId;
-      if (f != null) {
-        await s.asyncRule(const Exists('users'), f, p, 'author_id', _m);
+      int? value = dto.authorId;
+      if (value != null) {
+        await state.asyncRule(
+          const Exists('users'),
+          value,
+          path,
+          'author_id',
+          _messages,
+        );
       }
     }
   }
 
   @override
-  ListPosts fromMap(Map<String, dynamic> m) {
+  ListPosts fromMap(Map<String, dynamic> map) {
     return ListPosts(
-      page: m.containsKey('page') ? (m['page'] as num).toInt() : 1,
-      perPage: m.containsKey('per_page')
-          ? (m['per_page'] as num).toInt()
+      page: map.containsKey('page') ? (map['page'] as num).toInt() : 1,
+      perPage: map.containsKey('per_page')
+          ? (map['per_page'] as num).toInt()
           : AppConstants.defaultPerPage,
-      status: m.containsKey('status')
+      status: map.containsKey('status')
           ? <PostStatus>[
-              for (Object? x0 in m['status'] as List<dynamic>)
+              for (Object? x0 in map['status'] as List<dynamic>)
                 PostStatus.values.byName(x0 as String),
             ]
           : const <PostStatus>[],
-      authorId: m['author_id'] == null
+      authorId: map['author_id'] == null
           ? null
-          : ((m['author_id'] as num).toInt()),
+          : ((map['author_id'] as num).toInt()),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(ListPosts o) {
-    int f0 = o.page;
-    int f1 = o.perPage;
-    List<PostStatus> f2 = o.status;
-    int? f3 = o.authorId;
+  Map<String, dynamic> toMap(ListPosts dto) {
     return <String, dynamic>{
-      'page': f0,
-      'per_page': f1,
-      'status': <dynamic>[for (PostStatus x0 in f2) x0.name],
-      'author_id': f3,
+      'page': dto.page,
+      'per_page': dto.perPage,
+      'status': <dynamic>[for (PostStatus x0 in dto.status) x0.name],
+      'author_id': dto.authorId,
     };
   }
 
   @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as ListPosts));
+
+  @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'ListPosts',
       'properties': <String, dynamic>{
@@ -208,21 +240,21 @@ class _$ListPostsDto extends DtoSchema<ListPosts> {
         },
       },
     };
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'author_id',
     ], const Exists('users').toJsonSchema());
-    return j;
+    return schema;
   }
 }
 
 /// The checks, the converter and the JSON Schema of [SavePost].
 const DtoSchema<SavePost> $SavePostDto = _$SavePostDto();
 
-class _$SavePostDto extends DtoSchema<SavePost> {
+class _$SavePostDto extends DtoSchema<SavePost> implements JsonObjectWriter {
   const _$SavePostDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => SavePost;
@@ -234,129 +266,153 @@ class _$SavePostDto extends DtoSchema<SavePost> {
   bool get usesRequiredWhen => false;
 
   @override
-  SavePost? convert(Object? input, DtoState s, List<Object> p) {
+  SavePost? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // title: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'title'), p, 'title', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'title', _m);
+    Object? title = state.string(
+      state.read(input, 'title'),
+      path,
+      'title',
+      _messages,
+      trim: true,
+    );
+    if (title == null || title is Undefined)
+      state.required(path, 'title', _messages);
     // body: String
-    Object? c1;
-    c1 = s.string(s.read(input, 'body'), p, 'body', _m, trim: true);
-    if (c1 == null || c1 is Undefined) s.required(p, 'body', _m);
+    Object? body = state.string(
+      state.read(input, 'body'),
+      path,
+      'body',
+      _messages,
+      trim: true,
+    );
+    if (body == null || body is Undefined)
+      state.required(path, 'body', _messages);
     // status: PostStatus
-    Object? c2;
-    c2 = s.enumName(s.read(input, 'status'), p, 'status', _m, const <String>[
-      'draft',
-      'published',
-    ]);
-    if (c2 is String) {
-      c2 = switch (c2) {
+    Object? status = state.enumName(
+      state.read(input, 'status'),
+      path,
+      'status',
+      _messages,
+      const <String>['draft', 'published'],
+    );
+    if (status is String) {
+      status = switch (status) {
         'draft' => PostStatus.draft,
         _ => PostStatus.published,
       };
     }
-    if (c2 == null) s.required(p, 'status', _m);
+    if (status == null) state.required(path, 'status', _messages);
     // tags: List<String>
-    Object? c3;
-    c3 = s.list(s.read(input, 'tags'), p, 'tags', _m);
-    if (c3 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'tags'];
+    Object? tags = state.list(
+      state.read(input, 'tags'),
+      path,
+      'tags',
+      _messages,
+    );
+    if (tags is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'tags'];
       List<String> o0 = <String>[];
-      for (int i0 = 0; i0 < c3.length; i0++) {
-        Object? x0;
-        x0 = s.string(c3[i0], q0, i0, _m, trim: true, textCase: 1);
+      for (int i0 = 0; i0 < tags.length; i0++) {
+        Object? x0 = state.string(
+          tags[i0],
+          q0,
+          i0,
+          _messages,
+          trim: true,
+          textCase: 1,
+        );
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as String);
         }
       }
-      c3 = s.issues.length != b0 ? invalid : o0;
+      tags = state.issues.length != b0 ? invalid : o0;
     }
-    if (c3 == null) s.required(p, 'tags', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length <= 255)) {
-        s.fail(
-          p,
+    if (tags == null) state.required(path, 'tags', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (title is String) {
+      if (!(title.runes.length <= 255)) {
+        state.fail(
+          path,
           'title',
           IssueCodes.maxLength,
           DefaultMessages.maxLength,
-          c0,
+          title,
           params: const <String, Object?>{'max': 255},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c3 is List<String>) {
-      if (!(c3.length <= 5)) {
-        s.fail(
-          p,
+    if (tags is List<String>) {
+      if (!(tags.length <= 5)) {
+        state.fail(
+          path,
           'tags',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c3,
+          tags,
           params: const <String, Object?>{'max': 5},
-          messages: _m,
+          messages: _messages,
         );
       } else {
-        List<Object> q = <Object>[...p, 'tags'];
-        for (int i = 0; i < c3.length; i++) {
-          String v = c3[i];
-          if (!(const Slug().check(v, s.context(q, i, v)))) {
-            s.failRule(const Slug(), q, i, v, _m);
+        List<Object> q = <Object>[...path, 'tags'];
+        for (int i = 0; i < tags.length; i++) {
+          String v = tags[i];
+          if (!(const Slug().check(v, state.context(q, i, v)))) {
+            state.failRule(const Slug(), q, i, v, _messages);
           }
         }
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return SavePost(
-      title: c0 as String,
-      body: c1 as String,
-      status: c2 is Undefined ? PostStatus.draft : c2 as PostStatus,
-      tags: c3 is Undefined ? const <String>[] : c3 as List<String>,
+      title: title as String,
+      body: body as String,
+      status: status is Undefined ? PostStatus.draft : status as PostStatus,
+      tags: tags is Undefined ? const <String>[] : tags as List<String>,
     );
   }
 
   @override
-  SavePost fromMap(Map<String, dynamic> m) {
+  SavePost fromMap(Map<String, dynamic> map) {
     return SavePost(
-      title: m['title'] as String,
-      body: m['body'] as String,
-      status: m.containsKey('status')
-          ? PostStatus.values.byName(m['status'] as String)
+      title: map['title'] as String,
+      body: map['body'] as String,
+      status: map.containsKey('status')
+          ? PostStatus.values.byName(map['status'] as String)
           : PostStatus.draft,
-      tags: m.containsKey('tags')
+      tags: map.containsKey('tags')
           ? <String>[
-              for (Object? x0 in m['tags'] as List<dynamic>) x0 as String,
+              for (Object? x0 in map['tags'] as List<dynamic>) x0 as String,
             ]
           : const <String>[],
     );
   }
 
   @override
-  Map<String, dynamic> toMap(SavePost o) {
-    String f0 = o.title;
-    String f1 = o.body;
-    PostStatus f2 = o.status;
-    List<String> f3 = o.tags;
+  Map<String, dynamic> toMap(SavePost dto) {
     return <String, dynamic>{
-      'title': f0,
-      'body': f1,
-      'status': f2.name,
-      'tags': f3,
+      'title': dto.title,
+      'body': dto.body,
+      'status': dto.status.name,
+      'tags': dto.tags,
     };
   }
 
   @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as SavePost));
+
+  @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'SavePost',
       'properties': <String, dynamic>{
@@ -377,22 +433,23 @@ class _$SavePostDto extends DtoSchema<SavePost> {
       },
       'required': <dynamic>['title', 'body'],
     };
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'tags',
       'items',
     ], const Slug().toJsonSchema());
-    return j;
+    return schema;
   }
 }
 
 /// The checks, the converter and the JSON Schema of [AddComment].
 const DtoSchema<AddComment> $AddCommentDto = _$AddCommentDto();
 
-class _$AddCommentDto extends DtoSchema<AddComment> {
+class _$AddCommentDto extends DtoSchema<AddComment>
+    implements JsonObjectWriter {
   const _$AddCommentDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => AddComment;
@@ -404,44 +461,53 @@ class _$AddCommentDto extends DtoSchema<AddComment> {
   bool get usesRequiredWhen => false;
 
   @override
-  AddComment? convert(Object? input, DtoState s, List<Object> p) {
+  AddComment? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // body: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'body'), p, 'body', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'body', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length <= 1000)) {
-        s.fail(
-          p,
+    Object? body = state.string(
+      state.read(input, 'body'),
+      path,
+      'body',
+      _messages,
+      trim: true,
+    );
+    if (body == null || body is Undefined)
+      state.required(path, 'body', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (body is String) {
+      if (!(body.runes.length <= 1000)) {
+        state.fail(
+          path,
           'body',
           IssueCodes.maxLength,
           DefaultMessages.maxLength,
-          c0,
+          body,
           params: const <String, Object?>{'max': 1000},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return AddComment(body: c0 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return AddComment(body: body as String);
   }
 
   @override
-  AddComment fromMap(Map<String, dynamic> m) {
-    return AddComment(body: m['body'] as String);
+  AddComment fromMap(Map<String, dynamic> map) {
+    return AddComment(body: map['body'] as String);
   }
 
   @override
-  Map<String, dynamic> toMap(AddComment o) {
-    String f0 = o.body;
-    return <String, dynamic>{'body': f0};
+  Map<String, dynamic> toMap(AddComment dto) {
+    return <String, dynamic>{'body': dto.body};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as AddComment));
 
   @override
   Map<String, dynamic> toJsonSchema() {

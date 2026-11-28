@@ -11,10 +11,11 @@ part of 'note.dto.dart';
 /// The checks, the converter and the JSON Schema of [CreateNote].
 const DtoSchema<CreateNote> $CreateNoteDto = _$CreateNoteDto();
 
-class _$CreateNoteDto extends DtoSchema<CreateNote> {
+class _$CreateNoteDto extends DtoSchema<CreateNote>
+    implements JsonObjectWriter {
   const _$CreateNoteDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => CreateNote;
@@ -26,44 +27,53 @@ class _$CreateNoteDto extends DtoSchema<CreateNote> {
   bool get usesRequiredWhen => false;
 
   @override
-  CreateNote? convert(Object? input, DtoState s, List<Object> p) {
+  CreateNote? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // text: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'text'), p, 'text', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'text', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 2 && c0.runes.length <= 100)) {
-        s.fail(
-          p,
+    Object? text = state.string(
+      state.read(input, 'text'),
+      path,
+      'text',
+      _messages,
+      trim: true,
+    );
+    if (text == null || text is Undefined)
+      state.required(path, 'text', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (text is String) {
+      if (!(text.runes.length >= 2 && text.runes.length <= 100)) {
+        state.fail(
+          path,
           'text',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          text,
           params: const <String, Object?>{'min': 2, 'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return CreateNote(text: c0 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return CreateNote(text: text as String);
   }
 
   @override
-  CreateNote fromMap(Map<String, dynamic> m) {
-    return CreateNote(text: m['text'] as String);
+  CreateNote fromMap(Map<String, dynamic> map) {
+    return CreateNote(text: map['text'] as String);
   }
 
   @override
-  Map<String, dynamic> toMap(CreateNote o) {
-    String f0 = o.text;
-    return <String, dynamic>{'text': f0};
+  Map<String, dynamic> toMap(CreateNote dto) {
+    return <String, dynamic>{'text': dto.text};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as CreateNote));
 
   @override
   Map<String, dynamic> toJsonSchema() {

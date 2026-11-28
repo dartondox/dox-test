@@ -11,10 +11,11 @@ part of 'e2e310b_orm.dto.dart';
 /// The checks, the converter and the JSON Schema of [E310bAddress].
 const DtoSchema<E310bAddress> $E310bAddressDto = _$E310bAddressDto();
 
-class _$E310bAddressDto extends DtoSchema<E310bAddress> {
+class _$E310bAddressDto extends DtoSchema<E310bAddress>
+    implements JsonObjectWriter {
   const _$E310bAddressDto();
 
-  static const Map<String, String> _m = <String, String>{
+  static const Map<String, String> _messages = <String, String>{
     'street.required': 'Inner: the street',
   };
 
@@ -28,49 +29,68 @@ class _$E310bAddressDto extends DtoSchema<E310bAddress> {
   bool get usesRequiredWhen => false;
 
   @override
-  E310bAddress? convert(Object? input, DtoState s, List<Object> p) {
+  E310bAddress? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // city: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'city'), p, 'city', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'city', _m);
+    Object? city = state.string(
+      state.read(input, 'city'),
+      path,
+      'city',
+      _messages,
+    );
+    if (city == null || city is Undefined)
+      state.required(path, 'city', _messages);
     // street: String
-    Object? c1;
-    c1 = s.string(s.read(input, 'street'), p, 'street', _m);
-    if (c1 == null || c1 is Undefined) s.required(p, 'street', _m);
+    Object? street = state.string(
+      state.read(input, 'street'),
+      path,
+      'street',
+      _messages,
+    );
+    if (street == null || street is Undefined)
+      state.required(path, 'street', _messages);
     // zip: String
-    Object? c2;
-    c2 = s.string(s.read(input, 'zip'), p, 'zip', _m);
-    if (c2 == null || c2 is Undefined) s.required(p, 'zip', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    Object? zip = state.string(
+      state.read(input, 'zip'),
+      path,
+      'zip',
+      _messages,
+    );
+    if (zip == null || zip is Undefined) state.required(path, 'zip', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return E310bAddress(
-      city: c0 as String,
-      street: c1 as String,
-      zip: c2 as String,
+      city: city as String,
+      street: street as String,
+      zip: zip as String,
     );
   }
 
   @override
-  E310bAddress fromMap(Map<String, dynamic> m) {
+  E310bAddress fromMap(Map<String, dynamic> map) {
     return E310bAddress(
-      city: m['city'] as String,
-      street: m['street'] as String,
-      zip: m['zip'] as String,
+      city: map['city'] as String,
+      street: map['street'] as String,
+      zip: map['zip'] as String,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(E310bAddress o) {
-    String f0 = o.city;
-    String f1 = o.street;
-    String f2 = o.zip;
-    return <String, dynamic>{'city': f0, 'street': f1, 'zip': f2};
+  Map<String, dynamic> toMap(E310bAddress dto) {
+    return <String, dynamic>{
+      'city': dto.city,
+      'street': dto.street,
+      'zip': dto.zip,
+    };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as E310bAddress));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -91,10 +111,11 @@ class _$E310bAddressDto extends DtoSchema<E310bAddress> {
 const DtoSchema<E310bProfileForm> $E310bProfileFormDto =
     _$E310bProfileFormDto();
 
-class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm> {
+class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm>
+    implements JsonObjectWriter {
   const _$E310bProfileFormDto();
 
-  static const Map<String, String> _m = <String, String>{
+  static const Map<String, String> _messages = <String, String>{
     'address.city.required': 'Outer: the city',
     'tags.*.required': 'Outer: each tag',
     'zip.required': 'Outer: not used',
@@ -111,76 +132,94 @@ class _$E310bProfileFormDto extends DtoSchema<E310bProfileForm> {
   bool get usesRequiredWhen => false;
 
   @override
-  E310bProfileForm? convert(Object? input, DtoState s, List<Object> p) {
+  E310bProfileForm? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // name: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'name'), p, 'name', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'name', _m);
+    Object? name = state.string(
+      state.read(input, 'name'),
+      path,
+      'name',
+      _messages,
+    );
+    if (name == null || name is Undefined)
+      state.required(path, 'name', _messages);
     // address: E310bAddress
-    Object? c1;
-    c1 = s.object(s.read(input, 'address'), p, 'address', _m);
-    if (c1 is Map) {
-      c1 =
-          $E310bAddressDto.convert(c1, s, <Object>[...p, 'address']) ?? invalid;
+    Object? address = state.object(
+      state.read(input, 'address'),
+      path,
+      'address',
+      _messages,
+    );
+    if (address is Map) {
+      address =
+          $E310bAddressDto.convert(address, state, <Object>[
+            ...path,
+            'address',
+          ]) ??
+          invalid;
     }
-    if (c1 == null || c1 is Undefined) s.required(p, 'address', _m);
+    if (address == null || address is Undefined)
+      state.required(path, 'address', _messages);
     // tags: List<String>
-    Object? c2;
-    c2 = s.list(s.read(input, 'tags'), p, 'tags', _m);
-    if (c2 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'tags'];
+    Object? tags = state.list(
+      state.read(input, 'tags'),
+      path,
+      'tags',
+      _messages,
+    );
+    if (tags is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'tags'];
       List<String> o0 = <String>[];
-      for (int i0 = 0; i0 < c2.length; i0++) {
-        Object? x0;
-        x0 = s.string(c2[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < tags.length; i0++) {
+        Object? x0 = state.string(tags[i0], q0, i0, _messages);
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as String);
         }
       }
-      c2 = s.issues.length != b0 ? invalid : o0;
+      tags = state.issues.length != b0 ? invalid : o0;
     }
-    if (c2 == null) s.required(p, 'tags', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    if (tags == null) state.required(path, 'tags', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return E310bProfileForm(
-      name: c0 as String,
-      address: c1 as E310bAddress,
-      tags: c2 is Undefined ? const <String>[] : c2 as List<String>,
+      name: name as String,
+      address: address as E310bAddress,
+      tags: tags is Undefined ? const <String>[] : tags as List<String>,
     );
   }
 
   @override
-  E310bProfileForm fromMap(Map<String, dynamic> m) {
+  E310bProfileForm fromMap(Map<String, dynamic> map) {
     return E310bProfileForm(
-      name: m['name'] as String,
-      address: $E310bAddressDto.fromMap(m['address'] as Map<String, dynamic>),
-      tags: m.containsKey('tags')
+      name: map['name'] as String,
+      address: $E310bAddressDto.fromMap(map['address'] as Map<String, dynamic>),
+      tags: map.containsKey('tags')
           ? <String>[
-              for (Object? x0 in m['tags'] as List<dynamic>) x0 as String,
+              for (Object? x0 in map['tags'] as List<dynamic>) x0 as String,
             ]
           : const <String>[],
     );
   }
 
   @override
-  Map<String, dynamic> toMap(E310bProfileForm o) {
-    String f0 = o.name;
-    E310bAddress f1 = o.address;
-    List<String> f2 = o.tags;
+  Map<String, dynamic> toMap(E310bProfileForm dto) {
     return <String, dynamic>{
-      'name': f0,
-      'address': $E310bAddressDto.toMap(f1),
-      'tags': f2,
+      'name': dto.name,
+      'address': $E310bAddressDto.toMap(dto.address),
+      'tags': dto.tags,
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as E310bProfileForm));
 
   @override
   Map<String, dynamic> toJsonSchema() {
