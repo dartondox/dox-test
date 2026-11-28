@@ -11,10 +11,10 @@ part of 'e32y.dto.dart';
 /// The checks, the converter and the JSON Schema of [E32yForm].
 const DtoSchema<E32yForm> $E32yFormDto = _$E32yFormDto();
 
-class _$E32yFormDto extends DtoSchema<E32yForm> {
+class _$E32yFormDto extends DtoSchema<E32yForm> implements JsonObjectWriter {
   const _$E32yFormDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => E32yForm;
@@ -26,43 +26,51 @@ class _$E32yFormDto extends DtoSchema<E32yForm> {
   bool get usesRequiredWhen => false;
 
   @override
-  E32yForm? convert(Object? input, DtoState s, List<Object> p) {
+  E32yForm? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // at: DateTime?
-    Object? c0;
-    c0 = s.date(s.read(input, 'at'), p, 'at', _m);
+    Object? at = state.date(state.read(input, 'at'), path, 'at', _messages);
     // count: int?
-    Object? c1;
-    c1 = s.integer(s.read(input, 'count'), p, 'count', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    Object? count = state.integer(
+      state.read(input, 'count'),
+      path,
+      'count',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return E32yForm(
-      at: c0 is Undefined ? null : c0 as DateTime?,
-      count: c1 is Undefined ? null : c1 as int?,
+      at: at is Undefined ? null : at as DateTime?,
+      count: count is Undefined ? null : count as int?,
     );
   }
 
   @override
-  E32yForm fromMap(Map<String, dynamic> m) {
+  E32yForm fromMap(Map<String, dynamic> map) {
     return E32yForm(
-      at: m['at'] == null ? null : (DateTime.parse(m['at'] as String).toUtc()),
-      count: m['count'] == null ? null : ((m['count'] as num).toInt()),
+      at: map['at'] == null
+          ? null
+          : (DateTime.parse(map['at'] as String).toUtc()),
+      count: map['count'] == null ? null : ((map['count'] as num).toInt()),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(E32yForm o) {
-    DateTime? f0 = o.at;
-    int? f1 = o.count;
+  Map<String, dynamic> toMap(E32yForm dto) {
+    DateTime? at = dto.at;
     return <String, dynamic>{
-      'at': f0 == null ? null : f0.toIso8601String(),
-      'count': f1,
+      'at': at == null ? null : at.toIso8601String(),
+      'count': dto.count,
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as E32yForm));
 
   @override
   Map<String, dynamic> toJsonSchema() {

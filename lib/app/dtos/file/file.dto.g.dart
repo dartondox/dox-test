@@ -11,10 +11,11 @@ part of 'file.dto.dart';
 /// The checks, the converter and the JSON Schema of [UploadFile].
 const DtoSchema<UploadFile> $UploadFileDto = _$UploadFileDto();
 
-class _$UploadFileDto extends DtoSchema<UploadFile> {
+class _$UploadFileDto extends DtoSchema<UploadFile>
+    implements JsonObjectWriter {
   const _$UploadFileDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => UploadFile;
@@ -26,52 +27,65 @@ class _$UploadFileDto extends DtoSchema<UploadFile> {
   bool get usesRequiredWhen => false;
 
   @override
-  UploadFile? convert(Object? input, DtoState s, List<Object> p) {
+  UploadFile? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // file: RequestFile
-    Object? c0;
-    c0 = s.file(s.read(input, 'file'), p, 'file', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'file', _m);
+    Object? file = state.file(
+      state.read(input, 'file'),
+      path,
+      'file',
+      _messages,
+    );
+    if (file == null || file is Undefined)
+      state.required(path, 'file', _messages);
     // note: String
-    Object? c1;
-    c1 = s.string(s.read(input, 'note'), p, 'note', _m, trim: true);
-    if (c1 == null || c1 is Undefined) s.required(p, 'note', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is RequestFile) {
-      if (!(c0.length <= 1048576)) {
-        s.fail(
-          p,
+    Object? note = state.string(
+      state.read(input, 'note'),
+      path,
+      'note',
+      _messages,
+      trim: true,
+    );
+    if (note == null || note is Undefined)
+      state.required(path, 'note', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (file is RequestFile) {
+      if (!(file.length <= 1048576)) {
+        state.fail(
+          path,
           'file',
           IssueCodes.maxSize,
           DefaultMessages.maxSize,
-          c0,
+          file,
           params: const <String, Object?>{'max': '1MB'},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return UploadFile(file: c0 as RequestFile, note: c1 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return UploadFile(file: file as RequestFile, note: note as String);
   }
 
   @override
-  UploadFile fromMap(Map<String, dynamic> m) {
+  UploadFile fromMap(Map<String, dynamic> map) {
     return UploadFile(
-      file: m['file'] as RequestFile,
-      note: m['note'] as String,
+      file: map['file'] as RequestFile,
+      note: map['note'] as String,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(UploadFile o) {
-    RequestFile f0 = o.file;
-    String f1 = o.note;
-    return <String, dynamic>{'file': f0, 'note': f1};
+  Map<String, dynamic> toMap(UploadFile dto) {
+    return <String, dynamic>{'file': dto.file, 'note': dto.note};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as UploadFile));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -94,10 +108,11 @@ class _$UploadFileDto extends DtoSchema<UploadFile> {
 /// The checks, the converter and the JSON Schema of [UploadAvatar].
 const DtoSchema<UploadAvatar> $UploadAvatarDto = _$UploadAvatarDto();
 
-class _$UploadAvatarDto extends DtoSchema<UploadAvatar> {
+class _$UploadAvatarDto extends DtoSchema<UploadAvatar>
+    implements JsonObjectWriter {
   const _$UploadAvatarDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => UploadAvatar;
@@ -109,53 +124,61 @@ class _$UploadAvatarDto extends DtoSchema<UploadAvatar> {
   bool get usesRequiredWhen => false;
 
   @override
-  UploadAvatar? convert(Object? input, DtoState s, List<Object> p) {
+  UploadAvatar? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // avatar: RequestFile
-    Object? c0;
-    c0 = s.file(s.read(input, 'avatar'), p, 'avatar', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'avatar', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is RequestFile) {
-      if (!(FileTypes.matches(c0, SchemaConstants.imageExtensions))) {
-        s.fail(
-          p,
+    Object? avatar = state.file(
+      state.read(input, 'avatar'),
+      path,
+      'avatar',
+      _messages,
+    );
+    if (avatar == null || avatar is Undefined)
+      state.required(path, 'avatar', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (avatar is RequestFile) {
+      if (!(FileTypes.matches(avatar, SchemaConstants.imageExtensions))) {
+        state.fail(
+          path,
           'avatar',
           IssueCodes.image,
           DefaultMessages.image,
-          c0,
-          messages: _m,
+          avatar,
+          messages: _messages,
         );
-      } else if (!(c0.length <= 65536)) {
-        s.fail(
-          p,
+      } else if (!(avatar.length <= 65536)) {
+        state.fail(
+          path,
           'avatar',
           IssueCodes.maxSize,
           DefaultMessages.maxSize,
-          c0,
+          avatar,
           params: const <String, Object?>{'max': '64KB'},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return UploadAvatar(avatar: c0 as RequestFile);
+    if (state.issues.length != issuesBefore) return null;
+    return UploadAvatar(avatar: avatar as RequestFile);
   }
 
   @override
-  UploadAvatar fromMap(Map<String, dynamic> m) {
-    return UploadAvatar(avatar: m['avatar'] as RequestFile);
+  UploadAvatar fromMap(Map<String, dynamic> map) {
+    return UploadAvatar(avatar: map['avatar'] as RequestFile);
   }
 
   @override
-  Map<String, dynamic> toMap(UploadAvatar o) {
-    RequestFile f0 = o.avatar;
-    return <String, dynamic>{'avatar': f0};
+  Map<String, dynamic> toMap(UploadAvatar dto) {
+    return <String, dynamic>{'avatar': dto.avatar};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as UploadAvatar));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -178,10 +201,10 @@ class _$UploadAvatarDto extends DtoSchema<UploadAvatar> {
 /// The checks, the converter and the JSON Schema of [StoreFile].
 const DtoSchema<StoreFile> $StoreFileDto = _$StoreFileDto();
 
-class _$StoreFileDto extends DtoSchema<StoreFile> {
+class _$StoreFileDto extends DtoSchema<StoreFile> implements JsonObjectWriter {
   const _$StoreFileDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => StoreFile;
@@ -193,31 +216,39 @@ class _$StoreFileDto extends DtoSchema<StoreFile> {
   bool get usesRequiredWhen => false;
 
   @override
-  StoreFile? convert(Object? input, DtoState s, List<Object> p) {
+  StoreFile? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // file: RequestFile
-    Object? c0;
-    c0 = s.file(s.read(input, 'file'), p, 'file', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'file', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
-    return StoreFile(file: c0 as RequestFile);
+    Object? file = state.file(
+      state.read(input, 'file'),
+      path,
+      'file',
+      _messages,
+    );
+    if (file == null || file is Undefined)
+      state.required(path, 'file', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
+    return StoreFile(file: file as RequestFile);
   }
 
   @override
-  StoreFile fromMap(Map<String, dynamic> m) {
-    return StoreFile(file: m['file'] as RequestFile);
+  StoreFile fromMap(Map<String, dynamic> map) {
+    return StoreFile(file: map['file'] as RequestFile);
   }
 
   @override
-  Map<String, dynamic> toMap(StoreFile o) {
-    RequestFile f0 = o.file;
-    return <String, dynamic>{'file': f0};
+  Map<String, dynamic> toMap(StoreFile dto) {
+    return <String, dynamic>{'file': dto.file};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as StoreFile));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -235,10 +266,11 @@ class _$StoreFileDto extends DtoSchema<StoreFile> {
 /// The checks, the converter and the JSON Schema of [UploadPhoto].
 const DtoSchema<UploadPhoto> $UploadPhotoDto = _$UploadPhotoDto();
 
-class _$UploadPhotoDto extends DtoSchema<UploadPhoto> {
+class _$UploadPhotoDto extends DtoSchema<UploadPhoto>
+    implements JsonObjectWriter {
   const _$UploadPhotoDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => UploadPhoto;
@@ -250,81 +282,89 @@ class _$UploadPhotoDto extends DtoSchema<UploadPhoto> {
   bool get usesRequiredWhen => false;
 
   @override
-  UploadPhoto? convert(Object? input, DtoState s, List<Object> p) {
+  UploadPhoto? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // photo: RequestFile
-    Object? c0;
-    c0 = s.file(s.read(input, 'photo'), p, 'photo', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'photo', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is RequestFile) {
-      if (!(FileTypes.matchesMimeTypes(c0, const <String>[
+    Object? photo = state.file(
+      state.read(input, 'photo'),
+      path,
+      'photo',
+      _messages,
+    );
+    if (photo == null || photo is Undefined)
+      state.required(path, 'photo', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (photo is RequestFile) {
+      if (!(FileTypes.matchesMimeTypes(photo, const <String>[
         'image/png',
         'image/gif',
       ]))) {
-        s.fail(
-          p,
+        state.fail(
+          path,
           'photo',
           IssueCodes.mimeTypes,
           DefaultMessages.mimes,
-          c0,
+          photo,
           params: const <String, Object?>{'types': 'image/png, image/gif'},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c0.length >= 1024)) {
-        s.fail(
-          p,
+      } else if (!(photo.length >= 1024)) {
+        state.fail(
+          path,
           'photo',
           IssueCodes.minSize,
           DefaultMessages.minSize,
-          c0,
+          photo,
           params: const <String, Object?>{'min': '1KB'},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c0.length <= 65536)) {
-        s.fail(
-          p,
+      } else if (!(photo.length <= 65536)) {
+        state.fail(
+          path,
           'photo',
           IssueCodes.maxSize,
           DefaultMessages.maxSize,
-          c0,
+          photo,
           params: const <String, Object?>{'max': '64KB'},
-          messages: _m,
+          messages: _messages,
         );
       } else if (!(ImageSize.fits(
-        c0,
+        photo,
         minWidth: 2,
         maxWidth: 100,
         ratio: 1.0,
       ))) {
-        s.fail(
-          p,
+        state.fail(
+          path,
           'photo',
           IssueCodes.dimensions,
           DefaultMessages.dimensions,
-          c0,
-          messages: _m,
+          photo,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return UploadPhoto(photo: c0 as RequestFile);
+    if (state.issues.length != issuesBefore) return null;
+    return UploadPhoto(photo: photo as RequestFile);
   }
 
   @override
-  UploadPhoto fromMap(Map<String, dynamic> m) {
-    return UploadPhoto(photo: m['photo'] as RequestFile);
+  UploadPhoto fromMap(Map<String, dynamic> map) {
+    return UploadPhoto(photo: map['photo'] as RequestFile);
   }
 
   @override
-  Map<String, dynamic> toMap(UploadPhoto o) {
-    RequestFile f0 = o.photo;
-    return <String, dynamic>{'photo': f0};
+  Map<String, dynamic> toMap(UploadPhoto dto) {
+    return <String, dynamic>{'photo': dto.photo};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as UploadPhoto));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -349,10 +389,10 @@ class _$UploadPhotoDto extends DtoSchema<UploadPhoto> {
 /// The checks, the converter and the JSON Schema of [AddText].
 const DtoSchema<AddText> $AddTextDto = _$AddTextDto();
 
-class _$AddTextDto extends DtoSchema<AddText> {
+class _$AddTextDto extends DtoSchema<AddText> implements JsonObjectWriter {
   const _$AddTextDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => AddText;
@@ -364,42 +404,53 @@ class _$AddTextDto extends DtoSchema<AddText> {
   bool get usesRequiredWhen => false;
 
   @override
-  AddText? convert(Object? input, DtoState s, List<Object> p) {
+  AddText? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // text: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'text'), p, 'text', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'text', _m);
+    Object? text = state.string(
+      state.read(input, 'text'),
+      path,
+      'text',
+      _messages,
+    );
+    if (text == null || text is Undefined)
+      state.required(path, 'text', _messages);
     // atStart: bool
-    Object? c1;
-    c1 = s.boolean(s.read(input, 'at_start'), p, 'at_start', _m);
-    if (c1 == null) s.required(p, 'at_start', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    Object? atStart = state.boolean(
+      state.read(input, 'at_start'),
+      path,
+      'at_start',
+      _messages,
+    );
+    if (atStart == null) state.required(path, 'at_start', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return AddText(
-      text: c0 as String,
-      atStart: c1 is Undefined ? false : c1 as bool,
+      text: text as String,
+      atStart: atStart is Undefined ? false : atStart as bool,
     );
   }
 
   @override
-  AddText fromMap(Map<String, dynamic> m) {
+  AddText fromMap(Map<String, dynamic> map) {
     return AddText(
-      text: m['text'] as String,
-      atStart: m.containsKey('at_start') ? m['at_start'] as bool : false,
+      text: map['text'] as String,
+      atStart: map.containsKey('at_start') ? map['at_start'] as bool : false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(AddText o) {
-    String f0 = o.text;
-    bool f1 = o.atStart;
-    return <String, dynamic>{'text': f0, 'at_start': f1};
+  Map<String, dynamic> toMap(AddText dto) {
+    return <String, dynamic>{'text': dto.text, 'at_start': dto.atStart};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as AddText));
 
   @override
   Map<String, dynamic> toJsonSchema() {

@@ -11,10 +11,10 @@ part of 'tag.dto.dart';
 /// The checks, the converter and the JSON Schema of [ListTags].
 const DtoSchema<ListTags> $ListTagsDto = _$ListTagsDto();
 
-class _$ListTagsDto extends DtoSchema<ListTags> {
+class _$ListTagsDto extends DtoSchema<ListTags> implements JsonObjectWriter {
   const _$ListTagsDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => ListTags;
@@ -26,54 +26,64 @@ class _$ListTagsDto extends DtoSchema<ListTags> {
   bool get usesRequiredWhen => false;
 
   @override
-  ListTags? convert(Object? input, DtoState s, List<Object> p) {
+  ListTags? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // limit: int
-    Object? c0;
-    c0 = s.integer(s.read(input, 'limit'), p, 'limit', _m);
-    if (c0 == null) s.required(p, 'limit', _m);
+    Object? limit = state.integer(
+      state.read(input, 'limit'),
+      path,
+      'limit',
+      _messages,
+    );
+    if (limit == null) state.required(path, 'limit', _messages);
     // except: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'except'), p, 'except', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is int) {
-      if (!(c0 >= 1 && c0 <= 100)) {
-        s.fail(
-          p,
+    Object? except = state.string(
+      state.read(input, 'except'),
+      path,
+      'except',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (limit is int) {
+      if (!(limit >= 1 && limit <= 100)) {
+        state.fail(
+          path,
           'limit',
           IssueCodes.between,
           DefaultMessages.between,
-          c0,
+          limit,
           params: const <String, Object?>{'min': 1, 'max': 100},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return ListTags(
-      limit: c0 is Undefined ? 10 : c0 as int,
-      except: c1 is Undefined ? null : c1 as String?,
+      limit: limit is Undefined ? 10 : limit as int,
+      except: except is Undefined ? null : except as String?,
     );
   }
 
   @override
-  ListTags fromMap(Map<String, dynamic> m) {
+  ListTags fromMap(Map<String, dynamic> map) {
     return ListTags(
-      limit: m.containsKey('limit') ? (m['limit'] as num).toInt() : 10,
-      except: m['except'] == null ? null : (m['except'] as String),
+      limit: map.containsKey('limit') ? (map['limit'] as num).toInt() : 10,
+      except: map['except'] == null ? null : (map['except'] as String),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(ListTags o) {
-    int f0 = o.limit;
-    String? f1 = o.except;
-    return <String, dynamic>{'limit': f0, 'except': f1};
+  Map<String, dynamic> toMap(ListTags dto) {
+    return <String, dynamic>{'limit': dto.limit, 'except': dto.except};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as ListTags));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -99,10 +109,11 @@ class _$ListTagsDto extends DtoSchema<ListTags> {
 /// The checks, the converter and the JSON Schema of [CreateTags].
 const DtoSchema<CreateTags> $CreateTagsDto = _$CreateTagsDto();
 
-class _$CreateTagsDto extends DtoSchema<CreateTags> {
+class _$CreateTagsDto extends DtoSchema<CreateTags>
+    implements JsonObjectWriter {
   const _$CreateTagsDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => CreateTags;
@@ -114,101 +125,117 @@ class _$CreateTagsDto extends DtoSchema<CreateTags> {
   bool get usesRequiredWhen => false;
 
   @override
-  CreateTags? convert(Object? input, DtoState s, List<Object> p) {
+  CreateTags? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // names: List<String>
-    Object? c0;
-    c0 = s.list(s.read(input, 'names'), p, 'names', _m);
-    if (c0 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'names'];
+    Object? names = state.list(
+      state.read(input, 'names'),
+      path,
+      'names',
+      _messages,
+    );
+    if (names is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'names'];
       List<String> o0 = <String>[];
-      for (int i0 = 0; i0 < c0.length; i0++) {
-        Object? x0;
-        x0 = s.string(c0[i0], q0, i0, _m, trim: true, textCase: 1);
+      for (int i0 = 0; i0 < names.length; i0++) {
+        Object? x0 = state.string(
+          names[i0],
+          q0,
+          i0,
+          _messages,
+          trim: true,
+          textCase: 1,
+        );
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as String);
         }
       }
-      c0 = s.issues.length != b0 ? invalid : o0;
+      names = state.issues.length != b0 ? invalid : o0;
     }
-    if (c0 == null || c0 is Undefined || s.emptyList(c0)) {
-      s.required(p, 'names', _m);
-      c0 = invalid;
+    if (names == null || names is Undefined || state.emptyList(names)) {
+      state.required(path, 'names', _messages);
+      names = invalid;
     }
     // fail: bool
-    Object? c1;
-    c1 = s.boolean(s.read(input, 'fail'), p, 'fail', _m);
-    if (c1 == null) s.required(p, 'fail', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is List<String>) {
-      if (!(c0.length >= 1)) {
-        s.fail(
-          p,
+    Object? fail = state.boolean(
+      state.read(input, 'fail'),
+      path,
+      'fail',
+      _messages,
+    );
+    if (fail == null) state.required(path, 'fail', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (names is List<String>) {
+      if (!(names.length >= 1)) {
+        state.fail(
+          path,
           'names',
           IssueCodes.minItems,
           DefaultMessages.minItems,
-          c0,
+          names,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c0.length <= 10)) {
-        s.fail(
-          p,
+      } else if (!(names.length <= 10)) {
+        state.fail(
+          path,
           'names',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c0,
+          names,
           params: const <String, Object?>{'max': 10},
-          messages: _m,
+          messages: _messages,
         );
       } else {
-        List<Object> q = <Object>[...p, 'names'];
-        for (int i = 0; i < c0.length; i++) {
-          String v = c0[i];
+        List<Object> q = <Object>[...path, 'names'];
+        for (int i = 0; i < names.length; i++) {
+          String v = names[i];
           if (!(v.runes.length >= 2 && v.runes.length <= 100)) {
-            s.fail(
+            state.fail(
               q,
               i,
               IssueCodes.lengthBetween,
               DefaultMessages.lengthBetween,
               v,
               params: const <String, Object?>{'min': 2, 'max': 100},
-              messages: _m,
+              messages: _messages,
             );
           }
         }
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return CreateTags(
-      names: c0 as List<String>,
-      fail: c1 is Undefined ? false : c1 as bool,
+      names: names as List<String>,
+      fail: fail is Undefined ? false : fail as bool,
     );
   }
 
   @override
-  CreateTags fromMap(Map<String, dynamic> m) {
+  CreateTags fromMap(Map<String, dynamic> map) {
     return CreateTags(
       names: <String>[
-        for (Object? x0 in m['names'] as List<dynamic>) x0 as String,
+        for (Object? x0 in map['names'] as List<dynamic>) x0 as String,
       ],
-      fail: m.containsKey('fail') ? m['fail'] as bool : false,
+      fail: map.containsKey('fail') ? map['fail'] as bool : false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(CreateTags o) {
-    List<String> f0 = o.names;
-    bool f1 = o.fail;
-    return <String, dynamic>{'names': f0, 'fail': f1};
+  Map<String, dynamic> toMap(CreateTags dto) {
+    return <String, dynamic>{'names': dto.names, 'fail': dto.fail};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as CreateTags));
 
   @override
   Map<String, dynamic> toJsonSchema() {

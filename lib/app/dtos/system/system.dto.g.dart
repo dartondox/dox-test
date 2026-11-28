@@ -11,10 +11,11 @@ part of 'system.dto.dart';
 /// The checks, the converter and the JSON Schema of [HashPassword].
 const DtoSchema<HashPassword> $HashPasswordDto = _$HashPasswordDto();
 
-class _$HashPasswordDto extends DtoSchema<HashPassword> {
+class _$HashPasswordDto extends DtoSchema<HashPassword>
+    implements JsonObjectWriter {
   const _$HashPasswordDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => HashPassword;
@@ -26,31 +27,39 @@ class _$HashPasswordDto extends DtoSchema<HashPassword> {
   bool get usesRequiredWhen => false;
 
   @override
-  HashPassword? convert(Object? input, DtoState s, List<Object> p) {
+  HashPassword? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // password: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'password'), p, 'password', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'password', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
-    return HashPassword(password: c0 as String);
+    Object? password = state.string(
+      state.read(input, 'password'),
+      path,
+      'password',
+      _messages,
+    );
+    if (password == null || password is Undefined)
+      state.required(path, 'password', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
+    return HashPassword(password: password as String);
   }
 
   @override
-  HashPassword fromMap(Map<String, dynamic> m) {
-    return HashPassword(password: m['password'] as String);
+  HashPassword fromMap(Map<String, dynamic> map) {
+    return HashPassword(password: map['password'] as String);
   }
 
   @override
-  Map<String, dynamic> toMap(HashPassword o) {
-    String f0 = o.password;
-    return <String, dynamic>{'password': f0};
+  Map<String, dynamic> toMap(HashPassword dto) {
+    return <String, dynamic>{'password': dto.password};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as HashPassword));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -68,10 +77,10 @@ class _$HashPasswordDto extends DtoSchema<HashPassword> {
 /// The checks, the converter and the JSON Schema of [Address].
 const DtoSchema<Address> $AddressDto = _$AddressDto();
 
-class _$AddressDto extends DtoSchema<Address> {
+class _$AddressDto extends DtoSchema<Address> implements JsonObjectWriter {
   const _$AddressDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   static final RegExp _r0 = RegExp('^(?:\\d{5})\$');
 
@@ -85,51 +94,64 @@ class _$AddressDto extends DtoSchema<Address> {
   bool get usesRequiredWhen => false;
 
   @override
-  Address? convert(Object? input, DtoState s, List<Object> p) {
+  Address? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // city: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'city'), p, 'city', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'city', _m);
+    Object? city = state.string(
+      state.read(input, 'city'),
+      path,
+      'city',
+      _messages,
+      trim: true,
+    );
+    if (city == null || city is Undefined)
+      state.required(path, 'city', _messages);
     // postCode: String
-    Object? c1;
-    c1 = s.string(s.read(input, 'post_code'), p, 'post_code', _m);
-    if (c1 == null || c1 is Undefined) s.required(p, 'post_code', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c1 is String) {
-      if (!(_r0.hasMatch(c1))) {
-        s.fail(
-          p,
+    Object? postCode = state.string(
+      state.read(input, 'post_code'),
+      path,
+      'post_code',
+      _messages,
+    );
+    if (postCode == null || postCode is Undefined)
+      state.required(path, 'post_code', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (postCode is String) {
+      if (!(_r0.hasMatch(postCode))) {
+        state.fail(
+          path,
           'post_code',
           IssueCodes.regex,
           DefaultMessages.regex,
-          c1,
-          messages: _m,
+          postCode,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return Address(city: c0 as String, postCode: c1 as String);
+    if (state.issues.length != issuesBefore) return null;
+    return Address(city: city as String, postCode: postCode as String);
   }
 
   @override
-  Address fromMap(Map<String, dynamic> m) {
+  Address fromMap(Map<String, dynamic> map) {
     return Address(
-      city: m['city'] as String,
-      postCode: m['post_code'] as String,
+      city: map['city'] as String,
+      postCode: map['post_code'] as String,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(Address o) {
-    String f0 = o.city;
-    String f1 = o.postCode;
-    return <String, dynamic>{'city': f0, 'post_code': f1};
+  Map<String, dynamic> toMap(Address dto) {
+    return <String, dynamic>{'city': dto.city, 'post_code': dto.postCode};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as Address));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -152,10 +174,10 @@ class _$AddressDto extends DtoSchema<Address> {
 /// The checks, the converter and the JSON Schema of [OrderItem].
 const DtoSchema<OrderItem> $OrderItemDto = _$OrderItemDto();
 
-class _$OrderItemDto extends DtoSchema<OrderItem> {
+class _$OrderItemDto extends DtoSchema<OrderItem> implements JsonObjectWriter {
   const _$OrderItemDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => OrderItem;
@@ -167,75 +189,88 @@ class _$OrderItemDto extends DtoSchema<OrderItem> {
   bool get usesRequiredWhen => false;
 
   @override
-  OrderItem? convert(Object? input, DtoState s, List<Object> p) {
+  OrderItem? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // name: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'name'), p, 'name', _m, trim: true);
-    if (c0 == null || c0 is Undefined) s.required(p, 'name', _m);
+    Object? name = state.string(
+      state.read(input, 'name'),
+      path,
+      'name',
+      _messages,
+      trim: true,
+    );
+    if (name == null || name is Undefined)
+      state.required(path, 'name', _messages);
     // quantity: int
-    Object? c1;
-    c1 = s.integer(s.read(input, 'quantity'), p, 'quantity', _m);
-    if (c1 == null || c1 is Undefined) s.required(p, 'quantity', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 1 && c0.runes.length <= 50)) {
-        s.fail(
-          p,
+    Object? quantity = state.integer(
+      state.read(input, 'quantity'),
+      path,
+      'quantity',
+      _messages,
+    );
+    if (quantity == null || quantity is Undefined)
+      state.required(path, 'quantity', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (name is String) {
+      if (!(name.runes.length >= 1 && name.runes.length <= 50)) {
+        state.fail(
+          path,
           'name',
           IssueCodes.lengthBetween,
           DefaultMessages.lengthBetween,
-          c0,
+          name,
           params: const <String, Object?>{'min': 1, 'max': 50},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c1 is int) {
-      if (!(c1 >= 1)) {
-        s.fail(
-          p,
+    if (quantity is int) {
+      if (!(quantity >= 1)) {
+        state.fail(
+          path,
           'quantity',
           IssueCodes.min,
           DefaultMessages.min,
-          c1,
+          quantity,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c1 <= 99)) {
-        s.fail(
-          p,
+      } else if (!(quantity <= 99)) {
+        state.fail(
+          path,
           'quantity',
           IssueCodes.max,
           DefaultMessages.max,
-          c1,
+          quantity,
           params: const <String, Object?>{'max': 99},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return OrderItem(name: c0 as String, quantity: c1 as int);
+    if (state.issues.length != issuesBefore) return null;
+    return OrderItem(name: name as String, quantity: quantity as int);
   }
 
   @override
-  OrderItem fromMap(Map<String, dynamic> m) {
+  OrderItem fromMap(Map<String, dynamic> map) {
     return OrderItem(
-      name: m['name'] as String,
-      quantity: (m['quantity'] as num).toInt(),
+      name: map['name'] as String,
+      quantity: (map['quantity'] as num).toInt(),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(OrderItem o) {
-    String f0 = o.name;
-    int f1 = o.quantity;
-    return <String, dynamic>{'name': f0, 'quantity': f1};
+  Map<String, dynamic> toMap(OrderItem dto) {
+    return <String, dynamic>{'name': dto.name, 'quantity': dto.quantity};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as OrderItem));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -262,10 +297,11 @@ class _$OrderItemDto extends DtoSchema<OrderItem> {
 /// The checks, the converter and the JSON Schema of [CreateOrder].
 const DtoSchema<CreateOrder> $CreateOrderDto = _$CreateOrderDto();
 
-class _$CreateOrderDto extends DtoSchema<CreateOrder> {
+class _$CreateOrderDto extends DtoSchema<CreateOrder>
+    implements JsonObjectWriter {
   const _$CreateOrderDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   static const Set<String> _keys = <String>{'address', 'items'};
 
@@ -279,104 +315,121 @@ class _$CreateOrderDto extends DtoSchema<CreateOrder> {
   bool get usesRequiredWhen => false;
 
   @override
-  CreateOrder? convert(Object? input, DtoState s, List<Object> p) {
+  CreateOrder? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     for (Object? k in input.keys) {
       if (!_keys.contains(k)) {
-        s.fail(
-          p,
+        state.fail(
+          path,
           '$k',
           IssueCodes.unrecognizedKeys,
           DefaultMessages.notAllowed,
           input[k],
-          messages: _m,
+          messages: _messages,
         );
       }
     }
     // address: Address
-    Object? c0;
-    c0 = s.object(s.read(input, 'address'), p, 'address', _m);
-    if (c0 is Map) {
-      c0 = $AddressDto.convert(c0, s, <Object>[...p, 'address']) ?? invalid;
+    Object? address = state.object(
+      state.read(input, 'address'),
+      path,
+      'address',
+      _messages,
+    );
+    if (address is Map) {
+      address =
+          $AddressDto.convert(address, state, <Object>[...path, 'address']) ??
+          invalid;
     }
-    if (c0 == null || c0 is Undefined) s.required(p, 'address', _m);
+    if (address == null || address is Undefined)
+      state.required(path, 'address', _messages);
     // items: List<OrderItem>
-    Object? c1;
-    c1 = s.list(s.read(input, 'items'), p, 'items', _m);
-    if (c1 is List) {
-      int b0 = s.issues.length;
-      List<Object> q0 = <Object>[...p, 'items'];
+    Object? items = state.list(
+      state.read(input, 'items'),
+      path,
+      'items',
+      _messages,
+    );
+    if (items is List) {
+      int b0 = state.issues.length;
+      List<Object> q0 = <Object>[...path, 'items'];
       List<OrderItem> o0 = <OrderItem>[];
-      for (int i0 = 0; i0 < c1.length; i0++) {
-        Object? x0;
-        x0 = s.object(c1[i0], q0, i0, _m);
+      for (int i0 = 0; i0 < items.length; i0++) {
+        Object? x0 = state.object(items[i0], q0, i0, _messages);
         if (x0 is Map) {
-          x0 = $OrderItemDto.convert(x0, s, <Object>[...q0, i0]) ?? invalid;
+          x0 = $OrderItemDto.convert(x0, state, <Object>[...q0, i0]) ?? invalid;
         }
         if (x0 == null || x0 is Undefined) {
-          s.required(q0, i0, _m);
+          state.required(q0, i0, _messages);
         } else if (x0 is! Invalid) {
           o0.add(x0 as OrderItem);
         }
       }
-      c1 = s.issues.length != b0 ? invalid : o0;
+      items = state.issues.length != b0 ? invalid : o0;
     }
-    if (c1 == null || c1 is Undefined || s.emptyList(c1)) {
-      s.required(p, 'items', _m);
-      c1 = invalid;
+    if (items == null || items is Undefined || state.emptyList(items)) {
+      state.required(path, 'items', _messages);
+      items = invalid;
     }
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c1 is List<OrderItem>) {
-      if (!(c1.length >= 1)) {
-        s.fail(
-          p,
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (items is List<OrderItem>) {
+      if (!(items.length >= 1)) {
+        state.fail(
+          path,
           'items',
           IssueCodes.minItems,
           DefaultMessages.minItems,
-          c1,
+          items,
           params: const <String, Object?>{'min': 1},
-          messages: _m,
+          messages: _messages,
         );
-      } else if (!(c1.length <= 10)) {
-        s.fail(
-          p,
+      } else if (!(items.length <= 10)) {
+        state.fail(
+          path,
           'items',
           IssueCodes.maxItems,
           DefaultMessages.maxItems,
-          c1,
+          items,
           params: const <String, Object?>{'max': 10},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
-    return CreateOrder(address: c0 as Address, items: c1 as List<OrderItem>);
+    if (state.issues.length != issuesBefore) return null;
+    return CreateOrder(
+      address: address as Address,
+      items: items as List<OrderItem>,
+    );
   }
 
   @override
-  CreateOrder fromMap(Map<String, dynamic> m) {
+  CreateOrder fromMap(Map<String, dynamic> map) {
     return CreateOrder(
-      address: $AddressDto.fromMap(m['address'] as Map<String, dynamic>),
+      address: $AddressDto.fromMap(map['address'] as Map<String, dynamic>),
       items: <OrderItem>[
-        for (Object? x0 in m['items'] as List<dynamic>)
+        for (Object? x0 in map['items'] as List<dynamic>)
           $OrderItemDto.fromMap(x0 as Map<String, dynamic>),
       ],
     );
   }
 
   @override
-  Map<String, dynamic> toMap(CreateOrder o) {
-    Address f0 = o.address;
-    List<OrderItem> f1 = o.items;
+  Map<String, dynamic> toMap(CreateOrder dto) {
     return <String, dynamic>{
-      'address': $AddressDto.toMap(f0),
-      'items': <dynamic>[for (OrderItem x0 in f1) $OrderItemDto.toMap(x0)],
+      'address': $AddressDto.toMap(dto.address),
+      'items': <dynamic>[
+        for (OrderItem x0 in dto.items) $OrderItemDto.toMap(x0),
+      ],
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as CreateOrder));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -433,10 +486,10 @@ class _$CreateOrderDto extends DtoSchema<CreateOrder> {
 /// The checks, the converter and the JSON Schema of [RuleCheck].
 const DtoSchema<RuleCheck> $RuleCheckDto = _$RuleCheckDto();
 
-class _$RuleCheckDto extends DtoSchema<RuleCheck> {
+class _$RuleCheckDto extends DtoSchema<RuleCheck> implements JsonObjectWriter {
   const _$RuleCheckDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => RuleCheck;
@@ -445,233 +498,305 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
   String get name => 'RuleCheck';
 
   @override
-  RuleCheck? convert(Object? input, DtoState s, List<Object> p) {
+  RuleCheck? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // kind: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'kind'), p, 'kind', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'kind', _m);
+    Object? kind = state.string(
+      state.read(input, 'kind'),
+      path,
+      'kind',
+      _messages,
+    );
+    if (kind == null || kind is Undefined)
+      state.required(path, 'kind', _messages);
     // teamName: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'team_name'), p, 'team_name', _m);
+    Object? teamName = state.string(
+      state.read(input, 'team_name'),
+      path,
+      'team_name',
+      _messages,
+    );
     // email: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'email'), p, 'email', _m);
+    Object? email = state.string(
+      state.read(input, 'email'),
+      path,
+      'email',
+      _messages,
+    );
     // phone: String?
-    Object? c3;
-    c3 = s.string(s.read(input, 'phone'), p, 'phone', _m);
+    Object? phone = state.string(
+      state.read(input, 'phone'),
+      path,
+      'phone',
+      _messages,
+    );
     // pin: String
-    Object? c4;
-    c4 = s.string(s.read(input, 'pin'), p, 'pin', _m);
-    if (c4 == null || c4 is Undefined) s.required(p, 'pin', _m);
+    Object? pin = state.string(
+      state.read(input, 'pin'),
+      path,
+      'pin',
+      _messages,
+    );
+    if (pin == null || pin is Undefined) state.required(path, 'pin', _messages);
     // startsOn: String
-    Object? c5;
-    c5 = s.string(s.read(input, 'starts_on'), p, 'starts_on', _m);
-    if (c5 == null || c5 is Undefined) s.required(p, 'starts_on', _m);
+    Object? startsOn = state.string(
+      state.read(input, 'starts_on'),
+      path,
+      'starts_on',
+      _messages,
+    );
+    if (startsOn == null || startsOn is Undefined)
+      state.required(path, 'starts_on', _messages);
     // password: String
-    Object? c6;
-    c6 = s.string(s.read(input, 'password'), p, 'password', _m);
-    if (c6 == null || c6 is Undefined) s.required(p, 'password', _m);
+    Object? password = state.string(
+      state.read(input, 'password'),
+      path,
+      'password',
+      _messages,
+    );
+    if (password == null || password is Undefined)
+      state.required(path, 'password', _messages);
     // passwordConfirmation: String?
-    Object? c7;
-    c7 = s.string(
-      s.read(input, 'password_confirmation'),
-      p,
+    Object? passwordConfirmation = state.string(
+      state.read(input, 'password_confirmation'),
+      path,
       'password_confirmation',
-      _m,
+      _messages,
     );
     // code: String
-    Object? c8;
-    c8 = s.string(s.read(input, 'code'), p, 'code', _m);
-    if (c8 == null || c8 is Undefined) s.required(p, 'code', _m);
+    Object? code = state.string(
+      state.read(input, 'code'),
+      path,
+      'code',
+      _messages,
+    );
+    if (code == null || code is Undefined)
+      state.required(path, 'code', _messages);
     // codeAgain: String
-    Object? c9;
-    c9 = s.string(s.read(input, 'code_again'), p, 'code_again', _m);
-    if (c9 == null || c9 is Undefined) s.required(p, 'code_again', _m);
+    Object? codeAgain = state.string(
+      state.read(input, 'code_again'),
+      path,
+      'code_again',
+      _messages,
+    );
+    if (codeAgain == null || codeAgain is Undefined)
+      state.required(path, 'code_again', _messages);
     // ip: String?
-    Object? c10;
-    c10 = s.string(s.read(input, 'ip'), p, 'ip', _m);
+    Object? ip = state.string(state.read(input, 'ip'), path, 'ip', _messages);
     // data: String?
-    Object? c11;
-    c11 = s.string(s.read(input, 'data'), p, 'data', _m);
+    Object? data = state.string(
+      state.read(input, 'data'),
+      path,
+      'data',
+      _messages,
+    );
     // slug: String?
-    Object? c12;
-    c12 = s.string(s.read(input, 'slug'), p, 'slug', _m);
-    s.requiredWhen(
+    Object? slug = state.string(
+      state.read(input, 'slug'),
+      path,
+      'slug',
+      _messages,
+    );
+    state.requiredWhen(
       const RequiredIf('kind', 'team'),
-      c1,
+      teamName,
       input,
-      p,
+      path,
       'team_name',
-      _m,
+      _messages,
     );
-    s.requiredWhen(
+    state.requiredWhen(
       const RequiredWith(<String>['email']),
-      c3,
+      phone,
       input,
-      p,
+      path,
       'phone',
-      _m,
+      _messages,
     );
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(const <String>{'team', 'solo'}.contains(c0))) {
-        s.fail(
-          p,
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (kind is String) {
+      if (!(const <String>{'team', 'solo'}.contains(kind))) {
+        state.fail(
+          path,
           'kind',
           IssueCodes.inList,
           DefaultMessages.inList,
-          c0,
+          kind,
           params: const <String, Object?>{'values': 'team, and solo'},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (c2 is String) {
-      if (!(Patterns.email.hasMatch(c2))) {
-        s.fail(
-          p,
+    if (email is String) {
+      if (!(Patterns.email.hasMatch(email))) {
+        state.fail(
+          path,
           'email',
           IssueCodes.email,
           DefaultMessages.email,
-          c2,
-          messages: _m,
+          email,
+          messages: _messages,
         );
       }
     }
-    if (c4 is String) {
-      if (!(const DigitsBetween(4, 6).check(c4, s.context(p, 'pin', c4)))) {
-        s.failRule(const DigitsBetween(4, 6), p, 'pin', c4, _m);
+    if (pin is String) {
+      if (!(const DigitsBetween(
+        4,
+        6,
+      ).check(pin, state.context(path, 'pin', pin)))) {
+        state.failRule(const DigitsBetween(4, 6), path, 'pin', pin, _messages);
       }
     }
-    if (c5 is String) {
+    if (startsOn is String) {
       if (!(const DateFormatted('Y-m-d')
-          .check(c5, s.context(p, 'starts_on', c5)))) {
-        s.failRule(const DateFormatted('Y-m-d'), p, 'starts_on', c5, _m);
+          .check(startsOn, state.context(path, 'starts_on', startsOn)))) {
+        state.failRule(
+          const DateFormatted('Y-m-d'),
+          path,
+          'starts_on',
+          startsOn,
+          _messages,
+        );
       }
     }
-    if (c6 is String) {
+    if (password is String) {
       if (!(const Password(
         letters: true,
         mixedCase: true,
         numbers: true,
-      ).check(c6, s.context(p, 'password', c6)))) {
-        s.failRule(
+      ).check(password, state.context(path, 'password', password)))) {
+        state.failRule(
           const Password(letters: true, mixedCase: true, numbers: true),
-          p,
+          path,
           'password',
-          c6,
-          _m,
+          password,
+          _messages,
         );
-      } else if (!(const Confirmed().check(c6, s.context(p, 'password', c6)))) {
-        s.failRule(const Confirmed(), p, 'password', c6, _m);
+      } else if (!(const Confirmed().check(
+        password,
+        state.context(path, 'password', password),
+      ))) {
+        state.failRule(
+          const Confirmed(),
+          path,
+          'password',
+          password,
+          _messages,
+        );
       }
     }
-    if (c9 is String) {
-      if (!(const Same('code').check(c9, s.context(p, 'code_again', c9)))) {
-        s.failRule(const Same('code'), p, 'code_again', c9, _m);
+    if (codeAgain is String) {
+      if (!(const Same('code')
+          .check(codeAgain, state.context(path, 'code_again', codeAgain)))) {
+        state.failRule(
+          const Same('code'),
+          path,
+          'code_again',
+          codeAgain,
+          _messages,
+        );
       }
     }
-    if (c10 is String) {
-      if (!(DtoChecks.ip(c10))) {
-        s.fail(p, 'ip', IssueCodes.ip, DefaultMessages.ip, c10, messages: _m);
+    if (ip is String) {
+      if (!(DtoChecks.ip(ip))) {
+        state.fail(
+          path,
+          'ip',
+          IssueCodes.ip,
+          DefaultMessages.ip,
+          ip,
+          messages: _messages,
+        );
       }
     }
-    if (c11 is String) {
-      if (!(const Json().check(c11, s.context(p, 'data', c11)))) {
-        s.failRule(const Json(), p, 'data', c11, _m);
+    if (data is String) {
+      if (!(const Json().check(data, state.context(path, 'data', data)))) {
+        state.failRule(const Json(), path, 'data', data, _messages);
       }
     }
-    if (c12 is String) {
-      if (!(Patterns.alphaDash.hasMatch(c12))) {
-        s.fail(
-          p,
+    if (slug is String) {
+      if (!(Patterns.alphaDash.hasMatch(slug))) {
+        state.fail(
+          path,
           'slug',
           IssueCodes.alphaDash,
           DefaultMessages.alphaDash,
-          c12,
-          messages: _m,
+          slug,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return RuleCheck(
-      kind: c0 as String,
-      teamName: c1 is Undefined ? null : c1 as String?,
-      email: c2 is Undefined ? null : c2 as String?,
-      phone: c3 is Undefined ? null : c3 as String?,
-      pin: c4 as String,
-      startsOn: c5 as String,
-      password: c6 as String,
-      passwordConfirmation: c7 is Undefined ? null : c7 as String?,
-      code: c8 as String,
-      codeAgain: c9 as String,
-      ip: c10 is Undefined ? null : c10 as String?,
-      data: c11 is Undefined ? null : c11 as String?,
-      slug: c12 is Undefined ? null : c12 as String?,
-    );
-  }
-
-  @override
-  RuleCheck fromMap(Map<String, dynamic> m) {
-    return RuleCheck(
-      kind: m['kind'] as String,
-      teamName: m['team_name'] == null ? null : (m['team_name'] as String),
-      email: m['email'] == null ? null : (m['email'] as String),
-      phone: m['phone'] == null ? null : (m['phone'] as String),
-      pin: m['pin'] as String,
-      startsOn: m['starts_on'] as String,
-      password: m['password'] as String,
-      passwordConfirmation: m['password_confirmation'] == null
+      kind: kind as String,
+      teamName: teamName is Undefined ? null : teamName as String?,
+      email: email is Undefined ? null : email as String?,
+      phone: phone is Undefined ? null : phone as String?,
+      pin: pin as String,
+      startsOn: startsOn as String,
+      password: password as String,
+      passwordConfirmation: passwordConfirmation is Undefined
           ? null
-          : (m['password_confirmation'] as String),
-      code: m['code'] as String,
-      codeAgain: m['code_again'] as String,
-      ip: m['ip'] == null ? null : (m['ip'] as String),
-      data: m['data'] == null ? null : (m['data'] as String),
-      slug: m['slug'] == null ? null : (m['slug'] as String),
+          : passwordConfirmation as String?,
+      code: code as String,
+      codeAgain: codeAgain as String,
+      ip: ip is Undefined ? null : ip as String?,
+      data: data is Undefined ? null : data as String?,
+      slug: slug is Undefined ? null : slug as String?,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(RuleCheck o) {
-    String f0 = o.kind;
-    String? f1 = o.teamName;
-    String? f2 = o.email;
-    String? f3 = o.phone;
-    String f4 = o.pin;
-    String f5 = o.startsOn;
-    String f6 = o.password;
-    String? f7 = o.passwordConfirmation;
-    String f8 = o.code;
-    String f9 = o.codeAgain;
-    String? f10 = o.ip;
-    String? f11 = o.data;
-    String? f12 = o.slug;
+  RuleCheck fromMap(Map<String, dynamic> map) {
+    return RuleCheck(
+      kind: map['kind'] as String,
+      teamName: map['team_name'] == null ? null : (map['team_name'] as String),
+      email: map['email'] == null ? null : (map['email'] as String),
+      phone: map['phone'] == null ? null : (map['phone'] as String),
+      pin: map['pin'] as String,
+      startsOn: map['starts_on'] as String,
+      password: map['password'] as String,
+      passwordConfirmation: map['password_confirmation'] == null
+          ? null
+          : (map['password_confirmation'] as String),
+      code: map['code'] as String,
+      codeAgain: map['code_again'] as String,
+      ip: map['ip'] == null ? null : (map['ip'] as String),
+      data: map['data'] == null ? null : (map['data'] as String),
+      slug: map['slug'] == null ? null : (map['slug'] as String),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap(RuleCheck dto) {
     return <String, dynamic>{
-      'kind': f0,
-      'team_name': f1,
-      'email': f2,
-      'phone': f3,
-      'pin': f4,
-      'starts_on': f5,
-      'password': f6,
-      'password_confirmation': f7,
-      'code': f8,
-      'code_again': f9,
-      'ip': f10,
-      'data': f11,
-      'slug': f12,
+      'kind': dto.kind,
+      'team_name': dto.teamName,
+      'email': dto.email,
+      'phone': dto.phone,
+      'pin': dto.pin,
+      'starts_on': dto.startsOn,
+      'password': dto.password,
+      'password_confirmation': dto.passwordConfirmation,
+      'code': dto.code,
+      'code_again': dto.codeAgain,
+      'ip': dto.ip,
+      'data': dto.data,
+      'slug': dto.slug,
     };
   }
 
   @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as RuleCheck));
+
+  @override
   Map<String, dynamic> toJsonSchema() {
-    Map<String, dynamic> j = <String, dynamic>{
+    Map<String, dynamic> schema = <String, dynamic>{
       'type': 'object',
       'title': 'RuleCheck',
       'properties': <String, dynamic>{
@@ -730,16 +855,16 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
         'code_again',
       ],
     };
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'pin',
     ], const DigitsBetween(4, 6).toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'starts_on',
     ], const DateFormatted('Y-m-d').toJsonSchema());
     JsonSchemaTools.merge(
-      j,
+      schema,
       <String>['properties', 'password'],
       const Password(
         letters: true,
@@ -747,18 +872,18 @@ class _$RuleCheckDto extends DtoSchema<RuleCheck> {
         numbers: true,
       ).toJsonSchema(),
     );
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'password',
     ], const Confirmed().toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'code_again',
     ], const Same('code').toJsonSchema());
-    JsonSchemaTools.merge(j, <String>[
+    JsonSchemaTools.merge(schema, <String>[
       'properties',
       'data',
     ], const Json().toJsonSchema());
-    return j;
+    return schema;
   }
 }

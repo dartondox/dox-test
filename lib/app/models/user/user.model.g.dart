@@ -8,7 +8,7 @@ part of 'user.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class UserGenerator extends Model<User> {
+class UserGenerator extends Model<User> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -221,5 +221,64 @@ class UserGenerator extends Model<User> {
   void setComputedValues(Map<String, dynamic> map) {
     User instance = this as User;
     map['full_name'] = instance.fullName;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != User) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    User instance = this as User;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('email')) {
+      w.key('email');
+      w.string(instance.email);
+    }
+    if (all || !hide.contains('password')) {
+      w.key('password');
+      w.string(instance.password);
+    }
+    if (all || !hide.contains('first_name')) {
+      w.key('first_name');
+      w.string(instance.firstName);
+    }
+    if (all || !hide.contains('last_name')) {
+      w.key('last_name');
+      w.string(instance.lastName);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('profile') && (all || !hide.contains('profile'))) {
+      w.key('profile');
+      w.value(instance.profile);
+    }
+    if (preload.contains('posts') && (all || !hide.contains('posts'))) {
+      w.key('posts');
+      w.value(instance.posts);
+    }
+    if (all || !hide.contains('full_name')) {
+      w.key('full_name');
+      w.value(instance.fullName);
+    }
+    w.endObject();
   }
 }

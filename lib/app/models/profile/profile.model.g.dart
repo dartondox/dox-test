@@ -8,7 +8,7 @@ part of 'profile.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class ProfileGenerator extends Model<Profile> {
+class ProfileGenerator extends Model<Profile> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -175,5 +175,48 @@ class ProfileGenerator extends Model<Profile> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Profile) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Profile instance = this as Profile;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('user_id')) {
+      w.key('user_id');
+      w.integer(instance.userId);
+    }
+    if (all || !hide.contains('bio')) {
+      w.key('bio');
+      w.string(instance.bio);
+    }
+    if (all || !hide.contains('website')) {
+      w.key('website');
+      w.string(instance.website);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('user') && (all || !hide.contains('user'))) {
+      w.key('user');
+      w.value(instance.user);
+    }
+    w.endObject();
   }
 }

@@ -8,7 +8,7 @@ part of 'comment.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class CommentGenerator extends Model<Comment> {
+class CommentGenerator extends Model<Comment> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -171,5 +171,47 @@ class CommentGenerator extends Model<Comment> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Comment) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Comment instance = this as Comment;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('post_id')) {
+      w.key('post_id');
+      w.integer(instance.postId);
+    }
+    if (all || !hide.contains('user_id')) {
+      w.key('user_id');
+      w.integer(instance.userId);
+    }
+    if (all || !hide.contains('body')) {
+      w.key('body');
+      w.string(instance.body);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    if (all || !hide.contains('user')) {
+      w.key('user');
+      w.value(instance.user);
+    }
+    w.endObject();
   }
 }

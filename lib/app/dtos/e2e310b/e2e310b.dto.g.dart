@@ -11,10 +11,11 @@ part of 'e2e310b.dto.dart';
 /// The checks, the converter and the JSON Schema of [E2ePlanForm].
 const DtoSchema<E2ePlanForm> $E2ePlanFormDto = _$E2ePlanFormDto();
 
-class _$E2ePlanFormDto extends DtoSchema<E2ePlanForm> {
+class _$E2ePlanFormDto extends DtoSchema<E2ePlanForm>
+    implements JsonObjectWriter {
   const _$E2ePlanFormDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => E2ePlanForm;
@@ -23,49 +24,62 @@ class _$E2ePlanFormDto extends DtoSchema<E2ePlanForm> {
   String get name => 'E2ePlanForm';
 
   @override
-  E2ePlanForm? convert(Object? input, DtoState s, List<Object> p) {
+  E2ePlanForm? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // card: String?
-    Object? c0;
-    c0 = s.string(s.read(input, 'card'), p, 'card', _m);
+    Object? card = state.string(
+      state.read(input, 'card'),
+      path,
+      'card',
+      _messages,
+    );
     // plan: String
-    Object? c1;
-    c1 = s.string(
-      s.read(input, 'plan'),
-      p,
+    Object? plan = state.string(
+      state.read(input, 'plan'),
+      path,
       'plan',
-      _m,
+      _messages,
       trim: true,
       textCase: 1,
     );
-    if (c1 == null || c1 is Undefined) s.required(p, 'plan', _m);
-    s.requiredWhen(const RequiredIf('plan', 'pro'), c0, input, p, 'card', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    if (plan == null || plan is Undefined)
+      state.required(path, 'plan', _messages);
+    state.requiredWhen(
+      const RequiredIf('plan', 'pro'),
+      card,
+      input,
+      path,
+      'card',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return E2ePlanForm(
-      card: c0 is Undefined ? null : c0 as String?,
-      plan: c1 as String,
+      card: card is Undefined ? null : card as String?,
+      plan: plan as String,
     );
   }
 
   @override
-  E2ePlanForm fromMap(Map<String, dynamic> m) {
+  E2ePlanForm fromMap(Map<String, dynamic> map) {
     return E2ePlanForm(
-      card: m['card'] == null ? null : (m['card'] as String),
-      plan: m['plan'] as String,
+      card: map['card'] == null ? null : (map['card'] as String),
+      plan: map['plan'] as String,
     );
   }
 
   @override
-  Map<String, dynamic> toMap(E2ePlanForm o) {
-    String? f0 = o.card;
-    String f1 = o.plan;
-    return <String, dynamic>{'card': f0, 'plan': f1};
+  Map<String, dynamic> toMap(E2ePlanForm dto) {
+    return <String, dynamic>{'card': dto.card, 'plan': dto.plan};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as E2ePlanForm));
 
   @override
   Map<String, dynamic> toJsonSchema() {

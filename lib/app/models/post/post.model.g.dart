@@ -8,7 +8,9 @@ part of 'post.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class PostGenerator extends Model<Post> with SoftDeletes<Post> {
+class PostGenerator extends Model<Post>
+    with SoftDeletes<Post>
+    implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -253,5 +255,68 @@ class PostGenerator extends Model<Post> with SoftDeletes<Post> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Post) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Post instance = this as Post;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('user_id')) {
+      w.key('user_id');
+      w.integer(instance.userId);
+    }
+    if (all || !hide.contains('title')) {
+      w.key('title');
+      w.string(instance.title);
+    }
+    if (all || !hide.contains('body')) {
+      w.key('body');
+      w.string(instance.body);
+    }
+    if (all || !hide.contains('status')) {
+      w.key('status');
+      w.string(instance.status);
+    }
+    if (all || !hide.contains('views')) {
+      w.key('views');
+      w.integer(instance.views);
+    }
+    if (all || !hide.contains('deleted_at')) {
+      w.key('deleted_at');
+      w.dateTime(instance.deletedAt);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('author') && (all || !hide.contains('author'))) {
+      w.key('author');
+      w.value(instance.author);
+    }
+    if (preload.contains('comments') && (all || !hide.contains('comments'))) {
+      w.key('comments');
+      w.value(instance.comments);
+    }
+    if (preload.contains('tags') && (all || !hide.contains('tags'))) {
+      w.key('tags');
+      w.value(instance.tags);
+    }
+    w.endObject();
   }
 }

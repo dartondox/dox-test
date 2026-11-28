@@ -8,7 +8,7 @@ part of 'reaction.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class ReactionGenerator extends Model<Reaction> {
+class ReactionGenerator extends Model<Reaction> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -172,5 +172,48 @@ class ReactionGenerator extends Model<Reaction> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != Reaction) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    Reaction instance = this as Reaction;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('emoji')) {
+      w.key('emoji');
+      w.string(instance.emoji);
+    }
+    if (all || !hide.contains('reactable_id')) {
+      w.key('reactable_id');
+      w.integer(instance.reactableId);
+    }
+    if (all || !hide.contains('reactable_type')) {
+      w.key('reactable_type');
+      w.string(instance.reactableType);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('reactable') && (all || !hide.contains('reactable'))) {
+      w.key('reactable');
+      w.value(instance.reactable);
+    }
+    w.endObject();
   }
 }

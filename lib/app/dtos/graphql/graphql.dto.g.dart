@@ -11,10 +11,11 @@ part of 'graphql.dto.dart';
 /// The checks, the converter and the JSON Schema of [GqlPostInput].
 const DtoSchema<GqlPostInput> $GqlPostInputDto = _$GqlPostInputDto();
 
-class _$GqlPostInputDto extends DtoSchema<GqlPostInput> {
+class _$GqlPostInputDto extends DtoSchema<GqlPostInput>
+    implements JsonObjectWriter {
   const _$GqlPostInputDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => GqlPostInput;
@@ -26,62 +27,80 @@ class _$GqlPostInputDto extends DtoSchema<GqlPostInput> {
   bool get usesRequiredWhen => false;
 
   @override
-  GqlPostInput? convert(Object? input, DtoState s, List<Object> p) {
+  GqlPostInput? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // title: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'title'), p, 'title', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'title', _m);
+    Object? title = state.string(
+      state.read(input, 'title'),
+      path,
+      'title',
+      _messages,
+    );
+    if (title == null || title is Undefined)
+      state.required(path, 'title', _messages);
     // body: String
-    Object? c1;
-    c1 = s.string(s.read(input, 'body'), p, 'body', _m);
-    if (c1 == null) s.required(p, 'body', _m);
+    Object? body = state.string(
+      state.read(input, 'body'),
+      path,
+      'body',
+      _messages,
+    );
+    if (body == null) state.required(path, 'body', _messages);
     // status: String
-    Object? c2;
-    c2 = s.string(s.read(input, 'status'), p, 'status', _m);
-    if (c2 == null) s.required(p, 'status', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (c0 is String) {
-      if (!(c0.runes.length >= 3)) {
-        s.fail(
-          p,
+    Object? status = state.string(
+      state.read(input, 'status'),
+      path,
+      'status',
+      _messages,
+    );
+    if (status == null) state.required(path, 'status', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (title is String) {
+      if (!(title.runes.length >= 3)) {
+        state.fail(
+          path,
           'title',
           IssueCodes.minLength,
           DefaultMessages.minLength,
-          c0,
+          title,
           params: const <String, Object?>{'min': 3},
-          messages: _m,
+          messages: _messages,
         );
       }
     }
-    if (s.issues.length != e) return null;
+    if (state.issues.length != issuesBefore) return null;
     return GqlPostInput(
-      title: c0 as String,
-      body: c1 is Undefined ? '' : c1 as String,
-      status: c2 is Undefined ? 'draft' : c2 as String,
+      title: title as String,
+      body: body is Undefined ? '' : body as String,
+      status: status is Undefined ? 'draft' : status as String,
     );
   }
 
   @override
-  GqlPostInput fromMap(Map<String, dynamic> m) {
+  GqlPostInput fromMap(Map<String, dynamic> map) {
     return GqlPostInput(
-      title: m['title'] as String,
-      body: m.containsKey('body') ? m['body'] as String : '',
-      status: m.containsKey('status') ? m['status'] as String : 'draft',
+      title: map['title'] as String,
+      body: map.containsKey('body') ? map['body'] as String : '',
+      status: map.containsKey('status') ? map['status'] as String : 'draft',
     );
   }
 
   @override
-  Map<String, dynamic> toMap(GqlPostInput o) {
-    String f0 = o.title;
-    String f1 = o.body;
-    String f2 = o.status;
-    return <String, dynamic>{'title': f0, 'body': f1, 'status': f2};
+  Map<String, dynamic> toMap(GqlPostInput dto) {
+    return <String, dynamic>{
+      'title': dto.title,
+      'body': dto.body,
+      'status': dto.status,
+    };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as GqlPostInput));
 
   @override
   Map<String, dynamic> toJsonSchema() {
@@ -101,10 +120,11 @@ class _$GqlPostInputDto extends DtoSchema<GqlPostInput> {
 /// The checks, the converter and the JSON Schema of [GqlSecretInput].
 const DtoSchema<GqlSecretInput> $GqlSecretInputDto = _$GqlSecretInputDto();
 
-class _$GqlSecretInputDto extends DtoSchema<GqlSecretInput> {
+class _$GqlSecretInputDto extends DtoSchema<GqlSecretInput>
+    implements JsonObjectWriter {
   const _$GqlSecretInputDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => GqlSecretInput;
@@ -116,39 +136,51 @@ class _$GqlSecretInputDto extends DtoSchema<GqlSecretInput> {
   bool get usesRequiredWhen => false;
 
   @override
-  GqlSecretInput? convert(Object? input, DtoState s, List<Object> p) {
+  GqlSecretInput? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // body: String
-    Object? c0;
-    c0 = s.string(s.read(input, 'body'), p, 'body', _m);
-    if (c0 == null || c0 is Undefined) s.required(p, 'body', _m);
+    Object? body = state.string(
+      state.read(input, 'body'),
+      path,
+      'body',
+      _messages,
+    );
+    if (body == null || body is Undefined)
+      state.required(path, 'body', _messages);
     // postId: int
-    Object? c1;
-    c1 = s.integer(s.read(input, 'post_id'), p, 'post_id', _m);
-    if (c1 == null || c1 is Undefined) s.required(p, 'post_id', _m);
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
-    return GqlSecretInput(body: c0 as String, postId: c1 as int);
+    Object? postId = state.integer(
+      state.read(input, 'post_id'),
+      path,
+      'post_id',
+      _messages,
+    );
+    if (postId == null || postId is Undefined)
+      state.required(path, 'post_id', _messages);
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
+    return GqlSecretInput(body: body as String, postId: postId as int);
   }
 
   @override
-  GqlSecretInput fromMap(Map<String, dynamic> m) {
+  GqlSecretInput fromMap(Map<String, dynamic> map) {
     return GqlSecretInput(
-      body: m['body'] as String,
-      postId: (m['post_id'] as num).toInt(),
+      body: map['body'] as String,
+      postId: (map['post_id'] as num).toInt(),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(GqlSecretInput o) {
-    String f0 = o.body;
-    int f1 = o.postId;
-    return <String, dynamic>{'body': f0, 'post_id': f1};
+  Map<String, dynamic> toMap(GqlSecretInput dto) {
+    return <String, dynamic>{'body': dto.body, 'post_id': dto.postId};
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as GqlSecretInput));
 
   @override
   Map<String, dynamic> toJsonSchema() {

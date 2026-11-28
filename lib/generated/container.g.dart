@@ -68,9 +68,12 @@ import 'package:dox_test/app/models/profile/profile.model.dart' as i62;
 import 'package:dox_test/app/models/reaction/reaction.model.dart' as i63;
 import 'package:dox_test/app/models/tag/tag.model.dart' as i64;
 import 'package:dox_test/app/models/user/user.model.dart' as i65;
+import 'package:dox_test/app/serializers/post.serializer.dart' as i66;
+import 'package:dox_test/app/serializers/user.serializer.dart' as i67;
 
 /// Puts every class of the app into the container: the
-/// `@Inject()` classes, routers, providers and model binders.
+/// `@Inject()` classes, routers, providers, model binders and the
+/// JSON writers of the `@Serialize()` classes.
 /// Use it in `AppConfig(container: registerContainer)`.
 void registerContainer(IocContainer c) {
   c.singleton<i1.AuthController>(
@@ -270,4 +273,6 @@ void registerContainer(IocContainer c) {
     if (key == null) return null;
     return i65.User().find(key);
   });
+  c.jsonWriter(i66.$PostSerializerWriter);
+  c.jsonWriter(i67.$UserSerializerWriter);
 }

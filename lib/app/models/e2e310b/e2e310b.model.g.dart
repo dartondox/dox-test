@@ -8,7 +8,7 @@ part of 'e2e310b.model.dart';
 
 // ignore_for_file: always_specify_types
 
-class E310bItemGenerator extends Model<E310bItem> {
+class E310bItemGenerator extends Model<E310bItem> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -179,11 +179,54 @@ class E310bItemGenerator extends Model<E310bItem> {
       ..updatedAt = o.updatedAt;
     return true;
   }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E310bItem) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E310bItem instance = this as E310bItem;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    if (all || !hide.contains('qty')) {
+      w.key('qty');
+      w.integer(instance.qty);
+    }
+    if (all || !hide.contains('secret')) {
+      w.key('secret');
+      w.string(instance.secret);
+    }
+    if (all || !hide.contains('created_at')) {
+      w.key('created_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('updated_at')) {
+      w.key('updated_at');
+      w.dateTime(instance.updatedAt);
+    }
+    List<String> preload = getPreload();
+    if (preload.contains('tags') && (all || !hide.contains('tags'))) {
+      w.key('tags');
+      w.value(instance.tags);
+    }
+    w.endObject();
+  }
 }
 
 // ignore_for_file: always_specify_types
 
-class E310bTagGenerator extends Model<E310bTag> {
+class E310bTagGenerator extends Model<E310bTag> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -277,11 +320,33 @@ class E310bTagGenerator extends Model<E310bTag> {
       ..name = o.name;
     return true;
   }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E310bTag) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E310bTag instance = this as E310bTag;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('name')) {
+      w.key('name');
+      w.string(instance.name);
+    }
+    w.endObject();
+  }
 }
 
 // ignore_for_file: always_specify_types
 
-class E310bNoteGenerator extends Model<E310bNote> {
+class E310bNoteGenerator extends Model<E310bNote> implements JsonWritable {
   @override
   String get primaryKey => 'id';
 
@@ -403,5 +468,35 @@ class E310bNoteGenerator extends Model<E310bNote> {
       ..createdAt = o.createdAt
       ..updatedAt = o.updatedAt;
     return true;
+  }
+
+  @override
+  void writeJson(JsonWriter w) {
+    List<String>? hide = $jsonHidden;
+    // a class that extends the model can have its own toJson()
+    if (hide == null || runtimeType != E310bNote) {
+      w.value(toJson());
+      return;
+    }
+    bool all = hide.isEmpty;
+    E310bNote instance = this as E310bNote;
+    w.startObject();
+    if (all || !hide.contains('id')) {
+      w.key('id');
+      w.integer(instance.id);
+    }
+    if (all || !hide.contains('body')) {
+      w.key('body');
+      w.string(instance.body);
+    }
+    if (all || !hide.contains('made_at')) {
+      w.key('made_at');
+      w.dateTime(instance.createdAt);
+    }
+    if (all || !hide.contains('changed_at')) {
+      w.key('changed_at');
+      w.dateTime(instance.updatedAt);
+    }
+    w.endObject();
   }
 }

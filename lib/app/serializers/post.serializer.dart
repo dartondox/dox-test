@@ -2,7 +2,10 @@ import 'package:dox_core/dox_core.dart';
 import 'package:dox_test/app/models/post/post.model.dart';
 import 'package:dox_test/app/models/tag/tag.model.dart';
 
+part 'post.serializer.g.dart';
+
 /// Public shape of a post, with tag names only.
+@Serialize()
 class PostSerializer extends Serializer<Post> {
   PostSerializer(super.data);
 

@@ -11,10 +11,11 @@ part of 'e2e310.dto.dart';
 /// The checks, the converter and the JSON Schema of [E2eTeamForm].
 const DtoSchema<E2eTeamForm> $E2eTeamFormDto = _$E2eTeamFormDto();
 
-class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm> {
+class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm>
+    implements JsonObjectWriter {
   const _$E2eTeamFormDto();
 
-  static const Map<String, String> _m = <String, String>{};
+  static const Map<String, String> _messages = <String, String>{};
 
   @override
   Type get type => E2eTeamForm;
@@ -23,81 +24,94 @@ class _$E2eTeamFormDto extends DtoSchema<E2eTeamForm> {
   String get name => 'E2eTeamForm';
 
   @override
-  E2eTeamForm? convert(Object? input, DtoState s, List<Object> p) {
+  E2eTeamForm? convert(Object? input, DtoState state, List<Object> path) {
     if (input is! Map) {
-      s.notObject(input, p, _m);
+      state.notObject(input, path, _messages);
       return null;
     }
-    int e = s.issues.length;
+    int issuesBefore = state.issues.length;
     // kind: String
-    Object? c0;
-    c0 = s.string(
-      s.read(input, 'kind'),
-      p,
+    Object? kind = state.string(
+      state.read(input, 'kind'),
+      path,
       'kind',
-      _m,
+      _messages,
       trim: true,
       textCase: 1,
     );
-    if (c0 == null || c0 is Undefined) s.required(p, 'kind', _m);
+    if (kind == null || kind is Undefined)
+      state.required(path, 'kind', _messages);
     // teamName: String?
-    Object? c1;
-    c1 = s.string(s.read(input, 'team_name'), p, 'team_name', _m);
-    // email: String?
-    Object? c2;
-    c2 = s.string(s.read(input, 'email'), p, 'email', _m, trim: true);
-    // phone: String?
-    Object? c3;
-    c3 = s.string(s.read(input, 'phone'), p, 'phone', _m);
-    s.requiredWhen(
-      const RequiredIf('kind', 'team'),
-      c1,
-      input,
-      p,
+    Object? teamName = state.string(
+      state.read(input, 'team_name'),
+      path,
       'team_name',
-      _m,
+      _messages,
     );
-    s.requiredWhen(
-      const RequiredWith(<String>['email']),
-      c3,
-      input,
-      p,
+    // email: String?
+    Object? email = state.string(
+      state.read(input, 'email'),
+      path,
+      'email',
+      _messages,
+      trim: true,
+    );
+    // phone: String?
+    Object? phone = state.string(
+      state.read(input, 'phone'),
+      path,
       'phone',
-      _m,
+      _messages,
     );
-    if (s.issues.length != e && !s.allErrors) return null;
-    if (s.issues.length != e) return null;
+    state.requiredWhen(
+      const RequiredIf('kind', 'team'),
+      teamName,
+      input,
+      path,
+      'team_name',
+      _messages,
+    );
+    state.requiredWhen(
+      const RequiredWith(<String>['email']),
+      phone,
+      input,
+      path,
+      'phone',
+      _messages,
+    );
+    if (state.issues.length != issuesBefore && !state.allErrors) return null;
+    if (state.issues.length != issuesBefore) return null;
     return E2eTeamForm(
-      kind: c0 as String,
-      teamName: c1 is Undefined ? null : c1 as String?,
-      email: c2 is Undefined ? null : c2 as String?,
-      phone: c3 is Undefined ? null : c3 as String?,
+      kind: kind as String,
+      teamName: teamName is Undefined ? null : teamName as String?,
+      email: email is Undefined ? null : email as String?,
+      phone: phone is Undefined ? null : phone as String?,
     );
   }
 
   @override
-  E2eTeamForm fromMap(Map<String, dynamic> m) {
+  E2eTeamForm fromMap(Map<String, dynamic> map) {
     return E2eTeamForm(
-      kind: m['kind'] as String,
-      teamName: m['team_name'] == null ? null : (m['team_name'] as String),
-      email: m['email'] == null ? null : (m['email'] as String),
-      phone: m['phone'] == null ? null : (m['phone'] as String),
+      kind: map['kind'] as String,
+      teamName: map['team_name'] == null ? null : (map['team_name'] as String),
+      email: map['email'] == null ? null : (map['email'] as String),
+      phone: map['phone'] == null ? null : (map['phone'] as String),
     );
   }
 
   @override
-  Map<String, dynamic> toMap(E2eTeamForm o) {
-    String f0 = o.kind;
-    String? f1 = o.teamName;
-    String? f2 = o.email;
-    String? f3 = o.phone;
+  Map<String, dynamic> toMap(E2eTeamForm dto) {
     return <String, dynamic>{
-      'kind': f0,
-      'team_name': f1,
-      'email': f2,
-      'phone': f3,
+      'kind': dto.kind,
+      'team_name': dto.teamName,
+      'email': dto.email,
+      'phone': dto.phone,
     };
   }
+
+  @override
+  void writeObject(Object object, JsonWriter writer) =>
+      writer.value(toMap(object as E2eTeamForm));
 
   @override
   Map<String, dynamic> toJsonSchema() {

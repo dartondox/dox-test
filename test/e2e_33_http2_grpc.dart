@@ -1449,49 +1449,89 @@ class RawH2 {
     return f != null;
   }
 
-  /// `:status` of the first HEADERS of stream [id]
+  /// `:status` of the first HEADERS of stream [id]. The blocks are read in
+  /// order, because the server adds fields to the dynamic table.
   int? status(int id) {
+    List<(String, String)> table = <(String, String)>[];
     for (RawFrame f in frames) {
-      if (f.id == id && f.type == headersType) return _status(f.payload);
+      if (f.type != headersType) continue;
+      int? code = _status(f.payload, table);
+      if (f.id == id) return code;
     }
     return null;
   }
 
-  static const List<int> _staticStatus = <int>[
-    200,
-    204,
-    206,
-    304,
-    400,
-    404,
-    500,
+  /// the `:status` entries of the HPACK static table, index 8 to 14
+  static const List<String> _staticStatus = <String>[
+    '200',
+    '204',
+    '206',
+    '304',
+    '400',
+    '404',
+    '500',
   ];
 
-  static int? _status(Uint8List block) {
+  /// Reads one header block (RFC 7541) with no Huffman: the server sends
+  /// none. [table] is the dynamic table, newest first.
+  ///
+  /// ponytail: no eviction, the tests stay far below the 4 KB table.
+  static int? _status(Uint8List block, List<(String, String)> table) {
     int i = 0;
+    int readInt(int prefix) {
+      int mask = (1 << prefix) - 1;
+      int value = block[i++] & mask;
+      if (value < mask) return value;
+      int shift = 0;
+      int b;
+      do {
+        b = block[i++];
+        value += (b & 0x7f) << shift;
+        shift += 7;
+      } while (b & 0x80 != 0);
+      return value;
+    }
+
+    String readStr() {
+      int n = readInt(7);
+      String text = ascii.decode(block.sublist(i, i + n));
+      i += n;
+      return text;
+    }
+
+    String nameOf(int index) {
+      if (index >= 8 && index <= 14) return ':status';
+      if (index > 61) return table[index - 62].$1;
+      return '';
+    }
+
+    String? code;
     while (i < block.length) {
       int b = block[i];
+      String name;
+      String value;
       if (b & 0x80 != 0) {
-        int index = b & 0x7f;
-        if (index >= 8 && index <= 14) return _staticStatus[index - 8];
-        i++;
+        int index = readInt(7);
+        if (index >= 8 && index <= 14) {
+          (name, value) = (':status', _staticStatus[index - 8]);
+        } else if (index > 61) {
+          (name, value) = table[index - 62];
+        } else {
+          continue;
+        }
+      } else if (b & 0xe0 == 0x20) {
+        readInt(5); // dynamic table size update
         continue;
+      } else {
+        bool insert = b & 0x40 != 0;
+        int index = readInt(insert ? 6 : 4);
+        name = index == 0 ? readStr() : nameOf(index);
+        value = readStr();
+        if (insert) table.insert(0, (name, value));
       }
-      // literal without indexing (4 bit prefix), plain strings
-      int index = b & 0x0f;
-      i++;
-      String? name;
-      if (index == 0) {
-        int n = block[i++];
-        name = ascii.decode(block.sublist(i, i + n));
-        i += n;
-      }
-      int length = block[i++] & 0x7f;
-      String value = ascii.decode(block.sublist(i, i + length));
-      i += length;
-      if (index == 8 || name == ':status') return int.parse(value);
+      if (name == ':status') code ??= value;
     }
-    return null;
+    return code == null ? null : int.parse(code);
   }
 
   void close() {
